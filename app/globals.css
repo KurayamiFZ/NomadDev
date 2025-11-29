@@ -1,4 +1,6 @@
 @import "tailwindcss";
+@plugin "tailwind-scrollbar";
+@plugin "@iconify/tailwind4";
 
 :root {
   --background: #ffffff;
