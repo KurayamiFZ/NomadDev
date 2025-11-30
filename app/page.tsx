@@ -15,13 +15,13 @@ export default function Home() {
 
       {/* Header Widget */}
       <div className="mt-8 rounded-3xl h-[3px] w-1/5 items-center justify-center px-3 py-5 bg-[linear-gradient(to_right,#A95BF0,#E94D9B)]">
-        <p className="-m-3 flex justify-center font-bold text-sm">
+        <p className="-m-3 flex justify-center text-white font-bold text-sm">
           Одоогоор 2,847 сурагч шууд хичээллэж байна
         </p>
       </div>
 
       {/* Main Headline */}
-      <p className="mt-16 text-6xl font-extrabold">3 сарын таны аялал</p>
+      <p className="mt-16 text-6xl text-white font-extrabold">3 сарын таны аялал</p>
 
       <span className="bg-[linear-gradient(to_right,#A95BF0,#E94D9B)] font-[Inter] font-extrabold text-5xl bg-clip-text text-transparent">
         Тэгээс эхлээд тоглоом хөгжүүлэгч болтлоо
@@ -35,12 +35,18 @@ export default function Home() {
 
         {/* Headline */}
         <div className="bg-gray-800 flex items-center justify-between rounded-t-3xl h-15 w-full">
-          <div className="flex w-1/2 h-full justify-center items-center">
+          <div className="flex w-2/3 h-full items-center">
             <span className="icon-[proicons--game] bg-purple-400 size-6 m-2"></span>
-            <p className="font-bold">Хичээл туршаад үз – Харилцан үйлдэлтэй демо</p>
+            <p className="text-white font-bold">Хичээл туршаад үз – Харилцан үйлдэлтэй демо</p>
           </div>
           <p className="text-green-400 font-bold mr-8">●live</p>
         </div>
+
+        <div className="flex flex-row items-start w-full">
+          <span className="icon-[tabler--book] ml-26 size-5 bg-purple-400"></span>
+          <span className="font-bold ml-2  text-sm text-white">Хичээлээ сонго</span>
+        </div>
+        
 
         {/* Lesson Tabs */}
         <div className="flex flex-col items-center gap-3 w-full">
@@ -75,7 +81,7 @@ export default function Home() {
             alt="Video placeholder"
             className="absolute inset-0 w-5/6 h-full object-cover opacity-20"
           />
-          <button className="z-10 size-10 flex items-center justify-center text-6xl hover:scale-110 transition">
+          <button className="z-10 size-10 text-white flex items-center justify-center text-6xl hover:scale-110 transition">
             ▶
           </button>
           <div className="absolute bottom-0 left-0 right-0 bg-linear-to-t from-black to-transparent p-4 text-white flex justify-between text-sm">
@@ -87,8 +93,8 @@ export default function Home() {
         {/* Code Editor */}
         <div className="bg-gray-900 rounded-xl w-3/4 h-64 p-4 space-y-3">
           <div className="flex justify-between items-center">
-            <span className="font-bold text-sm text-white-400">Өөрөө туршиж үз</span>
-            <button className="bg-green-500 px-4 py-1 rounded-lg text-sm font-bold hover:bg-green-400 transition">
+            <span className="font-bold text-sm text-white">Өөрөө туршиж үз</span>
+            <button className="bg-green-500 text-white px-4 py-1 rounded-lg text-sm font-bold hover:bg-green-400 transition">
               Run Code
             </button>
           </div>
@@ -107,7 +113,7 @@ export default function Home() {
       </div>
 
       <div className="flex flex-col w-full items-center justify-center"> 
-        <p className="m-18 text-4xl font-extrabold font-[Inter]">Амжилтад хүрэх тод зам</p>
+        <p className="m-18 text-4xl font-extrabold text-white font-[Inter]">Амжилтад хүрэх тод зам</p>
           <div className="mb-36 flex flex-row items-center justify-center w-full h-[500px]">
             {/* Foundation */}
             <div className="flex self-start size-22 mr-8 rounded-full bg-[linear-gradient(to_right,#3A8FED,#26ACD9)]"></div>
@@ -119,11 +125,19 @@ export default function Home() {
                 <span className="font-light text-sm font-[Inter] ml-10 text-white">Үндсүүдийг бүрэн эзэмш</span>
               </div>
               {/* Cards */}
-              <div className="flex flex-col items-center justify-center pt-8 md:justify-between w-full h-4/5">
-                <div className="bg-black rounded-xl border border-gray-800 w-11/12 h-2/12"></div>
-                <div className="bg-black rounded-xl border border-gray-800 w-11/12 h-2/12"></div>
-                <div className="bg-black rounded-xl border border-gray-800 w-11/12 h-2/12"></div>
-                <div className="bg-black rounded-xl border border-gray-800 w-11/12 h-2/12"></div>
+              <div className="flex flex-col font-[Inter] items-center justify-center pt-8 md:justify-between w-full h-4/5">
+                <div className="flex items-center bg-black rounded-xl border border-gray-800 w-11/12 h-2/12">
+                  <span className="text-m text-white ml-4 font-extralight">C# Basics & Syntax</span>
+                </div>
+                <div className="flex items-center bg-black rounded-xl border border-gray-800 w-11/12 h-2/12">
+                  <span className="text-m text-white ml-4 font-extralight">Unity Interface Mastery</span>
+                </div>
+                <div className="flex items-center bg-black rounded-xl border border-gray-800 w-11/12 h-2/12">
+                  <span className="text-m text-white ml-4 font-extralight">2D Game Mechanics</span>
+                </div>
+                <div className="flex items-center bg-black rounded-xl border border-gray-800 w-11/12 h-2/12">
+                  <span className="text-m text-white ml-4 font-extralight">Ship Your First Playable Game</span>
+                </div>
               </div>
             </div>
           </div>
@@ -139,10 +153,18 @@ export default function Home() {
               </div>
               {/* Cards */}
               <div className="flex flex-col items-center justify-center pt-8 md:justify-between w-full h-4/5">
-                <div className="bg-black rounded-xl border border-gray-800 w-11/12 h-2/12"></div>
-                <div className="bg-black rounded-xl border border-gray-800 w-11/12 h-2/12"></div>
-                <div className="bg-black rounded-xl border border-gray-800 w-11/12 h-2/12"></div>
-                <div className="bg-black rounded-xl border border-gray-800 w-11/12 h-2/12"></div>
+                <div className="flex items-center bg-black rounded-xl border border-gray-800 w-11/12 h-2/12">
+                  <span className="text-m text-white ml-4 font-extralight">3D Environments & Lighting</span>
+                </div>
+                <div className="flex items-center bg-black rounded-xl border border-gray-800 w-11/12 h-2/12">
+                  <span className="text-m text-white ml-4 font-extralight">Character Controllers</span>
+                </div>
+                <div className="flex items-center bg-black rounded-xl border border-gray-800 w-11/12 h-2/12">
+                  <span className="text-m text-white ml-4 font-extralight">Physics & Collision System</span>
+                </div>
+                <div className="flex items-center bg-black rounded-xl border border-gray-800 w-11/12 h-2/12">
+                  <span className="text-m text-white ml-4 font-extralight">Complete Mobile Game</span>
+                </div>
               </div>
             </div>
           </div>
@@ -158,10 +180,18 @@ export default function Home() {
               </div>
               {/* Cards */}
               <div className="flex flex-col items-center justify-center pt-8 md:justify-between w-full h-4/5">
-                <div className="bg-black rounded-xl border border-gray-800 w-11/12 h-2/12"></div>
-                <div className="bg-black rounded-xl border border-gray-800 w-11/12 h-2/12"></div>
-                <div className="bg-black rounded-xl border border-gray-800 w-11/12 h-2/12"></div>
-                <div className="bg-black rounded-xl border border-gray-800 w-11/12 h-2/12"></div>
+                <div className="flex items-center bg-black rounded-xl border border-gray-800 w-11/12 h-2/12">
+                  <span className="text-m text-white ml-4 font-extralight">Multiplayer Networking</span>
+                </div>
+                <div className="flex items-center bg-black rounded-xl border border-gray-800 w-11/12 h-2/12">
+                  <span className="text-m text-white ml-4 font-extralight">AI & Pathfinding</span>
+                </div>
+                <div className="flex items-center bg-black rounded-xl border border-gray-800 w-11/12 h-2/12">
+                  <span className="text-m text-white ml-4 font-extralight">Performance Optimization</span>
+                </div>
+                <div className="flex items-center bg-black rounded-xl border border-gray-800 w-11/12 h-2/12">
+                  <span className="text-m text-white ml-4 font-extralight">Advanced RPG Systems</span>
+                </div>
               </div>
             </div>
           </div>
@@ -177,10 +207,18 @@ export default function Home() {
               </div>
               {/* Cards */}
               <div className="flex flex-col items-center justify-center pt-8 md:justify-between w-full h-4/5">
-                <div className="bg-black rounded-xl border border-gray-800 w-11/12 h-2/12"></div>
-                <div className="bg-black rounded-xl border border-gray-800 w-11/12 h-2/12"></div>
-                <div className="bg-black rounded-xl border border-gray-800 w-11/12 h-2/12"></div>
-                <div className="bg-black rounded-xl border border-gray-800 w-11/12 h-2/12"></div>
+                <div className="flex items-center bg-black rounded-xl border border-gray-800 w-11/12 h-2/12">
+                  <span className="text-m text-white ml-4 font-extralight">Monetization Strategies</span>
+                </div>
+                <div className="flex items-center bg-black rounded-xl border border-gray-800 w-11/12 h-2/12">
+                  <span className="text-m text-white ml-4 font-extralight">Marketing & ASO</span>
+                </div>
+                <div className="flex items-center bg-black rounded-xl border border-gray-800 w-11/12 h-2/12">
+                  <span className="text-m text-white ml-4 font-extralight">Store Submission Process</span>
+                </div>
+                <div className="flex items-center bg-black rounded-xl border border-gray-800 w-11/12 h-2/12">
+                  <span className="text-m text-white ml-4 font-extralight">Professional Portfolio</span>
+                </div>
               </div>
             </div>
           </div>
@@ -189,16 +227,16 @@ export default function Home() {
       {/* Phase */}
       <div className="m-40 flex flex-col font-[Inter] rounded-3xl space-y-2 w-6/8 h-[550px] items-center justify-center bg-[linear-gradient(to_right,#943EE5,#D72E7B)]">
         <span className="text-6xl">🎮</span>
-        <span className="font-extrabold text-xl">Эхний Долоо Хоног</span>
-        <span className="font-extralight">Анхлан Суралцагч</span>
-        <span className="font-extralight mb-8 text-[13px]">Код бичих туршилаггүй</span>
+        <span className="font-extrabold text-xl text-white">Эхний Долоо Хоног</span>
+        <span className="font-m text-white">Анхлан Суралцагч</span>
+        <span className="font-m text-white mb-8 text-[13px]">Код бичих туршилаггүй</span>
         <span className="text-6xl text-amber-300">→</span>
         <span className="font-extrabold text-amber-300 text-xl">12 Долоо Хоногийн Өөрчлөлт</span>
-        <span className="font-extralight text-[13px] mb-8">150 Гаруй Хичээл • 5 Бүрэн Тоглоом</span>
+        <span className="font-m text-white text-[13px] mb-8">150 Гаруй Хичээл • 5 Бүрэн Тоглоом</span>
         <span className="text-6xl mt-3">🚀</span>
-        <span className="font-extrabold text-xl">12 Дахь Долоо Хоног</span>
-        <span className="font-extralight">Тоглоом нийтэлсэн хөгжүүлэгч</span>
-        <span className="font-extralight text-[13px]">Арилжааны тоглоом гаргасан</span>
+        <span className="font-extrabold text-xl text-white">12 Дахь Долоо Хоног</span>
+        <span className="font-m text-white">Тоглоом нийтэлсэн хөгжүүлэгч</span>
+        <span className="font-m text-white text-[13px]">Арилжааны тоглоом гаргасан</span>
       </div>
 
       <div className="flex flex-col items-center w-full h-[800px]">
@@ -223,11 +261,52 @@ export default function Home() {
           <span className="font-light text-[10px] font-[Inter] ml-10 text-gray-500">Өргөжин Тэлж Буй Хамт Олон</span>
         </div>
       </div>
-      <div className="m-8 flex flex-col border-4 border-green-500 rounded-3xl w-1/3 h-[570px] items-center justify-center bg-[linear-gradient(to_bottom,#111826,#000000)]">
 
+      <div className="m-8 flex flex-col border-4 border-green-500 rounded-3xl w-1/3 h-[570px] items-center justify-center bg-[linear-gradient(to_bottom,#111826,#000000)]">
+        <div className="flex justify-center items-end w-full h-1/3">
+          <span className="text-white text-3xl font-black font-[Inter]">Our Guarantee To You</span>
+        </div>
+        <div className="flex flex-col ml-16 space-y-4 justify-center w-full h-3/6">
+          <div className="flex flex-row">
+            <div className="flex flex-col justify-center">
+              <span className="text-white text-m font-bold">30-Day Money Back Guarantee</span>
+              <span className="text-gray-600 text-sm">Not satisfied? Get a full refund, no questions asked.</span>
+            </div>
+          </div>
+          <div className="flex flex-row">
+            <div className="flex flex-col justify-center">
+              <span className="text-white text-m font-bold">Job Placement Support</span>
+              <span className="text-gray-600 text-sm">No offer in 6 months? Get a refund + 6 more months free mentorship.</span>
+            </div>
+          </div>
+          <div className="flex flex-row">
+            <div className="flex flex-col justify-center">
+              <span className="text-white text-m font-bold">Lifetime Access</span>
+              <span className="text-gray-600 text-sm">All lessons, updates, and future content included forever.</span>
+            </div>
+          </div>
+        </div>
+        <span className="flex text-green-400 justify-center font-bold">Zero Risk, All Reward</span>
       </div>
+
       <div className="m-40 flex flex-col rounded-3xl w-6/8 h-[550px] items-center justify-center bg-[linear-gradient(to_right,#943EE5,#D72E7B)]">
-        <button className="w-1/6 h-1/8 font-bold bg-black/50 hover:bg-stone-300 rounded-full border-2 border-white" onClick={() => router.push('/Curriculum')}>View Curriculum</button>
+        <div className="flex flex-col gap-5 justify-center items-center w-full h-1/3">
+          <div className="w-full h-1/2"></div>
+          <span className="text-5xl font-black text-white">Ready To Start Your Journey?</span>
+          <span className="text-2xl font-[Inter] font-extralight text-white">Join 15,000+ developers who transformed their careers. Start building real game today.</span>
+        </div>
+        <div className="flex flex-row justify-center items-center gap-5 w-full h-1/4">
+          <button className="w-2/9 h-1/2 font-bold bg-white hover:bg-stone-300 text-purple-950 rounded-full border-2 border-purple-800" onClick={() => router.push('/Curriculum')}>Одоо бүртгүүлэх - 30K</button>
+          <button className="w-2/9 h-1/2 font-bold bg-black/50 hover:bg-stone-300 text-white rounded-full border-2 border-white" onClick={() => router.push('/Curriculum')}>View Curriculum</button>
+        </div>
+        <div className="flex flex-col justify-center items-center w-full h-1/5">
+          <div className="flex flex-row gap-8 justify-center w-full h-1/2">
+            <span className="text-sm text-white font-m">30-Days Money Back</span>
+            <span className="text-sm text-white font-m">Lifetime Access</span>
+            <span className="text-sm text-white font-m">Job Guarantee</span>
+          </div>
+          <span className="text-lg text-yellow-400 font-bold">Next cohort starts in Dec 1st - Only 8 spots remaining.</span>
+        </div>
       </div>
     </div>
   );
