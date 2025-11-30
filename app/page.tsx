@@ -1,6 +1,7 @@
 'use client'
 
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 import Image from "next/image";
 
 export default function Home() {
@@ -289,7 +290,7 @@ export default function Home() {
         <span className="flex text-green-400 justify-center font-bold">Zero Risk, All Reward</span>
       </div>
 
-      <div className="m-40 flex flex-col rounded-3xl w-6/8 h-[550px] items-center justify-center bg-[linear-gradient(to_right,#943EE5,#D72E7B)]">
+      <div className="m-40 flex flex-col rounded-3xl w-6/8 h-[550px] items-center justify-center bg-[linear-gradient(to_right,#7731B4,#AD2460,#7731B4)]">
         <div className="flex flex-col gap-5 justify-center items-center w-full h-1/3">
           <div className="w-full h-1/2"></div>
           <span className="text-5xl font-black text-white">Ready To Start Your Journey?</span>

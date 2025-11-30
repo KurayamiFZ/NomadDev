@@ -7,6 +7,156 @@ import Image from "next/image";
 export default function Profile() {
   const router = useRouter();
 
+  type Project = {
+  name: string;
+  description: string;
+  tags: string[];
+  likes: number;
+  views: number;
+  color: string;
+  featured?: boolean;
+};
+
+type Badge = {
+  title: string;
+  description: string;
+  date: string;
+  earned: boolean;
+  icon?: string;
+};
+
+type Activity = {
+  title: string;
+  subtitle: string;
+  iconColor: string;
+  time: string;
+};
+
+type Skill = {
+  name: string;
+  percent: number;
+};
+
+type Status ={
+  value: string;
+  title: string;
+  subtitle: string;
+}
+
+const projectsData: Project[] = [
+  { name: "Space Shooter 2D", description: "Classic arcade-style space shooter with power-ups and boss battles", tags: ["Unity", "C#", "Pixel Art"], likes: 234, views: 1205, color: "blue-800", featured: true },
+  { name: "Platformer Adventure", description: "Retro platformer with smooth movement and challenging levels", tags: ["Unity", "C#", "2D animation"], likes: 189, views: 892, color: "green-800" },
+  { name: "Puzzle Maze", description: "Mind bending puzzle game with 50+ levels", tags: ["Unity", "C#", "Level Design"], likes: 156, views: 673, color: "purple-800" },
+];
+
+const statusData: Status[] = [
+  { value: "45", title: "Lessons Completed", subtitle: "30% of Course" },
+  { value: "12", title: "Days Streak", subtitle: "Longest: 28 days" },
+  { value: "3", title: "Games Built", subtitle: "2 more to go" },
+  { value: "156h", title: "Learning Time", subtitle: "Average: 2.5h/day" },
+];
+
+const badgesData: Badge[] = [
+  { title: "Quick Start", description: "Completed first lesson", date: "Jan 15, 2024", earned: true },
+  { title: "Hot Streak", description: "7 day learning streak", date: "Jan 22, 2024", earned: true },
+  { title: "First Game", description: "Built and published first game", date: "Feb 5, 2024", earned: true },
+  { title: "Dedicated Learner", description: "100+ hours of learning", date: "Feb 20, 2024", earned: true },
+  { title: "Week Champion", description: "Top learner of the week", date: "", earned: false },
+];
+
+const activitiesData: Activity[] = [
+  { title: "Completed 'Advanced Physics'", subtitle: "Week 4, Lesson 12", iconColor: "blue-500", time: "2 hours ago" },
+  { title: "Published 'Space Shooter'", subtitle: "Received 50+ likes", iconColor: "green-500", time: "1 day ago" },
+  { title: "Earned 'Dedicated Learner' badge", subtitle: "100 hours milestone", iconColor: "orange-500", time: "3 days ago" },
+  { title: "Completed 'Character Animation'", subtitle: "Week 3, Lesson 8", iconColor: "blue-500", time: "5 days ago" },
+  { title: "Helped 5 Students In Discord", subtitle: "Answered questions about C#", iconColor: "purple-500", time: "1 week ago" },
+];
+
+const skillsData: Skill[] = [
+  { name: "Unity", percent: 75 },
+  { name: "C#", percent: 65 },
+  { name: "2D Game Dev", percent: 80 },
+  { name: "3D Game Dev", percent: 45 },
+  { name: "Game Design", percent: 70 },
+  { name: "Physics System", percent: 60 },
+];
+
+// ---------------------- Reusable Components ----------------------
+
+const StatusCard = ({ status }: { status: Status }) => (
+  <div className="flex flex-col justify-center pl-8 bg-gray-900 w-186 h-1/2 rounded-2xl">
+    <div className="flex flex-row justify-between w-11/12 h-25">
+      <div className="bg-gray-400 size-25"></div>
+        <div className="bg-white size-15"></div>
+    </div>
+    <span className="text-white text-4xl mb-4 font-black">{status.value}</span>
+    <span className="text-lg text-light text-gray-300 ">{status.title}</span>
+    <span className="text-sm text-gray-400">{status.subtitle}</span>
+  </div>
+);
+
+
+const ProjectCard = ({ project }: { project: Project }) => (
+  <button className="flex flex-col items-start mt-4 space-y-4 w-365 h-100 rounded-2xl bg-gray-800 border border-gray-600">
+    <div className={`flex justify-end w-full h-1/2 rounded-t-2xl bg-${project.color}`}>
+      {project.featured && (
+        <span className="flex justify-center bg-gradient-to-r from-yellow-400 to-orange-500 px-2 py-1 m-3 text-black rounded-full text-sm font-bold flex items-center gap-1 w-11 h-1/6">
+          ⭐
+        </span>
+      )}
+    </div>
+    <span className="font-bold ml-8 font-[Inter] text-xl text-white">{project.name}</span>
+    <span className="font-light ml-8 font-[Inter] text-sm text-gray-400">{project.description}</span>
+    <div className="flex gap-2 w-full h-7 ml-8 text-gray-300 font-[Inter] font-light">
+      {project.tags.map((tag) => (
+        <div key={tag} className="h-full rounded-full bg-gray-600 px-2">{tag}</div>
+      ))}
+    </div>
+    <div className="flex ml-8 gap-4 font-[Inter] text-sm text-gray-400 font-light">
+      <span>{project.likes}</span>
+      <span>{project.views} views</span>
+    </div>
+  </button>
+);
+
+const BadgeCard = ({ badge }: { badge: Badge }) => (
+  <div className={`flex flex-col mt-4 justify-center items-center space-y-1 w-full pl-8 border-3 ${badge.earned ? 'border-yellow-500' : 'border-gray-700'} bg-gray-900 px-2 h-35 rounded-2xl ${!badge.earned && 'opacity-50'}`}>
+    <span className="text-white text-4xl font-black">45</span>
+    <span className="text-lg font-extrabold text-white">{badge.title}</span>
+    <span className="text-sm font-light text-gray-500">{badge.description}</span>
+    <div className={`flex justify-center items-center w-25 rounded-full h-5 text-sm font-bold ${badge.earned ? 'bg-green-500/20 text-green-400' : 'text-gray-500'}`}>
+      {badge.earned ? badge.date : 'Locked'}
+    </div>
+  </div>
+);
+
+const ActivityItem = ({ activity }: { activity: Activity }) => (
+  <div className="flex flex-row items-center justify-between border border-gray-600 mt-4 w-full h-33 bg-gray-800 rounded-2xl">
+    <div className="flex w-9/12 h-20">
+      <div className={`w-20 h-18 rounded-full ml-8 bg-${activity.iconColor}`}></div>
+      <div className="w-full h-full flex flex-col justify-center ml-4 font-[Inter]">
+        <span className="text-lg font-bold text-white">{activity.title}</span>
+        <span className="text-lg font-light text-gray-500">{activity.subtitle}</span>
+      </div>
+    </div>
+    <div className="flex w-1/12 h-full">
+      <span className="text-sm mt-8 text-gray-500 font-light font-[Inter]">{activity.time}</span>
+    </div>
+  </div>
+);
+
+const SkillBar = ({ skill }: { skill: Skill }) => (
+  <div className="flex flex-col mt-4 space-y-2 w-full h-1/9">
+    <div className="flex flex-row justify-between items-center">
+      <span className="text-xl text-white font-bold font-[Inter]">{skill.name}</span>
+      <span className="text-sm text-purple-500 font-bold">{skill.percent}%</span>
+    </div>
+    <div className="bg-gray-800 w-full h-5 rounded-full">
+      <div className="bg-linear-to-r rounded-full from-purple-500 to-pink-500" style={{ width: `${skill.percent}%`, height: '100%' }}></div>
+    </div>
+  </div>
+);
+
   // ------------------------------
   // UI STATE
   // ------------------------------
@@ -117,62 +267,15 @@ export default function Profile() {
         {/* -------------------------------------------------------
             STATISTIC CARDS (LESSONS, STREAKS, ETC.)
         -------------------------------------------------------- */}
-
-        {/* First Row */}
-        <div className="flex flex-row justify-between w-11/12 h-80 font-[Inter]">
-          {/* Card 1 */}
-          <div className="flex flex-col justify-center pl-8 bg-gray-900 w-186 h-full rounded-2xl">
-            <div className="flex flex-row justify-between w-11/12 h-25">
-              <div className="bg-gray-400 size-25"></div>
-              <div className="bg-white size-15"></div>
-            </div>
-            <span className="text-white text-4xl mb-4 font-black">45</span>
-            <span className="text-lg text-light text-gray-300 ">Lesson complete</span>
-            <span className="text-sm text-gray-400">30% of course</span>
-          </div>
-
-          {/* Card 2 */}
-          <div className="flex flex-col justify-center pl-8 bg-gray-900 w-186 h-full rounded-2xl">
-            <div className="flex flex-row justify-between w-11/12 h-25">
-              <div className="bg-gray-400 size-25"></div>
-              <div className="bg-white size-15"></div>
-            </div>
-            <span className="text-white text-4xl mb-4 font-black">12</span>
-            <span className="text-lg text-light text-gray-300 ">Days streak</span>
-            <span className="text-sm text-gray-400">Longest: 28 days</span>
-          </div>
-        </div>
-
-        {/* Second Row */}
-        <div className="flex flex-row justify-between w-11/12 h-80 font-[Inter]">
-          {/* Card 3 */}
-          <div className="flex flex-col justify-center pl-8 bg-gray-900 w-186 h-full rounded-2xl">
-            <div className="flex flex-row justify-between w-11/12 h-25">
-              <div className="bg-gray-400 size-25"></div>
-              <div className="bg-white size-15"></div>
-            </div>
-            <span className="text-white text-4xl mb-4 font-black">3</span>
-            <span className="text-lg text-light text-gray-300 ">Games built</span>
-            <span className="text-sm text-gray-400">2 more to go</span>
-          </div>
-
-          {/* Card 4 */}
-          <div className="flex flex-col justify-center pl-8 bg-gray-900 w-186 h-full rounded-2xl">
-            <div className="flex flex-row justify-between w-11/12 h-25">
-              <div className="bg-gray-400 size-25"></div>
-              <div className="bg-white size-15"></div>
-            </div>
-            <span className="text-white text-4xl mb-4 font-black">156h</span>
-            <span className="text-lg text-light text-gray-300 ">Learning time</span>
-            <span className="text-sm text-gray-400">Average: 2.5h/day</span>
-          </div>
+        <div className="flex flex-row justify-between w-11/12 h-120 font-[Inter] flex-wrap gap-5">
+          {statusData.map((status) => <StatusCard key={status.title} status={status} />)}
         </div>
 
 
         {/* -------------------------------------------------------
             TABS SECTION (Overview, Projects, Badges, Activity, Skills)
         -------------------------------------------------------- */}
-        <div className="bg-gray-900 rounded-xl w-11/12 overflow-x-hidden">
+        <div className="bg-gray-900 mt-8 rounded-xl w-11/12 overflow-x-hidden">
 
           {/* Tabs Navigation */}
           <div className="flex border-b border-gray-800 overflow-x-auto">
@@ -191,227 +294,28 @@ export default function Profile() {
             ))}
           </div>
 
-
           {/* -------------------------------------------------------
               TAB CONTENT
           -------------------------------------------------------- */}
           <div className="p-6">
-
-            {/* -------------------------------------------------------
-                OVERVIEW TAB
-            -------------------------------------------------------- */}
             {activeTab === 'overview' && (
-              <div>
-                {/* PROJECTS SHOWCASE */}
-                <div className="flex flex-row justify-between w-full h-15">
-                  <span className="text-3xl text-white font-black font-[Inter] ml-2">Featured Projects</span>
-                  <button className="text-purple-400">View All →</button>
+              <div className="flex flex-col mb-6">
+                <div className="flex justify-between items-center w-full h-20">
+                  <span className="text-2xl text-white font-black font-[Inter]">Featured Projects</span>
+                  <button className="text-purple-400">View All</button>
                 </div>
-
-                {/* Project Card 1 */}
-                <button className="flex flex-col items-start space-y-4 w-365 h-100 rounded-2xl bg-gray-800 border border-gray-600">
-                  <div className="flex justify-end bg-blue-800 w-full h-1/2 rounded-t-2xl">
-                    <span className="bg-gradient-to-r from-yellow-400 to-orange-500 px-2 py-1 m-3 text-black rounded-full text-sm font-bold flex items-center gap-1 w-1/12 h-1/6">
-                      ⭐ FEATURED
-                    </span>
-                  </div>
-                  <span className="font-bold ml-8 font-[Inter] text-xl text-white">Space Shooter 2D</span>
-                  <span className="font-light ml-8 font-[Inter] text-sm text-gray-400">Classic arcade-style space shooter with power-ups and boss battles</span>
-                  <div className="flex gap-2 w-full h-7 ml-8 text-gray-300 font-[Inter] font-light">
-                    <div className="h-full w-15 rounded-full bg-gray-600">Unity</div>
-                    <div className="h-full w-10 rounded-full bg-gray-600">C#</div>
-                    <div className="h-full w-20 rounded-full bg-gray-600">Pixel Art</div>
-                  </div>
-                  <div className="flex ml-8 gap-4 font-[Inter] text-sm text-gray-400 font-light">
-                    <span>234</span>
-                    <span>1205 views</span>
-                  </div>
-                </button>
-
-                {/* Project Card 2 */}
-                <button className="flex mt-8 flex-col items-start space-y-4 w-365 h-100 rounded-2xl bg-gray-800 border border-gray-600">
-                  <div className="flex justify-end bg-green-800 w-full h-1/2 rounded-t-2xl"></div>
-                  <span className="font-bold ml-8 font-[Inter] text-xl text-white">Platformer Adventure</span>
-                  <span className="font-light ml-8 font-[Inter] text-sm text-gray-400">Retro platformer with smooth movement and challenging levels</span>
-                  <div className="flex gap-2 w-full h-7 ml-8 text-gray-300 font-[Inter] font-light">
-                    <div className="h-full w-15 rounded-full bg-gray-600">Unity</div>
-                    <div className="h-full w-10 rounded-full bg-gray-600">C#</div>
-                    <div className="h-full w-28 rounded-full bg-gray-600">2D animation</div>
-                  </div>
-                  <div className="flex ml-8 gap-4 font-[Inter] text-sm text-gray-400 font-light">
-                    <span>189</span>
-                    <span>892 views</span>
-                  </div>
-                </button>
-
-                {/* Achievements Section Title */}
-                <div className="flex mt-8 flex-row justify-between w-full h-15">
-                  <span className="text-3xl text-white font-black font-[Inter] ml-2">Recent Achievements</span>
-                  <button className="text-purple-400">View All →</button>
+                <div>
+                  {projectsData.slice(0, 2).map((p) => <ProjectCard key={p.name} project={p} />)}
                 </div>
-
-                {/* Achievements First Row */}
-                <div className="flex flex-row justify-between w-full h-40 font-[Inter]">
-                  <div className="flex flex-col justify-center items-center pl-8 border-3 border-yellow-500 bg-gray-900 w-180 h-full rounded-2xl">
-                    <span className="text-white text-4xl mb-4 font-black">45</span>
-                    <span className="text-lg font-extrabold text-white">Quick Start</span>
-                    <span className="text-sm font-bold text-green-400">Jan 15, 2024</span>
-                  </div>
-                  <div className="flex flex-col justify-center items-center pl-8 border-3 border-yellow-500 bg-gray-900 w-180 h-full rounded-2xl">
-                    <span className="text-white text-4xl mb-4 font-black">45</span>
-                    <span className="text-lg font-extrabold text-white">Hot Streak</span>
-                    <span className="text-sm font-bold text-green-400">Jan 22, 2024</span>
-                  </div>
-                </div>
-
-                {/* Achievements Second Row */}
-                <div className="flex mt-4 flex-row justify-between w-full h-40 font-[Inter]">
-                  <div className="flex flex-col justify-center items-center pl-8 border-3 border-yellow-500 bg-gray-900 w-180 h-full rounded-2xl">
-                    <span className="text-white text-4xl mb-4 font-black">45</span>
-                    <span className="text-lg font-extrabold text-white">First Game</span>
-                    <span className="text-sm font-bold text-green-400">Feb 5, 2024</span>
-                  </div>
-                  <div className="flex flex-col justify-center items-center pl-8 border-3 border-yellow-500 bg-gray-900 w-180 h-full rounded-2xl">
-                    <span className="text-white text-4xl mb-4 font-black">45</span>
-                    <span className="text-lg font-extrabold text-white">Dedicated Learner</span>
-                    <span className="text-sm font-bold text-green-400">Feb 20, 2024</span>
-                  </div>
+                <div className="grid grid-cols-2 gap-x-2">
+                  {badgesData.slice(0, 4).map((b) => <BadgeCard key={b.title} badge={b} />)}
                 </div>
               </div>
             )}
-
-
-            {/* -------------------------------------------------------
-                PROJECTS TAB
-            -------------------------------------------------------- */}
-            {activeTab === 'projects' && (
-              <div>
-                {/* Header */}
-                <div className="flex flex-row justify-between items-center w-full h-15">
-                  <span className="text-3xl text-white font-black font-[Inter] ml-2">All Projects (3)</span>
-                  <button className="w-35 h-11 rounded-xl bg-linear-to-r from-purple-500 to-pink-500 text-sm font-bold text-white"> + New Project </button>
-                </div>
-
-                {/* Project Cards */}
-                {/* Card 1 */}
-                <button className="flex flex-col items-start mt-4 space-y-4 w-365 h-100 rounded-2xl bg-gray-800 border border-gray-600">
-                  <div className="flex justify-end bg-blue-800 w-full h-1/2 rounded-t-2xl">
-                    <span className="flex justify-center bg-gradient-to-r from-yellow-400 to-orange-500 px-2 py-1 m-3 text-black rounded-full text-sm font-bold flex items-center gap-1 w-11 h-1/6">
-                      ⭐ 
-                    </span>
-                  </div>
-                  <span className="font-bold ml-8 font-[Inter] text-xl text-white">Space Shooter 2D</span>
-                  <span className="font-light ml-8 font-[Inter] text-sm text-gray-400">Classic arcade-style space shooter with power-ups and boss battles</span>
-                  <div className="flex gap-2 w-full h-7 ml-8 text-gray-300 font-[Inter] font-light">
-                    <div className="h-full w-15 rounded-full bg-gray-600">Unity</div>
-                    <div className="h-full w-10 rounded-full bg-gray-600">C#</div>
-                    <div className="h-full w-20 rounded-full bg-gray-600">Pixel Art</div>
-                  </div>
-                  <div className="flex ml-8 gap-4 font-[Inter] text-sm text-gray-400 font-light">
-                    <span>234</span>
-                    <span>1205 views</span>
-                  </div>
-                </button>
-
-                {/* Card 2 */}
-                <button className="flex mt-4 flex-col items-start space-y-4 w-365 h-100 rounded-2xl bg-gray-800 border border-gray-600">
-                  <div className="flex justify-end bg-green-800 w-full h-1/2 rounded-t-2xl"></div>
-                  <span className="font-bold ml-8 font-[Inter] text-xl text-white">Platformer Adventure</span>
-                  <span className="font-light ml-8 font-[Inter] text-sm text-gray-400">Retro platformer with smooth movement and challenging levels</span>
-                  <div className="flex gap-2 w-full h-7 ml-8 text-gray-300 font-[Inter] font-light">
-                    <div className="h-full w-15 rounded-full bg-gray-600">Unity</div>
-                    <div className="h-full w-10 rounded-full bg-gray-600">C#</div>
-                    <div className="h-full w-28 rounded-full bg-gray-600">2D animation</div>
-                  </div>
-                  <div className="flex ml-8 gap-4 font-[Inter] text-sm text-gray-400 font-light">
-                    <span>189</span>
-                    <span>892 views</span>
-                  </div>
-                </button>
-
-                {/* Card 3 */}
-                <button className="flex mt-8 flex-col items-start space-y-4 w-365 h-100 rounded-2xl bg-gray-800 border border-gray-600">
-                  <div className="flex justify-end bg-purple-800 w-full h-1/2 rounded-t-2xl"></div>
-                  <span className="font-bold ml-8 font-[Inter] text-xl text-white">Puzzle Maze</span>
-                  <span className="font-light ml-8 font-[Inter] text-sm text-gray-400">Mind bending puzzle game with 50+ levels</span>
-                  <div className="flex gap-2 w-full h-7 ml-8 text-gray-300 font-[Inter] font-light">
-                    <div className="h-full w-15 rounded-full bg-gray-600">Unity</div>
-                    <div className="h-full w-10 rounded-full bg-gray-600">C#</div>
-                    <div className="h-full w-28 rounded-full bg-gray-600">Level Design</div>
-                  </div>
-                  <div className="flex ml-8 gap-4 font-[Inter] text-sm text-gray-400 font-light">
-                    <span>156</span>
-                    <span>673 views</span>
-                  </div>
-                </button>
-
-              </div>
-            )}
-
-
-            {/* -------------------------------------------------------
-                BADGES TAB
-            -------------------------------------------------------- */}
-            {activeTab === 'badges' && (
-              <div className="flex flex-col w-full font-[Inter]">
-
-                {/* Header */}
-                <div className="flex flex-row justify-between items-center w-full h-15">
-                  <span className="text-3xl text-white font-black ml-2">Achievement Badges</span>
-                  <span className="text-m text-gray-500 font-light ml-2">4 of 8 earned</span>
-                </div>
-
-                {/* Earned Badge Cards */}
-                <div className="flex flex-col mt-4 w-full">
-
-                  {/* Badge 1 */}
-                  <div className="flex flex-col justify-center items-center space-y-1 pl-8 border-3 border-yellow-500 bg-gray-900 w-full h-35 rounded-2xl">
-                    <span className="text-white text-4xl font-black">45</span>
-                    <span className="text-lg font-extrabold text-white">Quick Start</span>
-                    <span className="text-sm font-light text-gray-500">Completed first lesson</span>
-                    <div className="flex justify-center items-center w-25 rounded-full bg-green-500/20 h-5 text-sm font-bold text-green-400">Jan 15, 2024</div>
-                  </div>
-
-                  {/* Badge 2 */}
-                  <div className="flex flex-col mt-4 justify-center items-center space-y-1 pl-8 border-3 border-yellow-500 bg-gray-900 w-full h-35 rounded-2xl">
-                    <span className="text-white text-4xl font-black">45</span>
-                    <span className="text-lg font-extrabold text-white">Hot Streak</span>
-                    <span className="text-sm font-light text-gray-500">7 day learning streak</span>
-                    <div className="flex justify-center items-center w-25 rounded-full bg-green-500/20 h-5 text-sm font-bold text-green-400">Jan 22, 2024</div>
-                  </div>
-
-                  {/* Badge 3 */}
-                  <div className="flex flex-col mt-4 justify-center items-center space-y-1 pl-8 border-3 border-yellow-500 bg-gray-900 w-full h-35 rounded-2xl">
-                    <span className="text-white text-4xl font-black">45</span>
-                    <span className="text-lg font-extrabold text-white">First Game</span>
-                    <span className="text-sm font-light text-gray-500">Built and published first game</span>
-                    <div className="flex justify-center items-center w-25 rounded-full bg-green-500/20 h-5 text-sm font-bold text-green-400">Feb 5, 2024</div>
-                  </div>
-
-                  {/* Badge 4 */}
-                  <div className="flex flex-col mt-4 justify-center items-center space-y-1 pl-8 border-3 border-yellow-500 bg-gray-900 w-full h-35 rounded-2xl">
-                    <span className="text-white text-4xl font-black">45</span>
-                    <span className="text-lg font-extrabold text-white">Dedicated Learner</span>
-                    <span className="text-sm font-light text-gray-500">100+ hours of learning</span>
-                    <div className="flex justify-center items-center w-25 rounded-full bg-green-500/20 h-5 text-sm font-bold text-green-400">Feb 20, 2024</div>
-                  </div>
-
-                  {/* Locked Badges */}
-                  <div className="flex flex-col mt-4 justify-center items-center space-y-1 opacity-50 pl-8 border-3 border-gray-700 bg-gray-900 w-full h-35 rounded-2xl">
-                    <span className="text-white text-4xl font-black">45</span>
-                    <span className="text-lg font-extrabold text-white">Week Champion</span>
-                    <span className="text-sm font-light text-gray-500">Top learner of the week</span>
-                    <div className="flex justify-center items-center w-25 rounded-full h-5 text-sm font-bold text-gray-500">Locked</div>
-                  </div>
-
-                  {/* (More locked badges continue...) */}
-
-                </div>
-              </div>
-            )}
-
-            {/* You can add comments exactly the same way for "activity" and "skills" tabs once they are complete. */}
-
+            {activeTab === 'projects' && projectsData.map((p) => <ProjectCard key={p.name} project={p} />)}
+            {activeTab === 'badges' && badgesData.map((b) => <BadgeCard key={b.title} badge={b} />)}
+            {activeTab === 'activity' && activitiesData.map((a, i) => <ActivityItem key={i} activity={a} />)}
+            {activeTab === 'skills' && skillsData.map((s) => <SkillBar key={s.name} skill={s} />)}
           </div>
         </div>
       </div>
