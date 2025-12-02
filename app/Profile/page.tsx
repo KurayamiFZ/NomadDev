@@ -288,7 +288,7 @@ export default function Profile() {
         <div>
           <button
             className="h-8 w-30 ml-8 border border-white rounded-full bg-neutral-950/25"
-            onClick={() => router.push("/Home")}
+            onClick={() => router.push("/home")}
           >
             Back
           </button>

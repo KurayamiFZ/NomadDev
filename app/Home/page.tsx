@@ -56,7 +56,7 @@ export default function Home() {
             <div>
               <button
                 className="w-25 h-15 bg-gray-800 border border-gray-700 rounded-xl flex items-center justify-center hover:bg-gray-700 text-white font-semibold text-xl"
-                onClick={() => router.push("/Profile")}
+                onClick={() => router.push("/profile")}
               >
                 Kura
               </button>
