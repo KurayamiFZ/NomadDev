@@ -1,5 +1,7 @@
 "use client";
 
+import { useRouter } from "next/navigation";
+
 import {
   Play,
   Star,
@@ -123,6 +125,7 @@ const communityActivity = [
 ];
 
 export default function Home() {
+  const router = useRouter();
   return (
     <div className="flex w-full bg-black">
       {/* Content Area */}
@@ -264,8 +267,8 @@ export default function Home() {
                         lesson.current
                           ? "bg-purple-900/30 border-2 border-purple-500"
                           : lesson.completed
-                          ? "bg-gray-800/50 border border-gray-700"
-                          : "bg-gray-800 border border-gray-700 hover:border-gray-600"
+                            ? "bg-gray-800/50 border border-gray-700"
+                            : "bg-gray-800 border border-gray-700 hover:border-gray-600"
                       }`}
                     >
                       <div className="flex items-center gap-4">
@@ -274,8 +277,8 @@ export default function Home() {
                             lesson.completed
                               ? "bg-green-500"
                               : lesson.current
-                              ? "bg-purple-500"
-                              : "bg-gray-700"
+                                ? "bg-purple-500"
+                                : "bg-gray-700"
                           }`}
                         >
                           {lesson.completed ? (
@@ -389,7 +392,10 @@ export default function Home() {
                     </div>
                   ))}
                 </div>
-                <button className="w-full bg-gray-800 hover:bg-gray-700 text-white py-3 rounded-lg font-medium mt-4 transition">
+                <button
+                  className="w-full bg-gray-800 hover:bg-gray-700 text-white py-3 rounded-lg font-medium mt-4 transition"
+                  onClick={() => router.push("/home/achievements")}
+                >
                   View All Achievements
                 </button>
               </div>

@@ -1,472 +1,552 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import {
+  Play,
+  BookOpen,
+  Code,
+  Gamepad2,
+  CheckCircle,
+  ArrowRight,
+  Sparkles,
+  Target,
+  Rocket,
+  Shield,
+  Clock,
+  Menu,
+  X,
+} from "lucide-react";
 import { useState } from "react";
-import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
 
 export default function Home() {
+  const [activeLesson, setActiveLesson] = useState(0);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const router = useRouter();
+
+  const lessons = [
+    {
+      title: "Player Movement",
+      subtitle: "Learn 2D controls",
+      level: "Beginner",
+      levelColor: "bg-emerald-500/20 text-emerald-400",
+    },
+    {
+      title: "Enemy AI",
+      subtitle: "Smart opponents",
+      level: "Intermediate",
+      levelColor: "bg-amber-500/20 text-amber-400",
+    },
+    {
+      title: "Multiplayer Mode",
+      subtitle: "Real networking",
+      level: "Advanced",
+      levelColor: "bg-rose-500/20 text-rose-400",
+    },
+  ];
+
+  const roadmapPhases = [
+    {
+      weeks: "Weeks 1-3",
+      title: "Foundation",
+      subtitle: "Master the fundamentals",
+      gradient: "from-blue-500 to-cyan-400",
+      items: [
+        "C# Basics & Syntax",
+        "Unity Interface Mastery",
+        "2D Game Mechanics",
+        "Ship Your First Playable Game",
+      ],
+    },
+    {
+      weeks: "Weeks 4-6",
+      title: "Building",
+      subtitle: "Start real projects",
+      gradient: "from-purple-500 to-pink-500",
+      items: [
+        "3D Environments & Lighting",
+        "Character Controllers",
+        "Physics & Collision Systems",
+        "Complete Mobile Game",
+      ],
+    },
+    {
+      weeks: "Weeks 7-9",
+      title: "Advanced",
+      subtitle: "Professional techniques",
+      gradient: "from-orange-500 to-red-500",
+      items: [
+        "Multiplayer Networking",
+        "AI & Pathfinding",
+        "Performance Optimization",
+        "Advanced RPG Systems",
+      ],
+    },
+    {
+      weeks: "Weeks 10-12",
+      title: "Launch",
+      subtitle: "Ship your commercial game",
+      gradient: "from-emerald-500 to-green-600",
+      items: [
+        "Monetization Strategies",
+        "Marketing & ASO",
+        "Store Submission Process",
+        "Professional Portfolio",
+      ],
+    },
+  ];
+
+  const stats = [
+    { value: "150+", label: "Video Lessons", sub: "HD Content" },
+    { value: "50+", label: "Code Exercises", sub: "Hands-on Practice" },
+    { value: "5", label: "Complete Games", sub: "Portfolio Ready" },
+    { value: "15K+", label: "Active Learners", sub: "Growing Community" },
+  ];
+
+  const guarantees = [
+    {
+      title: "30-Day Money Back Guarantee",
+      desc: "Not satisfied? Get a full refund, no questions asked.",
+    },
+    {
+      title: "Job Placement Support",
+      desc: "No offer in 6 months? Get a refund + 6 more months free mentorship.",
+    },
+    {
+      title: "Lifetime Access",
+      desc: "All lessons, updates, and future content included forever.",
+    },
+  ];
+
   return (
-    <div
-      className="flex flex-col min-h-screen w-screen 
-                bg-neutral-950 
-                bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(41,19,60,1),rgba(255,255,255,0))]
-                bg-fixed
-                items-center"
-    >
-      {/* Header Widget */}
-      <div className="mt-8 rounded-3xl h-[3px] w-1/5 items-center justify-center px-3 py-5 bg-[linear-gradient(to_right,#A95BF0,#E94D9B)]">
-        <p className="-m-3 flex justify-center text-white font-bold text-sm">
-          Одоогоор 2,847 сурагч шууд хичээллэж байна
-        </p>
-      </div>
-
-      {/* Main Headline */}
-      <p className="mt-16 text-6xl text-white font-extrabold">
-        3 сарын таны аялал
-      </p>
-
-      <span className="bg-[linear-gradient(to_right,#A95BF0,#E94D9B)] font-[Inter] font-extrabold text-5xl bg-clip-text text-transparent">
-        Тэгээс эхлээд тоглоом хөгжүүлэгч болтлоо
-      </span>
-
-      <p className="mt-8 text-gray-500 text-xl">
-        Батлагдсан хөтөлбөрөө шууд хичээлийн демогоор туршаад үз. Бүртгэл
-        шаардлагагүй.
-      </p>
-
-      <div className="w-2/4 py-8 border flex flex-col justify-center items-center border-fuchsia-900 bg-black rounded-3xl mt-8 space-y-6 pt-0">
-        {/* Headline */}
-        <div className="bg-gray-800 flex items-center justify-between rounded-t-3xl h-15 w-full">
-          <div className="flex w-2/3 h-full items-center">
-            <span className="icon-[proicons--game] bg-purple-400 size-6 m-2"></span>
-            <p className="text-white font-bold">
-              Хичээл туршаад үз – Харилцан үйлдэлтэй демо
-            </p>
+    <div className="flex min-h-screen w-full flex-col items-center bg-background bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(120,40,180,0.3),transparent)] bg-fixed">
+      {/* Navigation */}
+      <nav className="sticky top-0 z-50 flex w-full items-center justify-between border-b border-border/50 bg-background/80 px-6 py-4 backdrop-blur-xl lg:px-12">
+        <div className="flex items-center gap-2">
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-linear-to-br from-purple-500 to-pink-500">
+            <Gamepad2 className="h-5 w-5 text-foreground" />
           </div>
-          <p className="text-green-400 font-bold mr-8">●live</p>
-        </div>
-
-        <div className="flex flex-row items-start w-full">
-          <span className="icon-[tabler--book] ml-26 size-5 bg-purple-400"></span>
-          <span className="font-bold ml-2  text-sm text-white">
-            Хичээлээ сонго
+          <span className="text-xl font-bold text-foreground">
+            GameDev Academy
           </span>
         </div>
 
-        {/* Lesson Tabs */}
-        <div className="flex flex-col items-center gap-3 w-full">
-          <button className="flex bg-linear-to-r from-purple-500 to-pink-500 w-3/4 py-2 rounded-lg">
-            <div className="flex flex-col items-start">
-              <p className="font-extrabold font-[Inter] ml-8 text-white text-[12px] ">
-                Тоглогчийн хөдөлгөөн
-              </p>
-              <p className="font-medium font-[Inter] ml-8 pb-1 text-gray-400 text-[10px] ">
-                2D удирдлагыг сурах
-              </p>
-              <div className="ml-8 w-6/12 h-4 rounded-xl bg-green-400 text-[10px] text-green-700">
-                Анхан шат
-              </div>
-            </div>
-          </button>
-          <button className="flex bg-gray-800 w-3/4 py-2 rounded-lg">
-            <div className="flex flex-col items-start">
-              <p className="font-extrabold font-[Inter] ml-8 text-white text-[12px] ">
-                Дайсны хиймэл оюун
-              </p>
-              <p className="font-medium font-[Inter] ml-8 pb-1 text-gray-400 text-[10px] ">
-                Ухаалаг өрсөлдөгчид
-              </p>
-              <div className="ml-8 w-6/12 h-4 rounded-xl bg-orange-400 text-[10px] text-orange-700">
-                Дундаж шат
-              </div>
-            </div>
-          </button>
-          <button className="flex bg-gray-800 w-3/4 py-2 rounded-lg">
-            <div className="flex flex-col items-start">
-              <p className="font-extrabold font-[Inter] ml-8 text-white text-[12px] ">
-                Олон тоглогчтой горим
-              </p>
-              <p className="font-medium font-[Inter] ml-8 pb-1 text-gray-400 text-[10px] ">
-                Бодит сүлжээ
-              </p>
-              <div className="ml-8 w-6/12 h-4 rounded-xl bg-red-400 text-[10px] text-red-700">
-                Дээд шат
-              </div>
-            </div>
-          </button>
+        {/* Desktop Nav */}
+        <div className="hidden items-center gap-8 md:flex">
+          <a
+            href="#demo"
+            className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+          >
+            Demo
+          </a>
+          <a
+            href="#roadmap"
+            className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+          >
+            Roadmap
+          </a>
+          <a
+            href="#pricing"
+            className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+          >
+            Pricing
+          </a>
+          <Button
+            className="bg-linear-to-r from-purple-500 to-pink-500 text-foreground hover:opacity-90"
+            onClick={() => router.push("/home")}
+          >
+            Start Learning
+          </Button>
         </div>
 
-        {/* Video Section */}
-        <div className="relative w-3/4 bg-black rounded-xl aspect-video flex items-center justify-center border border-purple-500/30 overflow-hidden">
-          <img
-            src="/mnt/data/127fb424-a1ff-4045-8d68-a073f90f5465.png"
-            alt="Video placeholder"
-            className="absolute inset-0 w-5/6 h-full object-cover opacity-20"
-          />
-          <button className="z-10 size-10 text-white flex items-center justify-center text-6xl hover:scale-110 transition">
-            ▶
-          </button>
-          <div className="absolute bottom-0 left-0 right-0 bg-linear-to-t from-black to-transparent p-4 text-white flex justify-between text-sm">
-            <span>Хичээл 1: Тоглогчийн хөдөлгөөн</span>
-            <span>12:34</span>
+        {/* Mobile Menu Button */}
+        <button
+          className="text-foreground md:hidden"
+          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          aria-label="Toggle menu"
+        >
+          {mobileMenuOpen ? (
+            <X className="h-6 w-6" />
+          ) : (
+            <Menu className="h-6 w-6" />
+          )}
+        </button>
+      </nav>
+
+      {/* Mobile Menu */}
+      {mobileMenuOpen && (
+        <div className="fixed inset-x-0 top-[73px] z-40 border-b border-border bg-background p-6 md:hidden">
+          <div className="flex flex-col gap-4">
+            <a
+              href="#demo"
+              className="text-foreground"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              Demo
+            </a>
+            <a
+              href="#roadmap"
+              className="text-foreground"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              Roadmap
+            </a>
+            <a
+              href="#pricing"
+              className="text-foreground"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              Pricing
+            </a>
+            <Button className="w-full bg-linear-to-r from-purple-500 to-pink-500 text-foreground">
+              Start Learning
+            </Button>
+          </div>
+        </div>
+      )}
+
+      {/* Live Badge */}
+      <div className="mt-6 flex items-center gap-2 rounded-full bg-linear-to-r from-purple-500 to-pink-500 px-3 py-1.5 sm:mt-8 sm:px-4 sm:py-2">
+        <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-400 sm:h-2 sm:w-2" />
+        <span className="text-xs font-medium text-foreground sm:text-sm">
+          2,847 students learning right now
+        </span>
+      </div>
+
+      {/* Hero Section */}
+      <section className="flex w-full max-w-5xl flex-col items-center px-4 py-10 text-center sm:px-6 sm:py-16 lg:py-20">
+        <h1 className="text-3xl font-extrabold leading-tight text-foreground sm:text-4xl md:text-5xl lg:text-6xl">
+          Your 3-Month Journey
+        </h1>
+        <p className="mt-2 bg-linear-to-r from-purple-400 to-pink-400 bg-clip-text text-2xl font-extrabold text-transparent sm:text-3xl md:text-4xl lg:text-5xl">
+          From Zero to Game Developer
+        </p>
+        <p className="mt-4 max-w-2xl px-2 text-base text-muted-foreground sm:mt-6 sm:text-lg">
+          Try our proven curriculum with an interactive demo. No registration
+          required.
+        </p>
+      </section>
+
+      {/* Interactive Demo Section */}
+      <section
+        id="demo"
+        className="mx-4 flex w-[calc(100%-2rem)] max-w-4xl flex-col overflow-hidden rounded-2xl border border-purple-500/30 bg-black/60 backdrop-blur-sm sm:mx-6 sm:w-[calc(100%-3rem)] sm:rounded-3xl"
+      >
+        {/* Demo Header */}
+        <div className="flex flex-col gap-2 bg-secondary/80 px-4 py-3 sm:flex-row sm:items-center sm:justify-between sm:px-6 sm:py-4">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <Gamepad2 className="h-4 w-4 text-purple-400 sm:h-5 sm:w-5" />
+            <span className="text-sm font-bold text-foreground sm:text-base">
+              Try a Lesson - Interactive Demo
+            </span>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="h-2 w-2 animate-pulse rounded-full bg-emerald-400" />
+            <span className="text-xs font-medium text-emerald-400 sm:text-sm">
+              live
+            </span>
           </div>
         </div>
 
-        {/* Code Editor */}
-        <div className="bg-gray-900 rounded-xl w-3/4 h-64 p-4 space-y-3">
-          <div className="flex justify-between items-center">
-            <span className="font-bold text-sm text-white">
-              Өөрөө туршиж үз
+        <div className="flex flex-col gap-4 p-4 sm:gap-6 sm:p-6">
+          {/* Lesson Selection */}
+          <div className="flex items-center gap-2">
+            <BookOpen className="h-4 w-4 text-purple-400 sm:h-5 sm:w-5" />
+            <span className="text-xs font-bold text-foreground sm:text-sm">
+              Choose Your Lesson
             </span>
-            <button className="bg-green-500 text-white px-4 py-1 rounded-lg text-sm font-bold hover:bg-green-400 transition">
-              Run Code
+          </div>
+
+          <div className="grid gap-2 sm:grid-cols-3 sm:gap-3">
+            {lessons.map((lesson, index) => (
+              <button
+                key={lesson.title}
+                onClick={() => setActiveLesson(index)}
+                className={`flex flex-col items-start rounded-lg p-3 text-left transition-all sm:rounded-xl sm:p-4 ${
+                  activeLesson === index
+                    ? "bg-linear-to-r from-purple-500 to-pink-500"
+                    : "bg-secondary/60 hover:bg-secondary"
+                }`}
+              >
+                <span className="text-sm font-bold text-foreground sm:text-base">
+                  {lesson.title}
+                </span>
+                <span className="text-xs text-foreground/60 sm:text-sm">
+                  {lesson.subtitle}
+                </span>
+                <span
+                  className={`mt-1.5 rounded-full px-2 py-0.5 text-[10px] font-medium sm:mt-2 sm:px-3 sm:text-xs ${lesson.levelColor}`}
+                >
+                  {lesson.level}
+                </span>
+              </button>
+            ))}
+          </div>
+
+          {/* Video Player Placeholder */}
+          <div className="relative flex aspect-video w-full items-center justify-center overflow-hidden rounded-lg border border-purple-500/30 bg-black sm:rounded-xl">
+            <div className="absolute inset-0 bg-linear-to-br from-purple-900/20 to-pink-900/20" />
+            <button className="z-10 flex h-12 w-12 items-center justify-center rounded-full bg-linear-to-r from-purple-500 to-pink-500 transition-transform hover:scale-110 sm:h-16 sm:w-16">
+              <Play
+                className="h-4 w-4 text-foreground sm:h-6 sm:w-6"
+                fill="currentColor"
+              />
             </button>
+            <div className="absolute inset-x-0 bottom-0 flex items-center justify-between bg-linear-to-t from-black to-transparent p-2 sm:p-4">
+              <span className="text-xs text-foreground sm:text-sm">
+                Lesson 1: {lessons[activeLesson].title}
+              </span>
+              <span className="text-xs text-foreground/60 sm:text-sm">
+                12:34
+              </span>
+            </div>
           </div>
-          <textarea
-            placeholder={`// Кодоо энд бичнэ үү...\nvoid Update() {\n    transform.Translate(Vector3.forward * Time.deltaTime);\n}`}
-            className="overflow-auto scrollbar-thin scrollbar-thumb-purple-400 scrollbar-track-purple-800 w-full h-44 bg-black text-green-400 p-4 rounded-lg font-mono text-sm border border-gray-800 focus:outline-none focus:border-purple-500 resize-none"
-          />
-        </div>
 
-        {/* Footer Note */}
-        <div className="bg-purple-500/10 w-3/4 h-[134px] border flex flex-col justify-center  border-purple-500 rounded-xl p-4 text-gray-300 text-sm">
-          <p className="text-xl font-extrabold font-[Inter] ml-8 text-purple-400">
-            Энэ бол 150+ хичээлийн ердөө нэг нь
-          </p>
-          <p className="text-[11px] ml-8">
-            Тоглоом хөгжлийг эхнээс нь худалдаанд гаргах хүртэл эзэмших 12 долоо
-            хоногийн бүрэн аяллаа нээгээрэй.
-          </p>
-        </div>
-      </div>
+          {/* Code Editor */}
+          <div className="flex flex-col gap-3 rounded-lg bg-secondary/60 p-3 sm:gap-4 sm:rounded-xl sm:p-4">
+            <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex items-center gap-2">
+                <Code className="h-4 w-4 text-purple-400 sm:h-5 sm:w-5" />
+                <span className="text-sm font-bold text-foreground sm:text-base">
+                  Try It Yourself
+                </span>
+              </div>
+              <Button
+                size="sm"
+                className="w-full bg-emerald-500 text-foreground hover:bg-emerald-400 sm:w-auto"
+              >
+                <Play className="mr-2 h-3 w-3 sm:h-4 sm:w-4" />
+                Run Code
+              </Button>
+            </div>
+            <textarea
+              placeholder={`// Write your code here...\nvoid Update() {\n    transform.Translate(Vector3.forward * Time.deltaTime);\n}`}
+              className="h-32 w-full resize-none rounded-lg border border-border bg-black p-3 font-mono text-xs text-emerald-400 placeholder:text-muted-foreground focus:border-purple-500 focus:outline-none sm:h-40 sm:p-4 sm:text-sm"
+            />
+          </div>
 
-      <div className="flex flex-col w-full items-center justify-center">
-        <p className="m-18 text-4xl font-extrabold text-white font-[Inter]">
-          Амжилтад хүрэх тод зам
-        </p>
-        <div className="mb-36 flex flex-row items-center justify-center w-full h-[500px]">
-          {/* Foundation */}
-          <div className="flex self-start size-22 mr-8 rounded-full bg-[linear-gradient(to_right,#3A8FED,#26ACD9)]"></div>
-          <div className="border-2 border-stone-800 rounded-2xl mr-31 pb-12 w-1/2 h-[490px] bg-[linear-gradient(to_right,#111826,#000000)]">
-            {/* Text */}
-            <div className="flex flex-col justify-center w-full h-1/4 space-y-1">
-              <span className="font-extrabold text-xl font-[Inter] ml-10 pt-5 text-purple-400">
-                1-3 Долоо Хоног
-              </span>
-              <span className="font-bold text-4xl font-[Inter] ml-10 text-white">
-                Суурь шат
-              </span>
-              <span className="font-light text-sm font-[Inter] ml-10 text-white">
-                Үндсүүдийг бүрэн эзэмш
-              </span>
-            </div>
-            {/* Cards */}
-            <div className="flex flex-col font-[Inter] items-center justify-center pt-8 md:justify-between w-full h-4/5">
-              <div className="flex items-center bg-black rounded-xl border border-gray-800 w-11/12 h-2/12">
-                <span className="text-m text-white ml-4 font-extralight">
-                  C# Basics & Syntax
-                </span>
-              </div>
-              <div className="flex items-center bg-black rounded-xl border border-gray-800 w-11/12 h-2/12">
-                <span className="text-m text-white ml-4 font-extralight">
-                  Unity Interface Mastery
-                </span>
-              </div>
-              <div className="flex items-center bg-black rounded-xl border border-gray-800 w-11/12 h-2/12">
-                <span className="text-m text-white ml-4 font-extralight">
-                  2D Game Mechanics
-                </span>
-              </div>
-              <div className="flex items-center bg-black rounded-xl border border-gray-800 w-11/12 h-2/12">
-                <span className="text-m text-white ml-4 font-extralight">
-                  Ship Your First Playable Game
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-        {/* Building */}
-        <div className="mb-36 flex flex-row items-center justify-center w-full h-[500px]">
-          <div className="flex self-start size-22 mr-8 rounded-full bg-[linear-gradient(to_right,#B359E3,#DE4FA8)]"></div>
-          <div className="border-2 border-stone-800 rounded-2xl mr-31 pb-12 w-1/2 h-[490px] bg-[linear-gradient(to_right,#111826,#000000)]">
-            {/* Text */}
-            <div className="flex flex-col justify-center w-full h-1/4 space-y-1">
-              <span className="font-extrabold text-xl font-[Inter] ml-10 pt-5 text-purple-400">
-                4-6 Долоо Хоног
-              </span>
-              <span className="font-bold text-4xl font-[Inter] ml-10 text-white">
-                Бүтээлийн шат
-              </span>
-              <span className="font-light text-sm font-[Inter] ml-10 text-white">
-                Бодит төслүүд хийж эхэл
-              </span>
-            </div>
-            {/* Cards */}
-            <div className="flex flex-col items-center justify-center pt-8 md:justify-between w-full h-4/5">
-              <div className="flex items-center bg-black rounded-xl border border-gray-800 w-11/12 h-2/12">
-                <span className="text-m text-white ml-4 font-extralight">
-                  3D Environments & Lighting
-                </span>
-              </div>
-              <div className="flex items-center bg-black rounded-xl border border-gray-800 w-11/12 h-2/12">
-                <span className="text-m text-white ml-4 font-extralight">
-                  Character Controllers
-                </span>
-              </div>
-              <div className="flex items-center bg-black rounded-xl border border-gray-800 w-11/12 h-2/12">
-                <span className="text-m text-white ml-4 font-extralight">
-                  Physics & Collision System
-                </span>
-              </div>
-              <div className="flex items-center bg-black rounded-xl border border-gray-800 w-11/12 h-2/12">
-                <span className="text-m text-white ml-4 font-extralight">
-                  Complete Mobile Game
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-        {/* Advanced */}
-        <div className="mb-36 flex flex-row items-center justify-center w-full h-[500px]">
-          <div className="flex self-start size-22 mr-8 rounded-full bg-[linear-gradient(to_right,#F59930,#FF3828)]"></div>
-          <div className="border-2 border-stone-800 rounded-2xl mr-31 pb-12 w-1/2 h-[490px] bg-[linear-gradient(to_right,#111826,#000000)]">
-            {/* Text */}
-            <div className="flex flex-col justify-center w-full h-1/4 space-y-1">
-              <span className="font-extrabold text-xl font-[Inter] ml-10 pt-5 text-purple-400">
-                7-9 Долоо Хоног
-              </span>
-              <span className="font-bold text-4xl font-[Inter] ml-10 text-white">
-                Ахисан шат
-              </span>
-              <span className="font-light text-sm font-[Inter] ml-10 text-white">
-                Мэргэжлийн арга техникүүд
-              </span>
-            </div>
-            {/* Cards */}
-            <div className="flex flex-col items-center justify-center pt-8 md:justify-between w-full h-4/5">
-              <div className="flex items-center bg-black rounded-xl border border-gray-800 w-11/12 h-2/12">
-                <span className="text-m text-white ml-4 font-extralight">
-                  Multiplayer Networking
-                </span>
-              </div>
-              <div className="flex items-center bg-black rounded-xl border border-gray-800 w-11/12 h-2/12">
-                <span className="text-m text-white ml-4 font-extralight">
-                  AI & Pathfinding
-                </span>
-              </div>
-              <div className="flex items-center bg-black rounded-xl border border-gray-800 w-11/12 h-2/12">
-                <span className="text-m text-white ml-4 font-extralight">
-                  Performance Optimization
-                </span>
-              </div>
-              <div className="flex items-center bg-black rounded-xl border border-gray-800 w-11/12 h-2/12">
-                <span className="text-m text-white ml-4 font-extralight">
-                  Advanced RPG Systems
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-        {/* Launch */}
-        <div className="mb-36 flex flex-row items-center justify-center w-full h-[500px]">
-          <div className="flex self-start size-22 mr-8 rounded-full bg-[linear-gradient(to_right,#7FEB57,#046922)]"></div>
-          <div className="border-2 border-stone-800 rounded-2xl mr-31 pb-12 w-1/2 h-[490px] bg-[linear-gradient(to_right,#111826,#000000)]">
-            {/* Text */}
-            <div className="flex flex-col justify-center w-full h-1/4 space-y-1">
-              <span className="font-extrabold text-xl font-[Inter] ml-10 pt-5 text-purple-400">
-                10-12 Долоо Хоног
-              </span>
-              <span className="font-bold text-4xl font-[Inter] ml-10 text-white">
-                Гарааны шат
-              </span>
-              <span className="font-light text-sm font-[Inter] ml-10 text-white">
-                Арилжааны тоглоомоо худалдаанд гарга.
-              </span>
-            </div>
-            {/* Cards */}
-            <div className="flex flex-col items-center justify-center pt-8 md:justify-between w-full h-4/5">
-              <div className="flex items-center bg-black rounded-xl border border-gray-800 w-11/12 h-2/12">
-                <span className="text-m text-white ml-4 font-extralight">
-                  Monetization Strategies
-                </span>
-              </div>
-              <div className="flex items-center bg-black rounded-xl border border-gray-800 w-11/12 h-2/12">
-                <span className="text-m text-white ml-4 font-extralight">
-                  Marketing & ASO
-                </span>
-              </div>
-              <div className="flex items-center bg-black rounded-xl border border-gray-800 w-11/12 h-2/12">
-                <span className="text-m text-white ml-4 font-extralight">
-                  Store Submission Process
-                </span>
-              </div>
-              <div className="flex items-center bg-black rounded-xl border border-gray-800 w-11/12 h-2/12">
-                <span className="text-m text-white ml-4 font-extralight">
-                  Professional Portfolio
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Phase */}
-      <div className="m-40 flex flex-col font-[Inter] rounded-3xl space-y-2 w-6/8 h-[550px] items-center justify-center bg-[linear-gradient(to_right,#943EE5,#D72E7B)]">
-        <span className="text-6xl">🎮</span>
-        <span className="font-extrabold text-xl text-white">
-          Эхний Долоо Хоног
-        </span>
-        <span className="font-m text-white">Анхлан Суралцагч</span>
-        <span className="font-m text-white mb-8 text-[13px]">
-          Код бичих туршилаггүй
-        </span>
-        <span className="text-6xl text-amber-300">→</span>
-        <span className="font-extrabold text-amber-300 text-xl">
-          12 Долоо Хоногийн Өөрчлөлт
-        </span>
-        <span className="font-m text-white text-[13px] mb-8">
-          150 Гаруй Хичээл • 5 Бүрэн Тоглоом
-        </span>
-        <span className="text-6xl mt-3">🚀</span>
-        <span className="font-extrabold text-xl text-white">
-          12 Дахь Долоо Хоног
-        </span>
-        <span className="font-m text-white">Тоглоом нийтэлсэн хөгжүүлэгч</span>
-        <span className="font-m text-white text-[13px]">
-          Арилжааны тоглоом гаргасан
-        </span>
-      </div>
-
-      <div className="flex flex-col items-center w-full h-[800px]">
-        <div className="m-8 flex flex-col border-2 border-stone-800 rounded-3xl w-6/8 h-[200px] items-center justify-center bg-[linear-gradient(to_bottom,#111826,#000000)]">
-          <span className="font-extrabold text-2xl font-[Inter] ml-10 pt-5 text-purple-400">
-            150+
-          </span>
-          <span className="font-bold text-sm font-[Inter] ml-10 text-white">
-            Видео Хичээлүүд
-          </span>
-          <span className="font-light text-[10px] font-[Inter] ml-10 text-gray-500">
-            HD контент
-          </span>
-        </div>
-        <div className="m-8 flex flex-col border-2 border-stone-800 rounded-3xl w-6/8 h-[200px] items-center justify-center bg-[linear-gradient(to_bottom,#111826,#000000)]">
-          <span className="font-extrabold text-2xl font-[Inter] ml-10 pt-5 text-purple-400">
-            50+
-          </span>
-          <span className="font-bold text-sm font-[Inter] ml-10 text-white">
-            Кодын Дасгалууд
-          </span>
-          <span className="font-light text-[10px] font-[Inter] ml-10 text-gray-500">
-            Бодитоор Хийж Сургах Дадлага
-          </span>
-        </div>
-        <div className="m-8 flex flex-col border-2 border-stone-800 rounded-3xl w-6/8 h-[200px] items-center justify-center bg-[linear-gradient(to_bottom,#111826,#000000)]">
-          <span className="font-extrabold text-2xl font-[Inter] ml-10 pt-5 text-purple-400">
-            5
-          </span>
-          <span className="font-bold text-sm font-[Inter] ml-10 text-white">
-            Бүрэн Хэмжээний Тоглоомууд
-          </span>
-          <span className="font-light text-[10px] font-[Inter] ml-10 text-gray-500">
-            Портфолиод Бэлэн
-          </span>
-        </div>
-        <div className="m-8 flex flex-col border-2 border-stone-800 rounded-3xl w-6/8 h-[200px] items-center justify-center bg-[linear-gradient(to_bottom,#111826,#000000)]">
-          <span className="font-extrabold text-2xl font-[Inter] ml-10 pt-5 text-purple-400">
-            15k+
-          </span>
-          <span className="font-bold text-sm font-[Inter] ml-10 text-white">
-            Идэвхтэй Суралцагчид
-          </span>
-          <span className="font-light text-[10px] font-[Inter] ml-10 text-gray-500">
-            Өргөжин Тэлж Буй Хамт Олон
-          </span>
-        </div>
-      </div>
-
-      <div className="m-8 flex flex-col border-4 border-green-500 rounded-3xl w-1/3 h-[570px] items-center justify-center bg-[linear-gradient(to_bottom,#111826,#000000)]">
-        <div className="flex justify-center items-end w-full h-1/3">
-          <span className="text-white text-3xl font-black font-[Inter]">
-            Our Guarantee To You
-          </span>
-        </div>
-        <div className="flex flex-col ml-16 space-y-4 justify-center w-full h-3/6">
-          <div className="flex flex-row">
-            <div className="flex flex-col justify-center">
-              <span className="text-white text-m font-bold">
-                30-Day Money Back Guarantee
-              </span>
-              <span className="text-gray-600 text-sm">
-                Not satisfied? Get a full refund, no questions asked.
-              </span>
-            </div>
-          </div>
-          <div className="flex flex-row">
-            <div className="flex flex-col justify-center">
-              <span className="text-white text-m font-bold">
-                Job Placement Support
-              </span>
-              <span className="text-gray-600 text-sm">
-                No offer in 6 months? Get a refund + 6 more months free
-                mentorship.
-              </span>
-            </div>
-          </div>
-          <div className="flex flex-row">
-            <div className="flex flex-col justify-center">
-              <span className="text-white text-m font-bold">
-                Lifetime Access
-              </span>
-              <span className="text-gray-600 text-sm">
-                All lessons, updates, and future content included forever.
-              </span>
-            </div>
-          </div>
-        </div>
-        <span className="flex text-green-400 justify-center font-bold">
-          Zero Risk, All Reward
-        </span>
-      </div>
-
-      <div className="m-40 flex flex-col rounded-3xl w-6/8 h-[550px] items-center justify-center bg-[linear-gradient(to_right,#7731B4,#AD2460,#7731B4)]">
-        <div className="flex flex-col gap-5 justify-center items-center w-full h-1/3">
-          <div className="w-full h-1/2"></div>
-          <span className="text-5xl font-black text-white">
-            Ready To Start Your Journey?
-          </span>
-          <span className="text-2xl font-[Inter] font-extralight text-white">
-            Join 15,000+ developers who transformed their careers. Start
-            building real game today.
-          </span>
-        </div>
-        <div className="flex flex-row justify-center items-center gap-5 w-full h-1/4">
-          <button
-            className="w-2/9 h-1/2 font-bold bg-white hover:bg-stone-300 text-purple-950 rounded-full border-2 border-purple-800"
-            onClick={() => router.push("/curriculum")}
-          >
-            Одоо бүртгүүлэх - 30K
-          </button>
-          <button
-            className="w-2/9 h-1/2 font-bold bg-black/50 hover:bg-stone-300 text-white rounded-full border-2 border-white"
-            onClick={() => router.push("/curriculum")}
-          >
-            View Curriculum
-          </button>
-        </div>
-        <div className="flex flex-col justify-center items-center w-full h-1/5">
-          <div className="flex flex-row gap-8 justify-center w-full h-1/2">
-            <span className="text-sm text-white font-m">
-              30-Days Money Back
+          {/* Demo Footer */}
+          <div className="flex flex-col gap-1.5 rounded-lg border border-purple-500/50 bg-purple-500/10 p-4 sm:gap-2 sm:rounded-xl sm:p-6">
+            <span className="text-base font-extrabold text-purple-400 sm:text-xl">
+              This is just 1 of 150+ lessons
             </span>
-            <span className="text-sm text-white font-m">Lifetime Access</span>
-            <span className="text-sm text-white font-m">Job Guarantee</span>
+            <span className="text-xs text-muted-foreground sm:text-sm">
+              Unlock the complete 12-week journey to master game development
+              from scratch to store launch.
+            </span>
           </div>
-          <span className="text-lg text-yellow-400 font-bold">
-            Next cohort starts in Dec 1st - Only 8 spots remaining.
+        </div>
+      </section>
+
+      {/* Roadmap Section */}
+      <section
+        id="roadmap"
+        className="flex w-full max-w-5xl flex-col items-center px-4 py-12 sm:px-6 sm:py-16 lg:py-24"
+      >
+        <h2 className="text-center text-2xl font-extrabold text-foreground sm:text-3xl lg:text-4xl">
+          Your Clear Path to Success
+        </h2>
+
+        <div className="mt-8 flex w-full flex-col gap-6 sm:mt-12 sm:gap-8 lg:mt-16 lg:gap-12">
+          {roadmapPhases.map((phase, index) => (
+            <div
+              key={phase.title}
+              className="flex items-start gap-3 sm:gap-4 lg:gap-6"
+            >
+              {/* Timeline Dot */}
+              <div
+                className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-linear-to-br sm:h-12 sm:w-12 lg:h-16 lg:w-16 ${phase.gradient}`}
+              >
+                <span className="text-lg font-bold text-foreground sm:text-xl lg:text-2xl">
+                  {index + 1}
+                </span>
+              </div>
+
+              {/* Phase Card */}
+              <div className="flex-1 overflow-hidden rounded-xl border border-border bg-linear-to-r from-secondary/80 to-black sm:rounded-2xl">
+                <div className="p-4 sm:p-6 lg:p-8">
+                  <span
+                    className={`bg-linear-to-r ${phase.gradient} bg-clip-text text-xs font-bold text-transparent sm:text-sm`}
+                  >
+                    {phase.weeks}
+                  </span>
+                  <h3 className="mt-1 text-lg font-bold text-foreground sm:text-xl lg:text-3xl">
+                    {phase.title}
+                  </h3>
+                  <p className="text-xs text-muted-foreground sm:text-sm">
+                    {phase.subtitle}
+                  </p>
+
+                  <div className="mt-4 grid gap-2 sm:mt-6 sm:grid-cols-2 sm:gap-3">
+                    {phase.items.map((item) => (
+                      <div
+                        key={item}
+                        className="flex items-center gap-2 rounded-lg border border-border bg-black/50 p-2 sm:gap-3 sm:rounded-xl sm:p-3"
+                      >
+                        <CheckCircle className="h-4 w-4 shrink-0 text-purple-400 sm:h-5 sm:w-5" />
+                        <span className="text-xs text-foreground sm:text-sm">
+                          {item}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Transformation Section */}
+      <section className="mx-4 flex w-[calc(100%-2rem)] max-w-3xl flex-col items-center gap-4 rounded-2xl bg-linear-to-r from-purple-600 to-pink-600 p-6 text-center sm:mx-6 sm:w-[calc(100%-3rem)] sm:gap-6 sm:rounded-3xl sm:p-8 lg:p-12">
+        <Sparkles className="h-8 w-8 text-amber-300 sm:h-10 sm:w-10 lg:h-12 lg:w-12" />
+        <div>
+          <span className="text-sm font-bold text-foreground/80 sm:text-base">
+            Week 1
+          </span>
+          <p className="text-lg font-bold text-foreground sm:text-xl">
+            Complete Beginner
+          </p>
+          <p className="text-xs text-foreground/60 sm:text-sm">
+            No coding experience
+          </p>
+        </div>
+        <ArrowRight className="h-6 w-6 rotate-90 text-amber-300 sm:h-8 sm:w-8 md:rotate-0" />
+        <div className="rounded-full bg-amber-400/20 px-3 py-1.5 sm:px-4 sm:py-2">
+          <span className="text-sm font-bold text-amber-300 sm:text-base">
+            12 Week Transformation
+          </span>
+          <p className="text-[10px] text-foreground/80 sm:text-xs">
+            150+ Lessons | 5 Complete Games
+          </p>
+        </div>
+        <ArrowRight className="h-6 w-6 rotate-90 text-amber-300 sm:h-8 sm:w-8 md:rotate-0" />
+        <div>
+          <Rocket className="mx-auto h-8 w-8 text-foreground sm:h-10 sm:w-10 lg:h-12 lg:w-12" />
+          <span className="text-sm font-bold text-foreground/80 sm:text-base">
+            Week 12
+          </span>
+          <p className="text-lg font-bold text-foreground sm:text-xl">
+            Published Game Developer
+          </p>
+          <p className="text-xs text-foreground/60 sm:text-sm">
+            Commercial game shipped
+          </p>
+        </div>
+      </section>
+
+      {/* Stats Section */}
+      <section className="grid w-full max-w-4xl grid-cols-2 gap-2 px-4 py-12 sm:gap-4 sm:px-6 sm:py-16 lg:grid-cols-4 lg:py-24">
+        {stats.map((stat) => (
+          <div
+            key={stat.label}
+            className="flex flex-col items-center justify-center rounded-xl border border-border bg-linear-to-b from-secondary/50 to-black p-4 text-center sm:rounded-2xl sm:p-6"
+          >
+            <span className="text-2xl font-extrabold text-purple-400 sm:text-3xl">
+              {stat.value}
+            </span>
+            <span className="mt-1 text-sm font-bold text-foreground sm:text-base">
+              {stat.label}
+            </span>
+            <span className="text-[10px] text-muted-foreground sm:text-xs">
+              {stat.sub}
+            </span>
+          </div>
+        ))}
+      </section>
+
+      {/* Guarantee Section */}
+      <section className="mx-4 flex w-[calc(100%-2rem)] max-w-xl flex-col items-center rounded-2xl border-2 border-emerald-500 bg-linear-to-b from-secondary to-black p-6 sm:mx-6 sm:w-[calc(100%-3rem)] sm:rounded-3xl sm:p-8">
+        <Shield className="h-10 w-10 text-emerald-400 sm:h-12 sm:w-12" />
+        <h3 className="mt-3 text-xl font-bold text-foreground sm:mt-4 sm:text-2xl">
+          Our Guarantee To You
+        </h3>
+
+        <div className="mt-6 flex w-full flex-col gap-4 sm:mt-8 sm:gap-6">
+          {guarantees.map((g) => (
+            <div key={g.title} className="flex items-start gap-3 sm:gap-4">
+              <CheckCircle className="h-4 w-4 shrink-0 text-emerald-400 sm:h-5 sm:w-5" />
+              <div>
+                <span className="text-sm font-bold text-foreground sm:text-base">
+                  {g.title}
+                </span>
+                <p className="text-xs text-muted-foreground sm:text-sm">
+                  {g.desc}
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <p className="mt-4 text-sm font-bold text-emerald-400 sm:mt-6 sm:text-base">
+          Zero Risk, All Reward
+        </p>
+      </section>
+
+      {/* CTA Section */}
+      <section
+        id="pricing"
+        className="mx-4 my-12 flex w-[calc(100%-2rem)] max-w-4xl flex-col items-center gap-5 rounded-2xl bg-linear-to-r from-purple-600 via-pink-600 to-purple-600 p-6 text-center sm:mx-6 sm:my-16 sm:w-[calc(100%-3rem)] sm:gap-6 sm:rounded-3xl sm:p-8 lg:my-24 lg:gap-8 lg:p-12"
+      >
+        <h2 className="text-2xl font-bold text-foreground sm:text-3xl lg:text-5xl">
+          Ready to Start Your Journey?
+        </h2>
+        <p className="max-w-xl text-sm text-foreground/80 sm:text-base lg:text-lg">
+          Join 15,000+ developers who transformed their careers. Start building
+          real games today.
+        </p>
+
+        <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:gap-4">
+          <Button
+            size="lg"
+            className="w-full bg-foreground text-purple-900 hover:bg-foreground/90 sm:w-auto"
+            onClick={() => router.push("/curriculum")}
+          >
+            Enroll Now - $299
+          </Button>
+          <Button
+            size="lg"
+            variant="outline"
+            className="w-full border-foreground/50 bg-transparent text-foreground hover:bg-foreground/10 sm:w-auto"
+            onClick={() => router.push("/curriculum")}
+          >
+            View Full Curriculum
+          </Button>
+        </div>
+
+        <div className="flex flex-wrap items-center justify-center gap-3 text-xs text-foreground/80 sm:gap-4 sm:text-sm">
+          <span className="flex items-center gap-1">
+            <CheckCircle className="h-3 w-3 sm:h-4 sm:w-4" /> 30-Day Money Back
+          </span>
+          <span className="flex items-center gap-1">
+            <Clock className="h-3 w-3 sm:h-4 sm:w-4" /> Lifetime Access
+          </span>
+          <span className="flex items-center gap-1">
+            <Target className="h-3 w-3 sm:h-4 sm:w-4" /> Job Guarantee
           </span>
         </div>
-      </div>
+
+        <p className="text-xs font-bold text-amber-300 sm:text-sm">
+          Next cohort starts February 1st - Only 8 spots remaining
+        </p>
+      </section>
+
+      {/* Footer */}
+      <footer className="w-full border-t border-border bg-black/50 px-4 py-6 sm:px-6 sm:py-8">
+        <div className="mx-auto flex max-w-5xl flex-col items-center justify-between gap-3 sm:gap-4 md:flex-row">
+          <div className="flex items-center gap-2">
+            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-linear-to-br from-purple-500 to-pink-500 sm:h-8 sm:w-8">
+              <Gamepad2 className="h-3.5 w-3.5 text-foreground sm:h-4 sm:w-4" />
+            </div>
+            <span className="text-sm font-bold text-foreground sm:text-base">
+              GameDev Academy
+            </span>
+          </div>
+          <p className="text-xs text-muted-foreground sm:text-sm">
+            2026 GameDev Academy. All rights reserved.
+          </p>
+        </div>
+      </footer>
     </div>
   );
 }
