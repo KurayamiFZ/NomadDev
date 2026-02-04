@@ -21,6 +21,7 @@ import {
   Lock,
   Code,
   Award,
+  Pen,
   Users,
 } from "lucide-react";
 
@@ -399,6 +400,10 @@ export default function Profile() {
               <span className="bg-linear-to-r from-yellow-400 to-orange-500 text-black px-3 py-1.5 rounded-full text-sm font-bold flex items-center gap-1.5">
                 ⭐ Rising Star
               </span>
+              {/* Edit Profile Button */}
+              <button className="flex justify-center items-center size-8 bg-linear-to-r from-purple-600 to-pink-600 rounded-lg text-white font-bold hover:from-purple-500 hover:to-pink-500 transition-all">
+                <Pen className=" size-4" />
+              </button>
             </div>
 
             {/* Username + Location + Join Date */}
@@ -414,17 +419,17 @@ export default function Profile() {
               </div>
             </div>
 
-            {/* Edit Profile Button */}
-            <button className="w-full sm:w-auto py-3 px-6 bg-linear-to-r from-purple-600 to-pink-600 rounded-lg text-white font-bold hover:from-purple-500 hover:to-pink-500 transition-all">
-              Edit Profile
-            </button>
+            <div>
+              {/* Bio Title */}
+              <p className="text-lg font-black">Bio</p>
 
-            {/* Bio */}
-            <p className="text-gray-300 text-base leading-relaxed">
-              Passionate game developer learning to build amazing experiences.
-              Currently mastering Unity and Unreal Engine. Always excited to
-              collaborate on indie game projects!
-            </p>
+              {/* Bio */}
+              <p className="text-gray-300 text-base leading-relaxed">
+                Passionate game developer learning to build amazing experiences.
+                Currently mastering Unity and Unreal Engine. Always excited to
+                collaborate on indie game projects!
+              </p>
+            </div>
 
             {/* Social Links */}
             <div className="flex items-center gap-3 flex-wrap">
