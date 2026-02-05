@@ -184,7 +184,7 @@ export default function Lessons() {
   return (
     <div className="flex flex-col min-h-screen w-full bg-black text-white">
       {/* Header Section */}
-      <div className="sticky top-0 z-50 bg-black border-b border-gray-800">
+      <div className="top-0 z-50 bg-black border-b border-gray-800">
         {/* Search Bar */}
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <div>

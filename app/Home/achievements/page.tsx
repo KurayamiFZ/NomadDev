@@ -18,6 +18,8 @@ import {
   Heart,
   Unlock,
   TrendingUp,
+  Bell,
+  BookOpen,
 } from "lucide-react";
 import { useState } from "react";
 
@@ -268,8 +270,8 @@ export default function AchievementsEnhanced() {
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(99,102,241,0.03)_0%,transparent_100%)]"></div>
       </div>
 
-      {/* Sticky Header - Minimal Design */}
-      <div className="sticky top-0 z-50 backdrop-blur-xl bg-black/60 border-b border-white/5">
+      {/* Header - Minimal Design */}
+      <div className="top-0 z-50 backdrop-blur-xl bg-black/60 border-b border-white/5">
         <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between gap-4">
             <div className="relative flex-1 max-w-md">
@@ -283,19 +285,28 @@ export default function AchievementsEnhanced() {
               />
             </div>
 
-            <div className="flex items-center gap-6">
-              <div className="text-right">
-                <div className="text-xs text-gray-400">Collection</div>
-                <div className="text-lg font-black">
-                  {unlockedCount}/{totalCount}
+            <div className="flex items-center gap-4">
+              <div className="bg-linear-to-r from-purple-500/20 to-pink-500/20 border border-purple-500/30 rounded-xl px-4 py-2 backdrop-blur-sm">
+                <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-2">
+                    <BookOpen className="w-5 h-5 text-yellow-400" />
+                    <span className="font-black text-lg">
+                      Collection {unlockedCount}/{totalCount}
+                    </span>
+                  </div>
+                  <div className="w-px h-6 bg-white/20"></div>
+                  <div className="flex items-center gap-2">
+                    <Sparkles className="w-5 h-5 text-purple-400" />
+                    <span className="font-bold text-purple-400">
+                      {totalXP.toLocaleString()} XP
+                    </span>
+                  </div>
                 </div>
               </div>
-              <div className="text-right border-l border-white/10 pl-6">
-                <div className="text-xs text-gray-400">Total Rewards</div>
-                <div className="text-lg font-black text-purple-400">
-                  {totalXP} XP
-                </div>
-              </div>
+              <button className="relative p-3 bg-white/5 hover:bg-white/10 rounded-xl transition border border-white/10">
+                <Bell className="w-5 h-5" />
+                <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+              </button>
             </div>
           </div>
         </div>
