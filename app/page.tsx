@@ -186,7 +186,7 @@ export default function Home() {
 
       {/* Mobile Navigation Menu - Conditional dropdown shown on mobile */}
       {mobileMenuOpen && (
-        <div className="fixed inset-x-0 top-[73px] z-40 border-b border-border bg-background p-6 md:hidden">
+        <div className="fixed inset-x-0 top-18.25 z-40 border-b border-border bg-background p-6 md:hidden">
           <div className="flex flex-col gap-4">
             <a
               href="#demo"

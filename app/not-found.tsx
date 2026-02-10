@@ -17,7 +17,7 @@ export default function NotFound() {
       </span>
       <button
         className="bg-black/10 hover:bg-neutral-700 border-3 mt-8 border-white rounded-full w-1/7 h-15"
-        onClick={() => router.push("/")}
+        onClick={() => router.back()}
       >
         Back To Page
       </button>
