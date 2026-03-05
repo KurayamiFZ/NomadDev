@@ -1,27 +1,7 @@
 "use client";
 
-import {
-  Search,
-  Trophy,
-  Zap,
-  Sparkles,
-  Lock,
-  Star,
-  Crown,
-  Flame,
-  Target,
-  ChevronRight,
-  Gem,
-  Award,
-  ArrowRight,
-  Shield,
-  Heart,
-  Unlock,
-  TrendingUp,
-  Bell,
-  BookOpen,
-} from "lucide-react";
 import { useState } from "react";
+import Icon from "../../components/icons";
 
 // Achievement data with rarity tiers and unlock chains
 const allAchievements = [
@@ -265,7 +245,7 @@ export default function AchievementsEnhanced() {
       {/* Animated Background - Unique Aurora Effect */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-0 left-1/4 w-96 h-96 bg-cyan-500/15 rounded-full blur-[150px] animate-pulse"></div>
-        <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-purple-500/10 rounded-full blur-[180px] animate-pulse delay-1000"></div>
+        <div className="absolute bottom-0 right-1/4 w-125 h-125 bg-purple-500/10 rounded-full blur-[180px] animate-pulse delay-1000"></div>
         <div className="absolute top-1/3 right-0 w-80 h-80 bg-pink-500/10 rounded-full blur-[140px] animate-pulse delay-500"></div>
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(99,102,241,0.03)_0%,transparent_100%)]"></div>
       </div>
@@ -275,7 +255,10 @@ export default function AchievementsEnhanced() {
         <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between gap-4">
             <div className="relative flex-1 max-w-md">
-              <Search className="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" />
+              <Icon
+                name="Search"
+                className="size-5 absolute left-3 top-1/2 -translate-y-1/2 text-gray-500"
+              />
               <input
                 type="text"
                 placeholder="Search achievements..."
@@ -289,14 +272,14 @@ export default function AchievementsEnhanced() {
               <div className="bg-linear-to-r from-purple-500/20 to-pink-500/20 border border-purple-500/30 rounded-xl px-4 py-2 backdrop-blur-sm">
                 <div className="flex items-center gap-3">
                   <div className="flex items-center gap-2">
-                    <BookOpen className="w-5 h-5 text-yellow-400" />
+                    <Icon name="BookOpen" className="size-5 text-yellow-400" />
                     <span className="font-black text-lg">
                       Collection {unlockedCount}/{totalCount}
                     </span>
                   </div>
                   <div className="w-px h-6 bg-white/20"></div>
                   <div className="flex items-center gap-2">
-                    <Sparkles className="w-5 h-5 text-purple-400" />
+                    <Icon name="Sparkles" className="size-5 text-purple-400" />
                     <span className="font-bold text-purple-400">
                       {totalXP.toLocaleString()} XP
                     </span>
@@ -304,7 +287,7 @@ export default function AchievementsEnhanced() {
                 </div>
               </div>
               <button className="relative p-3 bg-white/5 hover:bg-white/10 rounded-xl transition border border-white/10">
-                <Bell className="w-5 h-5" />
+                <Icon name="Bell" className="size-5" />
                 <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
               </button>
             </div>
@@ -324,7 +307,7 @@ export default function AchievementsEnhanced() {
                 <div className="relative flex items-center justify-between">
                   <div className="flex-1">
                     <div className="inline-flex items-center gap-2 mb-4 px-3 py-1 bg-red-500/20 border border-red-500/50 rounded-full">
-                      <Sparkles className="w-4 h-4 text-red-400" />
+                      <Icon name="Sparkles" className="size-4 text-red-400" />
                       <span className="text-xs font-bold text-red-400">
                         Epic Achievement
                       </span>
@@ -350,7 +333,7 @@ export default function AchievementsEnhanced() {
                       <div>
                         <div className="text-sm text-gray-400 mb-1">Rarity</div>
                         <div className="text-lg font-black flex items-center gap-1">
-                          <Gem className="w-5 h-5 text-red-400" />
+                          <Icon name="Gem" className="size-5 text-red-400" />
                           Epic
                         </div>
                       </div>
@@ -366,7 +349,7 @@ export default function AchievementsEnhanced() {
         {/* Tier System - Vertical Progress Path */}
         <div className="mb-12">
           <h3 className="text-xl font-black mb-6 flex items-center gap-2">
-            <Trophy className="w-6 h-6 text-purple-400" />
+            <Icon name="Trophy" className="size-6 text-purple-400" />
             Achievement Tiers
           </h3>
 
@@ -402,18 +385,26 @@ export default function AchievementsEnhanced() {
                         }`}
                       >
                         {tier === 1 && (
-                          <Star className="w-5 h-5 text-blue-400" />
+                          <Icon name="Star" className="size-5 text-blue-400" />
                         )}
                         {tier === 2 && (
-                          <Zap className="w-5 h-5 text-cyan-400" />
+                          <Icon name="Zap" className="size-5 text-cyan-400" />
                         )}
                         {tier === 3 && (
-                          <Shield className="w-5 h-5 text-green-400" />
+                          <Icon
+                            name="Shield"
+                            className="size-5 text-green-400"
+                          />
                         )}
                         {tier === 4 && (
-                          <Crown className="w-5 h-5 text-yellow-400" />
+                          <Icon
+                            name="Crown"
+                            className="size-5 text-yellow-400"
+                          />
                         )}
-                        {tier === 5 && <Gem className="w-5 h-5 text-red-400" />}
+                        {tier === 5 && (
+                          <Icon name="Gem" className="size-5 text-red-400" />
+                        )}
                       </div>
                       <div>
                         <h4 className="font-black text-lg">
@@ -431,7 +422,8 @@ export default function AchievementsEnhanced() {
                       <div className="text-lg font-black">
                         {Math.round(tierProgress)}%
                       </div>
-                      <ChevronRight
+                      <Icon
+                        name="ChevronRight"
                         className={`w-5 h-5 text-gray-400 transition-transform ${
                           selectedTier === tier ? "rotate-90" : ""
                         }`}
@@ -457,7 +449,7 @@ export default function AchievementsEnhanced() {
             // Show all achievements in a masonry-style grid
             <div>
               <h3 className="text-xl font-black mb-6 flex items-center gap-2">
-                <Award className="w-6 h-6 text-cyan-400" />
+                <Icon name="Award" className="size-6 text-cyan-400" />
                 All Achievements
               </h3>
               <div className="grid md:grid-cols-3 lg:grid-cols-4 gap-4">
@@ -512,7 +504,10 @@ export default function AchievementsEnhanced() {
                         )}
 
                         {!achievement.unlocked && (
-                          <Lock className="w-4 h-4 text-gray-500 mx-auto mt-2" />
+                          <Icon
+                            name="Lock"
+                            className="size-4 text-gray-500 mx-auto mt-2"
+                          />
                         )}
                       </div>
 
@@ -536,7 +531,7 @@ export default function AchievementsEnhanced() {
                   className="text-sm font-bold text-purple-400 hover:text-purple-300 flex items-center gap-2"
                 >
                   View All
-                  <ChevronRight className="w-4 h-4" />
+                  <Icon name="ChevronRight" className="size-4" />
                 </button>
               </div>
 
@@ -579,12 +574,12 @@ export default function AchievementsEnhanced() {
                           >
                             {achievement.unlocked ? (
                               <>
-                                <Star className="w-3 h-3" />
+                                <Icon name="Star" className="size-3" />
                                 {achievement.xpReward} XP
                               </>
                             ) : (
                               <>
-                                <Lock className="w-3 h-3" />
+                                <Icon name="Lock" className="size-3" />
                                 Locked
                               </>
                             )}
@@ -668,7 +663,7 @@ export default function AchievementsEnhanced() {
                   {unlockedCount}/{totalCount}
                 </div>
               </div>
-              <Star className="w-8 h-8 text-blue-400" />
+              <Icon name="Star" className="size-8 text-blue-400" />
             </div>
           </div>
 
@@ -680,7 +675,7 @@ export default function AchievementsEnhanced() {
                   {totalXP}
                 </div>
               </div>
-              <Sparkles className="w-8 h-8 text-purple-400" />
+              <Icon name="Sparkles" className="size-8 text-purple-400" />
             </div>
           </div>
 
@@ -692,7 +687,7 @@ export default function AchievementsEnhanced() {
                   {Math.round((unlockedCount / totalCount) * 100)}%
                 </div>
               </div>
-              <TrendingUp className="w-8 h-8 text-yellow-400" />
+              <Icon name="TrendingUp" className="size-8 text-yellow-400" />
             </div>
           </div>
 
@@ -702,7 +697,7 @@ export default function AchievementsEnhanced() {
                 <div className="text-sm text-gray-400 mb-1">Next Unlock</div>
                 <div className="text-3xl font-black text-green-400">Soon</div>
               </div>
-              <Unlock className="w-8 h-8 text-green-400" />
+              <Icon name="Unlock" className="size-8 text-green-400" />
             </div>
           </div>
         </div>

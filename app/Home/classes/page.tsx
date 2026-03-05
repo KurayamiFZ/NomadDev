@@ -4,17 +4,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 // Import icons from lucide-react library
-import {
-  Video,
-  Clock,
-  Users,
-  Calendar,
-  Play,
-  Bell,
-  Search,
-  ChevronRight,
-  TrendingUp,
-} from "lucide-react";
+import Icon from "@/app/components/icons";
 
 // Main component for the classes page
 export default function LiveClassesPage() {
@@ -231,7 +221,10 @@ export default function LiveClassesPage() {
           <div>
             <div className="relative">
               {/* Search Icon */}
-              <Search className="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" />
+              <Icon
+                name="Search"
+                className="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-gray-500"
+              />
               {/* Search Input Field */}
               <input
                 type="text"
@@ -308,7 +301,7 @@ export default function LiveClassesPage() {
                             </div>
                             {/* Class duration */}
                             <div className="flex items-center gap-1">
-                              <Clock className="w-4 h-4" />
+                              <Icon name="Clock" className="size-4" />
                               {currentLiveClass.duration}
                             </div>
                           </div>
@@ -346,10 +339,13 @@ export default function LiveClassesPage() {
                           {/* Overlay that changes on hover */}
                           <div className="absolute inset-0 bg-black opacity-30 group-hover:opacity-20 transition"></div>
                           {/* Video play icon */}
-                          <Video className="w-20 h-20 text-white opacity-40 group-hover:scale-110 transition" />
+                          <Icon
+                            name="Video"
+                            className="w-20 h-20 text-white opacity-40 group-hover:scale-110 transition"
+                          />
                           {/* Duration badge */}
                           <div className="absolute top-3 left-3 bg-black bg-opacity-70 px-3 py-1.5 rounded-full text-sm font-bold backdrop-blur-sm flex items-center gap-2">
-                            <Clock className="w-4 h-4" />
+                            <Icon name="Clock" className="size-4" />
                             {cls.duration}
                           </div>
                           {/* Category badge */}
@@ -389,13 +385,13 @@ export default function LiveClassesPage() {
                               </div>
                               {/* Registered attendees count */}
                               <div className="text-gray-500 text-xs flex items-center gap-1">
-                                <Users className="w-3 h-3" />
+                                <Icon name="Users" className="size-3" />
                                 {cls.attendees} registered
                               </div>
                             </div>
                             {/* Register button */}
                             <button className="bg-purple-600 hover:bg-purple-500 px-6 py-2.5 rounded-lg font-bold text-sm transition flex items-center gap-2">
-                              <Bell className="w-4 h-4" /> Register
+                              <Icon name="Bell" className="size-4" /> Register
                             </button>
                           </div>
                         </div>
@@ -412,7 +408,7 @@ export default function LiveClassesPage() {
                   <div className="flex items-center justify-between mb-6">
                     <h2 className="text-2xl font-black">Past Recordings</h2>
                     <button className="text-purple-400 hover:text-purple-300 flex items-center gap-1 text-sm font-medium">
-                      View All <ChevronRight className="w-4 h-4" />
+                      View All <Icon name="ChevronRight" className="size-4" />
                     </button>
                   </div>
                   {/* Grid of past class recording cards */}
@@ -425,7 +421,10 @@ export default function LiveClassesPage() {
                         {/* Recording Thumbnail */}
                         <div className="h-36 bg-gray-800 flex items-center justify-center relative">
                           {/* Play button icon */}
-                          <Play className="w-14 h-14 text-white opacity-30 group-hover:opacity-60 group-hover:scale-110 transition relative z-10" />
+                          <Icon
+                            name="Play"
+                            className="w-14 h-14 text-white opacity-30 group-hover:opacity-60 group-hover:scale-110 transition relative z-10"
+                          />
                           {/* Recording duration badge */}
                           <div className="absolute bottom-2 right-2 bg-black bg-opacity-80 px-2 py-1 rounded text-xs font-bold backdrop-blur-sm">
                             {cls.time}
@@ -455,7 +454,7 @@ export default function LiveClassesPage() {
                             <span>{cls.date}</span>
                             <span>•</span>
                             <div className="flex items-center gap-1">
-                              <TrendingUp className="w-3 h-3" />
+                              <Icon name="TrendingUp" className="size-3" />
                               {cls.views?.toLocaleString()} views
                             </div>
                           </div>
@@ -473,7 +472,7 @@ export default function LiveClassesPage() {
                 {/* This Week's Schedule Section */}
                 <div className="bg-gray-900 rounded-xl border border-gray-800 p-6">
                   <h3 className="font-black text-lg mb-4 flex items-center gap-2">
-                    <Calendar className="w-5 h-5 text-purple-400" />
+                    <Icon name="Calendar" className="w-5 h-5 text-purple-400" />
                     This Week's Schedule
                   </h3>
                   <div className="space-y-4">

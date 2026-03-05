@@ -26,7 +26,7 @@ export default function Curriculum() {
         <div className="bg-black w-1/12 h-full"></div>
       </div>
 
-      <div className="flex w-3/4 h-[800px] rounded-4xl bg-black/50 border-2 border-white ">
+      <div className="flex w-3/4 h-200 rounded-4xl bg-black/50 border-2 border-white ">
         {/* Free Plan */}
         <div className="flex flex-col justify-center space-y-2 w-1/3 h-full rounded-l-4xl border border-white">
           <span className="flex text-white self-center text-3xl mt-4 font-medium font-[Inter]">

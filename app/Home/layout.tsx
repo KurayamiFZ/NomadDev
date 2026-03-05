@@ -2,6 +2,7 @@
 
 import { useRouter, usePathname } from "next/navigation";
 import type { ReactNode } from "react";
+import Footer from "../components/footer";
 
 export default function HomeLayout({ children }: { children: ReactNode }) {
   const router = useRouter();
@@ -12,13 +13,13 @@ export default function HomeLayout({ children }: { children: ReactNode }) {
   const tabs = ["overview", "lessons", "projects", "classes", "achievements"];
 
   return (
-    // 🚫 Prevent body/page scrolling
+    // Prevent body/page scrolling
     <div className="flex h-screen w-screen overflow-hidden bg-black text-white">
       {/* SIDEBAR (NON-SCROLLING) */}
       <aside className="flex flex-col p-4 w-1/7 h-full border-r border-gray-600 bg-gray-900 shrink-0">
         <button
           className="flex items-center gap-3 h-15"
-          onClick={() => router.push("/home/overview")}
+          onClick={() => router.push("/home")}
         >
           <div className="size-15 bg-linear-to-br from-purple-500 to-pink-500 rounded-2xl" />
           <span className="text-2xl font-black">Nomad Dev</span>
@@ -61,7 +62,10 @@ export default function HomeLayout({ children }: { children: ReactNode }) {
         </header>
 
         {/* ✅ ONLY SCROLLABLE AREA */}
-        <main className="flex-1 overflow-y-auto p-8">{children}</main>
+        <main className="flex-1 overflow-y-auto">
+          <div className="p-8 ">{children}</div>
+          <Footer />
+        </main>
       </div>
     </div>
   );

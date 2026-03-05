@@ -4,19 +4,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 // Import icons from lucide-react library
-import {
-  CheckCircle,
-  Lock,
-  Play,
-  Clock,
-  Calendar,
-  TrendingUp,
-  ChevronRight,
-  Search,
-  BookOpen,
-  Award,
-  Target,
-} from "lucide-react";
+import Icon from "@/app/components/icons";
 
 // Main component for the lessons page
 export default function Lessons() {
@@ -190,7 +178,10 @@ export default function Lessons() {
           <div>
             <div className="relative">
               {/* Search Icon */}
-              <Search className="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" />
+              <Icon
+                name="Search"
+                className="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-gray-500"
+              />
               {/* Search Input Field */}
               <input
                 type="text"
@@ -284,7 +275,7 @@ export default function Lessons() {
                     </p>
                     <div className="flex items-center gap-4 text-gray-400">
                       <div className="flex items-center gap-2">
-                        <Clock className="w-4 h-4" />
+                        <Icon name="Clock" className="w-4 h-4" />
                         {currentWeekLessons.find((l) => l.current)?.duration}
                       </div>
                       <div className="px-3 py-1 bg-purple-600 rounded-full text-white text-xs font-bold">
@@ -293,7 +284,7 @@ export default function Lessons() {
                     </div>
                   </div>
                   <button className="bg-purple-600 hover:bg-purple-500 text-white px-10 py-5 rounded-xl font-black text-xl transition shadow-2xl flex items-center gap-3">
-                    <Play className="w-6 h-6" />
+                    <Icon name="Play" className="w-6 h-6" />
                     CONTINUE
                   </button>
                 </div>
@@ -338,11 +329,17 @@ export default function Lessons() {
                           }`}
                         >
                           {lesson.completed ? (
-                            <CheckCircle className="w-6 h-6 text-white" />
+                            <Icon
+                              name="CheckCircle"
+                              className="w-6 h-6 text-white"
+                            />
                           ) : lesson.locked ? (
-                            <Lock className="w-5 h-5 text-gray-400" />
+                            <Icon
+                              name="Lock"
+                              className="w-5 h-5 text-gray-400"
+                            />
                           ) : (
-                            <Play className="w-5 h-5 text-white" />
+                            <Icon name="Play" className="w-5 h-5 text-white" />
                           )}
                         </div>
 
@@ -367,7 +364,7 @@ export default function Lessons() {
                           </p>
                           <div className="flex items-center gap-4 text-xs text-gray-500">
                             <div className="flex items-center gap-1">
-                              <Clock className="w-3 h-3" />
+                              <Icon name="Clock" className="w-3 h-3" />
                               {lesson.duration}
                             </div>
                             <span>•</span>
@@ -399,7 +396,7 @@ export default function Lessons() {
                 <div className="flex items-center justify-between mb-6">
                   <h2 className="text-2xl font-black">Upcoming Lessons</h2>
                   <button className="text-purple-400 hover:text-purple-300 flex items-center gap-1 text-sm font-medium">
-                    View All <ChevronRight className="w-4 h-4" />
+                    View All <Icon name="ChevronRight" className="w-4 h-4" />
                   </button>
                 </div>
 
@@ -411,7 +408,7 @@ export default function Lessons() {
                     >
                       <div className="flex items-start gap-4">
                         <div className="w-10 h-10 bg-gray-700 rounded-full flex items-center justify-center shrink-0">
-                          <Lock className="w-5 h-5 text-gray-500" />
+                          <Icon name="Lock" className="w-5 h-5 text-gray-500" />
                         </div>
                         <div className="flex-1">
                           <h3 className="font-bold mb-2 text-gray-300">
@@ -419,7 +416,7 @@ export default function Lessons() {
                           </h3>
                           <div className="flex items-center gap-3 text-xs text-gray-500 mb-2">
                             <div className="flex items-center gap-1">
-                              <Clock className="w-3 h-3" />
+                              <Icon name="Clock" className="w-3 h-3" />
                               {lesson.duration}
                             </div>
                             <span>•</span>
@@ -443,7 +440,7 @@ export default function Lessons() {
               {/* Learning Stats */}
               <div className="bg-gray-900 rounded-xl border border-gray-800 p-6">
                 <h3 className="font-black text-lg mb-4 flex items-center gap-2">
-                  <TrendingUp className="w-5 h-5 text-purple-400" />
+                  <Icon name="TrendingUp" className="w-5 h-5 text-purple-400" />
                   Your Progress
                 </h3>
                 <div className="space-y-4">
@@ -481,7 +478,7 @@ export default function Lessons() {
               {/* Weekly Milestones */}
               <div className="bg-gray-900 rounded-xl border border-gray-800 p-6">
                 <h3 className="font-black text-lg mb-4 flex items-center gap-2">
-                  <Calendar className="w-5 h-5 text-purple-400" />
+                  <Icon name="Calendar" className="w-5 h-5 text-purple-400" />
                   Course Roadmap
                 </h3>
                 <div className="space-y-4">
@@ -501,10 +498,13 @@ export default function Lessons() {
                           Week {milestone.week}
                         </div>
                         {milestone.status === "completed" && (
-                          <CheckCircle className="w-4 h-4 text-green-500" />
+                          <Icon
+                            name="CheckCircle"
+                            className="w-4 h-4 text-green-500"
+                          />
                         )}
                         {milestone.status === "locked" && (
-                          <Lock className="w-4 h-4 text-gray-600" />
+                          <Icon name="Lock" className="w-4 h-4 text-gray-600" />
                         )}
                       </div>
                       <div className="text-xs text-gray-400 mb-2">
@@ -523,7 +523,7 @@ export default function Lessons() {
                 <div className="absolute inset-0 bg-black opacity-20"></div>
                 <div className="relative z-10">
                   <div className="flex items-center gap-3 mb-3">
-                    <Award className="w-8 h-8 text-yellow-300" />
+                    <Icon name="Award" className="w-8 h-8 text-yellow-300" />
                     <h3 className="font-black text-lg">Keep Going!</h3>
                   </div>
                   <p className="text-sm text-white opacity-90 mb-4">
@@ -531,7 +531,7 @@ export default function Lessons() {
                     more lessons to unlock a badge!
                   </p>
                   <div className="flex items-center gap-2 text-sm">
-                    <Target className="w-4 h-4" />
+                    <Icon name="Target" className="w-4 h-4" />
                     <span className="font-bold">Next: Physics Master</span>
                   </div>
                 </div>
