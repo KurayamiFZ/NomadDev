@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Play, BookOpen, Code, Gamepad2 } from "lucide-react";
+import Icon from "./icons";
 import { Button } from "./button";
 import { LESSONS, type Lesson } from "@/lib/constants";
 
@@ -15,7 +15,10 @@ export function DemoSection() {
     >
       <div className="flex flex-col gap-2 bg-secondary/80 px-4 py-3 sm:flex-row sm:items-center sm:justify-between sm:px-6 sm:py-4">
         <div className="flex items-center gap-2 sm:gap-3">
-          <Gamepad2 className="h-4 w-4 text-purple-400 sm:h-5 sm:w-5" />
+          <Icon
+            name="Gamepad2"
+            className="h-4 w-4 text-purple-400 sm:h-5 sm:w-5"
+          />
           <span className="text-sm font-bold text-foreground sm:text-base">
             Try a Lesson - Interactive Demo
           </span>
@@ -30,7 +33,10 @@ export function DemoSection() {
 
       <div className="flex flex-col gap-4 p-4 sm:gap-6 sm:p-6">
         <div className="flex items-center gap-2">
-          <BookOpen className="h-4 w-4 text-purple-400 sm:h-5 sm:w-5" />
+          <Icon
+            name="BookOpen"
+            className="h-4 w-4 text-purple-400 sm:h-5 sm:w-5"
+          />
           <span className="text-xs font-bold text-foreground sm:text-sm">
             Choose Your Lesson
           </span>
@@ -65,7 +71,8 @@ export function DemoSection() {
         <div className="relative flex aspect-video w-full items-center justify-center overflow-hidden rounded-lg border border-purple-500/30 bg-black sm:rounded-xl">
           <div className="absolute inset-0 bg-linear-to-br from-purple-900/20 to-pink-900/20" />
           <button className="z-10 flex h-12 w-12 items-center justify-center rounded-full bg-linear-to-r from-purple-500 to-pink-500 transition-transform hover:scale-110 sm:h-16 sm:w-16">
-            <Play
+            <Icon
+              name="Play"
               className="h-4 w-4 text-foreground sm:h-6 sm:w-6"
               fill="currentColor"
             />
@@ -74,16 +81,17 @@ export function DemoSection() {
             <span className="text-xs text-foreground sm:text-sm">
               Lesson 1: {LESSONS[activeLesson].title}
             </span>
-            <span className="text-xs text-foreground/60 sm:text-sm">
-              12:34
-            </span>
+            <span className="text-xs text-foreground/60 sm:text-sm">12:34</span>
           </div>
         </div>
 
         <div className="flex flex-col gap-3 rounded-lg bg-secondary/60 p-3 sm:gap-4 sm:rounded-xl sm:p-4">
           <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex items-center gap-2">
-              <Code className="h-4 w-4 text-purple-400 sm:h-5 sm:w-5" />
+              <Icon
+                name="Code"
+                className="h-4 w-4 text-purple-400 sm:h-5 sm:w-5"
+              />
               <span className="text-sm font-bold text-foreground sm:text-base">
                 Try It Yourself
               </span>
@@ -92,7 +100,7 @@ export function DemoSection() {
               size="sm"
               className="w-full bg-emerald-500 text-foreground hover:bg-emerald-400 sm:w-auto"
             >
-              <Play className="mr-2 h-3 w-3 sm:h-4 sm:w-4" />
+              <Icon name="Play" className="mr-2 h-3 w-3 sm:h-4 sm:w-4" />
               Run Code
             </Button>
           </div>
@@ -107,8 +115,8 @@ export function DemoSection() {
             This is just 1 of 150+ lessons
           </span>
           <span className="text-xs text-muted-foreground sm:text-sm">
-            Unlock the complete 12-week journey to master game development
-            from scratch to store launch.
+            Unlock the complete 12-week journey to master game development from
+            scratch to store launch.
           </span>
         </div>
       </div>

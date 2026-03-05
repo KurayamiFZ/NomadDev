@@ -1,8 +1,8 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { CheckCircle, Clock, Target } from "lucide-react";
 import { Button } from "./button";
+import Icon from "./icons";
 
 export function CTASection() {
   const router = useRouter();
@@ -18,8 +18,8 @@ export function CTASection() {
         </h2>
 
         <p className="max-w-xl text-sm text-foreground/80 sm:text-base lg:text-lg">
-          Join 15,000+ developers who transformed their careers. Start
-          building real games today.
+          Join 15,000+ developers who transformed their careers. Start building
+          real games today.
         </p>
 
         <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:gap-4">
@@ -43,14 +43,16 @@ export function CTASection() {
 
         <div className="flex flex-wrap items-center justify-center gap-3 text-xs text-foreground/80 sm:gap-4 sm:text-sm">
           <span className="flex items-center gap-1">
-            <CheckCircle className="h-3 w-3 sm:h-4 sm:w-4" /> 30-Day Money
-            Back
+            <Icon name="CheckCircle" className="h-3 w-3 sm:h-4 sm:w-4" /> 30-Day
+            Money Back
           </span>
           <span className="flex items-center gap-1">
-            <Clock className="h-3 w-3 sm:h-4 sm:w-4" /> Lifetime Access
+            <Icon name="Clock" className="h-3 w-3 sm:h-4 sm:w-4" /> Lifetime
+            Access
           </span>
           <span className="flex items-center gap-1">
-            <Target className="h-3 w-3 sm:h-4 sm:w-4" /> Job Guarantee
+            <Icon name="Target" className="h-3 w-3 sm:h-4 sm:w-4" /> Job
+            Guarantee
           </span>
         </div>
 
