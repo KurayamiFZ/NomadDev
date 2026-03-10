@@ -10,7 +10,7 @@ export default function HomeLayout({ children }: { children: ReactNode }) {
 
   const activeTab = pathname.split("/")[2] ?? "overview";
 
-  const tabs = ["overview", "lessons", "projects", "classes", "achievements"];
+  const tabs = ["overview", "lessons", "projects", "classes", "achievements", "community"];
 
   return (
     // Prevent body/page scrolling

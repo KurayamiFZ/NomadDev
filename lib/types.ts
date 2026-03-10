@@ -161,3 +161,119 @@ export interface CourseStats {
   /** Total weeks in course */
   totalWeeks: number;
 }
+
+/**
+ * Profile project data structure
+ */
+export interface ProfileProject {
+  /** Project display name */
+  name: string;
+  /** Project description */
+  description: string;
+  /** Technology tags */
+  tags: string[];
+  /** Number of likes received */
+  likes: number;
+  /** Number of views */
+  views: number;
+  /** Gradient color scheme */
+  color: string;
+  /** Whether project is featured */
+  featured?: boolean;
+}
+
+/**
+ * Profile achievement/badge data
+ */
+export interface ProfileBadge {
+  /** Badge title */
+  title: string;
+  /** Badge requirements description */
+  description: string;
+  /** Date earned (empty if locked) */
+  date: string;
+  /** Whether badge is unlocked */
+  earned: boolean;
+  /** Optional icon representation */
+  icon?: string;
+}
+
+/**
+ * Profile activity feed item
+ */
+export interface ProfileActivity {
+  /** Activity title */
+  title: string;
+  /** Activity subtitle/details */
+  subtitle: string;
+  /** Icon background color */
+  iconColor: string;
+  /** Relative timestamp */
+  time: string;
+  /** Activity icon name (string) */
+  icon: string;
+}
+
+/**
+ * Profile skill with progress
+ */
+export interface ProfileSkill {
+  /** Skill name */
+  name: string;
+  /** Proficiency percentage */
+  percent: number;
+}
+
+/**
+ * Profile status/metric card
+ */
+export interface ProfileStatus {
+  /** Display value */
+  value: string;
+  /** Status title */
+  title: string;
+  /** Additional subtitle info */
+  subtitle: string;
+  /** Status icon name (string) */
+  icon: string;
+}
+
+/**
+ * Complete user profile data
+ */
+export interface UserProfile {
+  /** Unique username */
+  username: string;
+  /** Display name */
+  displayName: string;
+  /** User bio/description */
+  bio: string;
+  /** Avatar initial */
+  avatarInitial: string;
+  /** User rank/title */
+  rank: string;
+  /** Location */
+  location: string;
+  /** Join date */
+  joinDate: string;
+  /** Personal website */
+  website?: string;
+  /** GitHub username */
+  github?: string;
+  /** LinkedIn profile */
+  linkedin?: string;
+  /** Twitter handle */
+  twitter?: string;
+  /** User statistics */
+  stats: ProfileStatus[];
+  /** User projects */
+  projects: ProfileProject[];
+  /** User badges/achievements */
+  badges: ProfileBadge[];
+  /** Recent activities */
+  activities: ProfileActivity[];
+  /** Skills with progress */
+  skills: ProfileSkill[];
+  /** Whether this is the current user's profile */
+  isOwnProfile: boolean;
+}
