@@ -2,7 +2,7 @@ import { createServerClient } from "@supabase/ssr";
 import { NextResponse, NextRequest } from "next/server";
 
 export async function proxy(req: NextRequest) {
-  let response = NextResponse.next();
+  const response = NextResponse.next();
 
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -12,10 +12,10 @@ export async function proxy(req: NextRequest) {
         getAll() {
           return req.cookies.getAll();
         },
-        setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value, options }) =>
-            response.cookies.set(name, value, options),
-          );
+        setAll(cookies) {
+          cookies.forEach(({ name, value, options }) => {
+            response.cookies.set(name, value, options);
+          });
         },
       },
     },
@@ -25,12 +25,27 @@ export async function proxy(req: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  // 🔒 Not logged in → redirect to landing page
   if (!user) {
     return NextResponse.redirect(new URL("/", req.url));
   }
 
-  // ✅ Logged in but visiting exactly /home → redirect to /home/overview
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("role")
+    .eq("id", user.id)
+    .single();
+
+  const isAdmin = profile?.role === "admin";
+  const isPathAdmin = req.nextUrl.pathname.startsWith("/admin");
+
+  if (isPathAdmin && !isAdmin) {
+    return NextResponse.redirect(new URL("/home/overview", req.url));
+  }
+
+  if (req.nextUrl.pathname === "/admin") {
+    return NextResponse.redirect(new URL("/admin/dashboard", req.url));
+  }
+
   if (req.nextUrl.pathname === "/home") {
     return NextResponse.redirect(new URL("/home/overview", req.url));
   }
@@ -39,5 +54,5 @@ export async function proxy(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/home", "/home/:path*"],
+  matcher: ["/home", "/home/:path*", "/admin", "/admin/:path*"],
 };

@@ -8,6 +8,7 @@ type User = {
   email: string;
   age: number;
   name: string;
+  level: string;
 };
 
 export default function Auther() {
@@ -21,6 +22,7 @@ export default function Auther() {
   const [error, setError] = useState("");
   const [successMsg, setSuccessMsg] = useState("");
   const [name, setName] = useState("");
+  const [level, setLevel] = useState("");
 
   // Sign-up only fields
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -63,6 +65,7 @@ export default function Auther() {
           name: name,
           email: email,
           age: age,
+          level: level,
           created_at: new Date().toISOString(),
         });
 
@@ -192,9 +195,42 @@ export default function Auther() {
             </div>
           )}
 
+          {isSignUp && (
+            <div className="mb-6">
+              <label className={labelClass}>Select Your Level</label>
+              <select
+                name="level"
+                id="level"
+                onChange={(e) => setLevel(e.target.value)}
+              >
+                <option
+                  value="Beginner"
+                  className="text-gray-500 hover:text-white bg-transparent"
+                >
+                  Beginner
+                </option>
+                <option
+                  value="Intermediate"
+                  className="text-gray-500 hover:text-white bg-transparent"
+                >
+                  Intermediate
+                </option>
+                <option
+                  value="Advanced"
+                  className="text-gray-500 hover:text-white bg-transparent"
+                >
+                  Advanced
+                </option>
+              </select>
+              <span className="text-sm text-white/20 font-extralight font-[Italic]">
+                Please Choose Your Coding Experience Level.
+              </span>
+            </div>
+          )}
+
           {/* Error */}
           {error && (
-            <div className="text-xs text-black border border-gray-200 bg-gray-50 px-3 py-2 mb-4 tracking-wide">
+            <div className="text-xs text-white border border-gray-200 bg-red-500/30 px-3 py-2 mb-4 tracking-wide">
               {error}
             </div>
           )}
