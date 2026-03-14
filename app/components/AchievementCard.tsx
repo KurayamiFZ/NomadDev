@@ -22,7 +22,12 @@ interface AchievementCardProps {
   onExpand?: () => void;
 }
 
-export function AchievementCard({ achievement, onClick, expanded, onExpand }: AchievementCardProps) {
+export function AchievementCard({
+  achievement,
+  onClick,
+  expanded,
+  onExpand,
+}: AchievementCardProps) {
   const rarityConfig = {
     common: {
       label: "Common",
@@ -58,7 +63,9 @@ export function AchievementCard({ achievement, onClick, expanded, onExpand }: Ac
     },
   };
 
-  const config = rarityConfig[achievement.rarity as keyof typeof rarityConfig] || rarityConfig.common;
+  const config =
+    rarityConfig[achievement.rarity as keyof typeof rarityConfig] ||
+    rarityConfig.common;
 
   return (
     <div
@@ -73,53 +80,72 @@ export function AchievementCard({ achievement, onClick, expanded, onExpand }: Ac
       <div className="p-4">
         <div className="flex items-start justify-between mb-3">
           {/* Icon */}
-          <div className={`w-12 h-12 rounded-lg flex items-center justify-center text-2xl ${
-            achievement.unlocked
-              ? `bg-linear-to-br ${config.bgFrom} ${config.bgTo}`
-              : "bg-gray-700"
-          }`}>
-            {achievement.unlocked ? achievement.icon : <Lock className="w-6 h-6 text-gray-500" />}
+          <div
+            className={`w-12 h-12 rounded-lg flex items-center justify-center text-2xl ${
+              achievement.unlocked
+                ? `bg-linear-to-br ${config.bgFrom} ${config.bgTo}`
+                : "bg-gray-700"
+            }`}
+          >
+            {achievement.unlocked ? (
+              achievement.icon
+            ) : (
+              <Lock className="w-6 h-6 text-gray-500" />
+            )}
           </div>
 
           {/* Rarity Badge */}
-          <div className={`px-2 py-1 rounded-full text-xs font-medium ${config.textColor} ${config.bgFrom}`}>
+          <div
+            className={`px-2 py-1 rounded-full text-xs font-medium ${config.textColor} ${config.bgFrom}`}
+          >
             {config.label}
           </div>
         </div>
 
         {/* Title */}
-        <h3 className={`font-bold text-white mb-1 ${!achievement.unlocked && "text-gray-400"}`}>
+        <h3
+          className={`font-bold text-white mb-1 ${!achievement.unlocked && "text-gray-400"}`}
+        >
           {achievement.title}
         </h3>
 
         {/* Description */}
-        <p className={`text-sm mb-3 ${!achievement.unlocked ? "text-gray-500" : "text-gray-300"}`}>
+        <p
+          className={`text-sm mb-3 ${!achievement.unlocked ? "text-gray-500" : "text-gray-300"}`}
+        >
           {achievement.description}
         </p>
 
         {/* Progress Bar (if not completed) */}
-        {achievement.progress !== undefined && achievement.total !== undefined && !achievement.unlocked && (
-          <div className="mb-3">
-            <div className="flex justify-between text-xs text-gray-400 mb-1">
-              <span>Progress</span>
-              <span>{achievement.progress}/{achievement.total}</span>
+        {achievement.progress !== undefined &&
+          achievement.total !== undefined &&
+          !achievement.unlocked && (
+            <div className="mb-3">
+              <div className="flex justify-between text-xs text-gray-400 mb-1">
+                <span>Progress</span>
+                <span>
+                  {achievement.progress}/{achievement.total}
+                </span>
+              </div>
+              <div className="w-full bg-gray-700 rounded-full h-2">
+                <div
+                  className="bg-linear-to-r from-purple-500 to-pink-500 h-2 rounded-full transition-all"
+                  style={{
+                    width: `${(achievement.progress / achievement.total) * 100}%`,
+                  }}
+                ></div>
+              </div>
             </div>
-            <div className="w-full bg-gray-700 rounded-full h-2">
-              <div
-                className="bg-linear-to-r from-purple-500 to-pink-500 h-2 rounded-full transition-all"
-                style={{ width: `${(achievement.progress / achievement.total) * 100}%` }}
-              ></div>
-            </div>
-          </div>
-        )}
+          )}
 
         {/* XP Reward */}
         <div className="flex items-center justify-between">
-          <div className={`flex items-center gap-1 text-sm font-medium ${
-            achievement.unlocked ? "text-yellow-400" : "text-gray-500"
-          }`}>
-            <Star className="w-4 h-4" />
-            +{achievement.xpReward} XP
+          <div
+            className={`flex items-center gap-1 text-sm font-medium ${
+              achievement.unlocked ? "text-yellow-400" : "text-gray-500"
+            }`}
+          >
+            <Star className="w-4 h-4" />+{achievement.xpReward} XP
           </div>
 
           {/* Expand Button */}
@@ -131,7 +157,9 @@ export function AchievementCard({ achievement, onClick, expanded, onExpand }: Ac
               }}
               className="text-gray-400 hover:text-white transition-colors"
             >
-              <Trophy className={`w-4 h-4 transition-transform ${expanded ? "rotate-180" : ""}`} />
+              <Trophy
+                className={`w-4 h-4 transition-transform ${expanded ? "rotate-180" : ""}`}
+              />
             </button>
           )}
         </div>
@@ -141,7 +169,8 @@ export function AchievementCard({ achievement, onClick, expanded, onExpand }: Ac
       {achievement.unlocked && achievement.unlockedDate && (
         <div className={`px-4 py-2 bg-black/20 border-t ${config.borderColor}`}>
           <div className="text-xs text-gray-400">
-            Unlocked on {new Date(achievement.unlockedDate).toLocaleDateString()}
+            Unlocked on{" "}
+            {new Date(achievement.unlockedDate).toLocaleDateString()}
           </div>
         </div>
       )}

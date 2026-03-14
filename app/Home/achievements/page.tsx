@@ -326,7 +326,7 @@ export default function AchievementsEnhanced() {
                       achievement={{
                         ...achievement,
                         icon: achievement.icon || "🏆",
-                        rarity: achievement.rarity || "common",
+                        rarity: achievement.tier,
                         xpReward: achievement.XP || achievement.xpReward || 0,
                       }}
                       onClick={() =>
