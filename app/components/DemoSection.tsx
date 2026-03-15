@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Icon from "./icons";
 import { Button } from "./button";
-import { LESSONS, type Lesson } from "@/lib/constants";
+import { LANDING_LESSONS, type LandingLesson } from "@/lib/constants";
 
 export function DemoSection() {
   const [activeLesson, setActiveLesson] = useState(0);
@@ -43,7 +43,7 @@ export function DemoSection() {
         </div>
 
         <div className="grid gap-2 sm:grid-cols-3 sm:gap-3">
-          {LESSONS.map((lesson: Lesson, index: number) => (
+          {LANDING_LESSONS.map((lesson: LandingLesson, index: number) => (
             <button
               key={lesson.title}
               onClick={() => setActiveLesson(index)}
@@ -79,7 +79,7 @@ export function DemoSection() {
           </button>
           <div className="absolute inset-x-0 bottom-0 flex items-center justify-between bg-linear-to-t from-black to-transparent p-2 sm:p-4">
             <span className="text-xs text-foreground sm:text-sm">
-              Lesson 1: {LESSONS[activeLesson].title}
+              Lesson 1: {LANDING_LESSONS[activeLesson].title}
             </span>
             <span className="text-xs text-foreground/60 sm:text-sm">12:34</span>
           </div>

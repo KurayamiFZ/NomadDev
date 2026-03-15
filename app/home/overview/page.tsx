@@ -14,8 +14,10 @@ import {
   ACHIEVEMENTS, 
   COMMUNITY_ACTIVITY 
 } from "../../../lib/home-data";
+import { useRouter } from "next/navigation";
 
 export default function Overview() {
+  const router = useRouter();
   return (
     <div className="flex w-full bg-black">
       {/* Content Area */}
@@ -180,10 +182,15 @@ export default function Overview() {
                     <CommunityActivityItem key={i} activity={activity} />
                   ))}
                 </div>
-                <button className="w-full bg-linear-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white py-3 rounded-lg font-bold mt-4 transition flex items-center justify-center gap-2">
+                <a
+                  href="https://discord.gg/wrRfkUydxQ"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full bg-linear-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white py-3 rounded-lg font-bold mt-4 transition flex items-center justify-center gap-2"
+                >
                   <Icon name="MessageCircle" className="size-4" />
                   Join Discord Community
-                </button>
+                </a>
               </div>
             </div>
 
@@ -215,6 +222,11 @@ export default function Overview() {
                 ].map((link, i) => (
                   <button
                     key={i}
+                    onClick={() => {
+                      if (link.label === "Ask a Question") {
+                        router.push("/feedback");
+                      }
+                    }}
                     className="w-full flex items-center gap-3 p-3 rounded-lg bg-gray-800 hover:bg-gray-700 transition text-left"
                   >
                     <link.icon className={`w-5 h-5 ${link.color}`} />

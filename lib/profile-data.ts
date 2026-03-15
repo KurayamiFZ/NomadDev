@@ -17,6 +17,7 @@ export const sampleProfiles: Record<string, UserProfile> = {
   kurayami: {
     username: "kurayami",
     displayName: "Kurayami",
+    email: "kurayami@example.com",
     bio: "Passionate game developer learning to build amazing experiences. Currently mastering Unity and Unreal Engine. Always excited to collaborate on indie game projects!",
     avatarInitial: "K",
     rank: "Rising Star",
@@ -162,6 +163,7 @@ export const sampleProfiles: Record<string, UserProfile> = {
   alexchen: {
     username: "alexchen",
     displayName: "Alex Chen",
+    email: "alexchen@example.com",
     bio: "Unity developer with 5 years of experience. Specializing in 2D platformers and mobile games. Love teaching and helping others learn game development!",
     avatarInitial: "A",
     rank: "Expert Developer",
@@ -293,6 +295,7 @@ export const sampleProfiles: Record<string, UserProfile> = {
   sarahmartinez: {
     username: "sarahmartinez",
     displayName: "Sarah Martinez",
+    email: "sarahmartinez@example.com",
     bio: "Indie game artist and developer. Creating beautiful pixel art games with compelling stories. Currently working on my first commercial title!",
     avatarInitial: "S",
     rank: "Creative Developer",
@@ -409,21 +412,44 @@ export const sampleProfiles: Record<string, UserProfile> = {
 };
 
 /**
- * Get user profile by username
- * In production, this would be an API call to your database
+ * Get user profile by username from database
+ * In production, this fetches from the database via API
  */
-export function getUserProfile(username: string): UserProfile | null {
-  return sampleProfiles[username.toLowerCase()] || null;
+export async function getUserProfile(username: string): Promise<UserProfile | null> {
+  try {
+    console.log(`getUserProfile called with username: ${username}`);
+    const response = await fetch(`/api/profile/${username}`);
+    
+    console.log(`API response status: ${response.status}`);
+    
+    if (!response.ok) {
+      if (response.status === 404) {
+        console.log('User not found (404)');
+        return null; // User not found
+      }
+      const errorText = await response.text();
+      console.error(`API error (${response.status}): ${errorText}`);
+      throw new Error(`Failed to fetch profile: ${response.status}`);
+    }
+    
+    const profile = await response.json();
+    console.log('Profile data from API:', profile);
+    return profile;
+  } catch (error) {
+    console.error('Error fetching user profile:', error);
+    return null;
+  }
 }
 
 /**
  * Get list of all users for discovery
  * In production, this would come from your user database
  */
-export function getAllUsers(): Array<{ username: string; displayName: string; rank: string }> {
+export function getAllUsers(): Array<{ username: string; displayName: string; rank: string; email: string }> {
   return Object.values(sampleProfiles).map(profile => ({
     username: profile.username,
     displayName: profile.displayName,
     rank: profile.rank,
+    email: profile.email,
   }));
 }

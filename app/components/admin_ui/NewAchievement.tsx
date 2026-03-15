@@ -2,7 +2,7 @@
 
 import { supabase } from "@/app/supabaseclient";
 import { useState, useEffect } from "react";
-import { Trophy, Star, Award, Zap } from "lucide-react";
+import { Trophy, Star, Award, Zap, Edit, Trash2 } from "lucide-react";
 import { AchievementCard } from "@/app/components/AchievementCard";
 
 type Achievement = {
@@ -15,6 +15,7 @@ type Achievement = {
   unlockedDate?: string;
   tier: number;
   XP: number;
+  xpReward?: number; // Add optional xpReward field
   progress?: number;
   total?: number;
   requiredFor?: number;
@@ -38,10 +39,26 @@ export default function NewAchievement({ isActive = false }: NewAchievementProps
   const [nextId, setNextId] = useState(1);
   const [achievements, setAchievements] = useState<any[]>([]);
   const [expandedAchievement, setExpandedAchievement] = useState<number | null>(null);
+  const [selectedAchievement, setSelectedAchievement] = useState<Achievement | null>(null);
+  const [isEditMode, setIsEditMode] = useState(false);
+
+  // Debug state changes
+  useEffect(() => {
+    console.log('State changed:', {
+      isEditMode,
+      selectedAchievement: selectedAchievement?.id,
+      title,
+      tier,
+      success,
+      error
+    });
+  }, [isEditMode, selectedAchievement, title, tier, success, error]);
 
   // Fetch achievements from Supabase when component is active
   useEffect(() => {
     if (!isActive) return; // Only fetch when tab is active
+    
+    console.log('Fetching achievements - isActive:', isActive);
     
     async function fetchAchievements() {
       try {
@@ -50,6 +67,7 @@ export default function NewAchievement({ isActive = false }: NewAchievementProps
         if (error) {
           console.error("Error fetching achievements:", error);
         } else {
+          console.log('Achievements fetched:', data?.length, 'items');
           setAchievements(data || []);
         }
       } catch (err) {
@@ -99,7 +117,7 @@ export default function NewAchievement({ isActive = false }: NewAchievementProps
 
     try {
       const achievementData = {
-        id: nextId, // Use auto-generated ID
+        id: isEditMode && selectedAchievement ? selectedAchievement.id : nextId,
         tier: parseInt(tier),
         title,
         description,
@@ -107,27 +125,105 @@ export default function NewAchievement({ isActive = false }: NewAchievementProps
         unlocked,
       };
 
-      const { data, error } = await supabase.from("achievement").insert([achievementData]);
+      let result;
+      if (isEditMode && selectedAchievement) {
+        // Update existing achievement
+        result = await supabase
+          .from("achievement")
+          .update(achievementData)
+          .eq("id", selectedAchievement.id);
+      } else {
+        // Create new achievement
+        result = await supabase.from("achievement").insert([achievementData]);
+      }
 
+      if (result.error) {
+        setError(result.error.message);
+      } else {
+        setSuccess(true);
+        if (!isEditMode) {
+          setNextId(nextId + 1);
+        }
+        
+        // Refresh achievements list
+        const { data: refreshedData } = await supabase.from("achievement").select("*");
+        setAchievements(refreshedData || []);
+        
+        // Reset form - only reset if not in edit mode
+        if (!isEditMode) {
+          resetForm();
+        } else {
+          // In edit mode, just clear success message but keep the achievement selected
+          setTimeout(() => setSuccess(false), 2000);
+        }
+      }
+    } catch (err) {
+      setError(isEditMode ? "Failed to update achievement" : "Failed to create achievement");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const resetForm = () => {
+    console.log('Resetting form - clearing edit mode');
+    setId("");
+    setTier("");
+    setTitle("");
+    setDescription("");
+    setXpReward("");
+    setUnlocked(false);
+    setSelectedAchievement(null);
+    setIsEditMode(false);
+    setSuccess(false);
+    setError(null);
+  };
+
+  const handleSelectAchievement = (achievement: Achievement) => {
+    console.log('Selecting achievement:', achievement);
+    setSelectedAchievement(achievement);
+    setIsEditMode(true);
+    
+    // Load achievement data into form
+    setTier(achievement.tier.toString());
+    setTitle(achievement.title);
+    setDescription(achievement.description);
+    setXpReward(achievement.XP?.toString() || achievement.xpReward?.toString() || "0");
+    setUnlocked(achievement.unlocked);
+    
+    console.log('Edit mode activated:', true);
+    
+    // Scroll to the form to show the loaded data
+    setTimeout(() => {
+      const formElement = document.querySelector('form');
+      if (formElement) {
+        formElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }, 100);
+  };
+
+  const handleDeleteAchievement = async (achievementId: number) => {
+    if (!confirm("Are you sure you want to delete this achievement?")) return;
+    
+    try {
+      const { error } = await supabase
+        .from("achievement")
+        .delete()
+        .eq("id", achievementId);
+      
       if (error) {
         setError(error.message);
       } else {
-        setSuccess(true);
-        // Increment the next ID for future entries
-        setNextId(nextId + 1);
+        // Refresh achievements list
+        const { data: refreshedData } = await supabase.from("achievement").select("*");
+        setAchievements(refreshedData || []);
         
-        // Reset form
-        setId("");
-        setTier("");
-        setTitle("");
-        setDescription("");
-        setXpReward("");
-        setUnlocked(false);
+        // Reset form if deleted achievement was selected
+        if (selectedAchievement?.id === achievementId) {
+          resetForm();
+        }
       }
     } catch (err) {
-      setError("Failed to create achievement");
-    } finally {
-      setLoading(false);
+      setError("Failed to delete achievement");
     }
   };
 
@@ -144,28 +240,53 @@ export default function NewAchievement({ isActive = false }: NewAchievementProps
         {/* Header */}
         <div className="flex items-center gap-3 mb-8">
           <Trophy className="w-8 h-8 text-purple-400" />
-          <h1 className="text-3xl font-bold text-white">Create New Achievement</h1>
+          <h1 className="text-3xl font-bold text-white">
+            {isEditMode ? `Edit Achievement #${selectedAchievement?.id}` : "Create New Achievement"}
+          </h1>
         </div>
 
-        {/* Auto-generated ID Display */}
-        <div className="mb-6 p-4 bg-blue-500/10 border border-blue-500 rounded-lg">
-          <div className="flex items-center justify-between">
-            <div>
-              <h3 className="text-sm font-medium text-blue-400 mb-1">Next Available ID</h3>
-              <p className="text-2xl font-bold text-white">{nextId}</p>
-            </div>
-            <div className="text-xs text-blue-300">
-              <p>• Auto-generated from database</p>
-              <p>• Incremented after each creation</p>
-              <p>• Prevents duplicate IDs</p>
+        {/* Edit Mode Indicator */}
+        {isEditMode && (
+          <div className="mb-6 p-4 bg-yellow-500/10 border border-yellow-500 rounded-lg">
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="text-sm font-medium text-yellow-400 mb-1">Edit Mode</h3>
+                <p className="text-white">Editing Achievement #{selectedAchievement?.id}: {selectedAchievement?.title}</p>
+              </div>
+              <button
+                onClick={resetForm}
+                className="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white text-sm rounded-lg transition-colors font-medium"
+              >
+                ✕ Cancel Edit
+              </button>
             </div>
           </div>
-        </div>
+        )}
+
+        {/* Auto-generated ID Display - Only show in create mode */}
+        {!isEditMode && (
+          <div className="mb-6 p-4 bg-blue-500/10 border border-blue-500 rounded-lg">
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="text-sm font-medium text-blue-400 mb-1">Next Available ID</h3>
+                <p className="text-2xl font-bold text-white">{nextId}</p>
+              </div>
+              <div className="text-xs text-blue-300">
+                <p>• Auto-generated from database</p>
+                <p>• Incremented after each creation</p>
+                <p>• Prevents duplicate IDs</p>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Success Message */}
         {success && (
           <div className="mb-6 p-4 bg-green-500/20 border border-green-500 rounded-lg">
-            <p className="text-green-400 font-medium">✅ Achievement created successfully with ID: {nextId - 1}!</p>
+            <p className="text-green-400 font-medium">
+              ✅ Achievement {isEditMode ? "updated" : "created"} successfully!
+              {isEditMode ? ` (ID: ${selectedAchievement?.id})` : ` (ID: ${nextId - 1})`}
+            </p>
           </div>
         )}
 
@@ -178,20 +299,20 @@ export default function NewAchievement({ isActive = false }: NewAchievementProps
 
         {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Achievement ID - Auto-generated display */}
+          {/* Achievement ID - Show in edit mode, auto-generated in create mode */}
           <div>
             <label className="block text-sm font-medium text-gray-300 mb-2">
-              Achievement ID (Auto-generated)
+              Achievement ID {isEditMode ? "(Editing)" : "(Auto-generated)"}
             </label>
             <input
               type="number"
-              value={nextId}
+              value={isEditMode ? selectedAchievement?.id : nextId}
               readOnly
               className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-gray-300 cursor-not-allowed"
-              placeholder="ID will be auto-generated"
+              placeholder={isEditMode ? "Achievement ID" : "ID will be auto-generated"}
             />
             <p className="text-xs text-gray-500 mt-1">
-              The next available ID is automatically fetched from the database
+              {isEditMode ? "This achievement's ID cannot be changed" : "The next available ID is automatically fetched from the database"}
             </p>
           </div>
 
@@ -278,28 +399,45 @@ export default function NewAchievement({ isActive = false }: NewAchievementProps
           </div>
 
           {/* Submit Button */}
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full py-3 bg-purple-600 hover:bg-purple-500 disabled:bg-gray-700 disabled:cursor-not-allowed text-white font-medium rounded-lg transition-colors flex items-center justify-center gap-2"
-          >
-            {loading ? (
-              <>
-                <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                Creating Achievement...
-              </>
-            ) : (
-              <>
+          <div className="flex gap-3">
+            {isEditMode && (
+              <button
+                type="button"
+                onClick={() => handleDeleteAchievement(selectedAchievement?.id || 0)}
+                className="flex-1 py-3 bg-red-600 hover:bg-red-500 text-white font-medium rounded-lg transition-colors flex items-center justify-center gap-2"
+              >
                 <Trophy className="w-5 h-5" />
-                Create Achievement (ID: {nextId})
-              </>
+                Delete Achievement
+              </button>
             )}
-          </button>
+            <button
+              type="submit"
+              disabled={loading}
+              className={`flex-1 py-3 ${isEditMode ? "bg-blue-600 hover:bg-blue-500" : "bg-purple-600 hover:bg-purple-500"} disabled:bg-gray-700 disabled:cursor-not-allowed text-white font-medium rounded-lg transition-colors flex items-center justify-center gap-2`}
+            >
+              {loading ? (
+                <>
+                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                  {isEditMode ? "Updating..." : "Creating..."}
+                </>
+              ) : (
+                <>
+                  <Trophy className="w-5 h-5" />
+                  {isEditMode ? `Update Achievement #${selectedAchievement?.id}` : `Create Achievement (ID: ${nextId})`}
+                </>
+              )}
+            </button>
+          </div>
           
           {/* Achievement Data Display - Only show when tab is active */}
           {isActive && (
             <div className="mb-8 mt-8">
-              <h2 className="text-2xl font-bold text-white mb-6">Achievement Database</h2>
+              <h2 className="text-2xl font-bold text-white mb-6">
+                Achievement Database {isEditMode && `(Editing #${selectedAchievement?.id})`}
+              </h2>
+              <p className="text-gray-400 mb-4">
+                Click on any achievement to edit its details, or use the quick action buttons.
+              </p>
               
               {achievements.length === 0 ? (
                 <div className="text-center py-8">
@@ -307,28 +445,57 @@ export default function NewAchievement({ isActive = false }: NewAchievementProps
                 </div>
               ) : (
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {achievements.map((achievement) => (
-                    <AchievementCard
-                      key={achievement.id}
-                      achievement={{
-                        ...achievement,
-                        icon: achievement.icon || "🏆",
-                        rarity: achievement.rarity || "common",
-                        xpReward: achievement.XP || achievement.xpReward || 0,
-                      }}
-                      onClick={() =>
-                        setExpandedAchievement(
-                          expandedAchievement === achievement.id ? null : achievement.id,
-                        )
-                      }
-                      expanded={expandedAchievement === achievement.id}
-                      onExpand={() =>
-                        setExpandedAchievement(
-                          expandedAchievement === achievement.id ? null : achievement.id,
-                        )
-                      }
-                    />
-                  ))}
+                  {achievements.map((achievement) => {
+                    const isSelected = selectedAchievement?.id === achievement.id;
+                    return (
+                      <div key={achievement.id} className={`relative ${isSelected ? 'ring-2 ring-blue-500 rounded-xl' : ''}`}>
+                        <AchievementCard
+                          achievement={{
+                            ...achievement,
+                            icon: achievement.icon || "🏆",
+                            rarity: achievement.rarity || "common",
+                            xpReward: achievement.XP || achievement.xpReward || 0,
+                          }}
+                          onClick={() => handleSelectAchievement(achievement)}
+                          expanded={expandedAchievement === achievement.id}
+                          onExpand={() =>
+                            setExpandedAchievement(
+                              expandedAchievement === achievement.id ? null : achievement.id,
+                            )
+                          }
+                        />
+                        {/* Quick Action Buttons */}
+                        <div className="absolute top-2 right-2 flex gap-1">
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleSelectAchievement(achievement);
+                            }}
+                            className="p-1.5 bg-blue-600 hover:bg-blue-500 text-white rounded-lg transition-colors"
+                            title="Edit Achievement"
+                          >
+                            <Edit className="w-3 h-3" />
+                          </button>
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleDeleteAchievement(achievement.id);
+                            }}
+                            className="p-1.5 bg-red-600 hover:bg-red-500 text-white rounded-lg transition-colors"
+                            title="Delete Achievement"
+                          >
+                            <Trash2 className="w-3 h-3" />
+                          </button>
+                        </div>
+                        {/* Selected Indicator */}
+                        {isSelected && (
+                          <div className="absolute top-2 left-2 bg-blue-600 text-white text-xs px-2 py-1 rounded-full font-medium">
+                            ✓ Selected
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
                 </div>
               )}
             </div>

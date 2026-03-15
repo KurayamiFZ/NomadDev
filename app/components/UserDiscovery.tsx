@@ -10,10 +10,9 @@
 
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Search, Users, Trophy, Star } from "lucide-react";
-import { getAllUsers } from "../../lib/profile-data";
 
 /**
  * User Discovery Component
@@ -26,9 +25,38 @@ import { getAllUsers } from "../../lib/profile-data";
 export function UserDiscovery() {
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
+  const [allUsers, setAllUsers] = useState<Array<{ username: string; displayName: string; rank: string; email: string }>>([]);
+  const [loading, setLoading] = useState(true);
   
-  // Get all users from profile data
-  const allUsers = getAllUsers();
+  // Fetch users from API on component mount
+  useEffect(() => {
+    const fetchUsers = async () => {
+      setLoading(true);
+      
+      try {
+        const response = await fetch('/api/users', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+        
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+        
+        const users = await response.json();
+        setAllUsers(users);
+      } catch (error) {
+        console.error('Failed to fetch users:', error);
+        setAllUsers([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    fetchUsers();
+  }, []);
   
   // Filter users based on search query
   const filteredUsers = allUsers.filter(user => 
@@ -79,42 +107,52 @@ export function UserDiscovery() {
       </div>
 
       {/* User Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {filteredUsers.map((user) => (
-          <button
-            key={user.username}
-            onClick={() => handleUserClick(user.username)}
-            className="bg-gray-800 border border-gray-700 rounded-lg p-4 hover:border-purple-500/50 transition-all text-left group"
-          >
-            {/* User Avatar and Name */}
-            <div className="flex items-center gap-3 mb-3">
-              <div className="w-12 h-12 bg-linear-to-br from-purple-500 to-pink-500 rounded-lg flex items-center justify-center text-white font-bold text-lg">
-                {user.displayName.charAt(0)}
+      {loading ? (
+        <div className="text-center py-12">
+          <div className="w-16 h-16 border-4 border-purple-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <h3 className="text-white text-lg font-semibold mb-2">Loading users...</h3>
+          <p className="text-gray-400">
+            Fetching community members from database
+          </p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {filteredUsers.map((user) => (
+            <button
+              key={user.username}
+              onClick={() => handleUserClick(user.username)}
+              className="bg-gray-800 border border-gray-700 rounded-lg p-4 hover:border-purple-500/50 transition-all text-left group"
+            >
+              {/* User Avatar and Name */}
+              <div className="flex items-center gap-3 mb-3">
+                <div className="w-12 h-12 bg-linear-to-br from-purple-500 to-pink-500 rounded-lg flex items-center justify-center text-white font-bold text-lg">
+                  {user.displayName.charAt(0)}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <h3 className="text-white font-semibold group-hover:text-purple-400 transition-colors truncate">
+                    {user.displayName}
+                  </h3>
+                  <p className="text-gray-400 text-sm truncate">{user.email || 'no-email'}</p>
+                </div>
               </div>
-              <div className="flex-1 min-w-0">
-                <h3 className="text-white font-semibold group-hover:text-purple-400 transition-colors truncate">
-                  {user.displayName}
-                </h3>
-                <p className="text-gray-400 text-sm truncate">@{user.username}</p>
+
+              {/* Rank Badge */}
+              <div className="flex items-center gap-2">
+                {getRankIcon(user.rank)}
+                <span className="text-sm text-gray-300">{user.rank}</span>
               </div>
-            </div>
 
-            {/* Rank Badge */}
-            <div className="flex items-center gap-2">
-              {getRankIcon(user.rank)}
-              <span className="text-sm text-gray-300">{user.rank}</span>
-            </div>
-
-            {/* View Profile Indicator */}
-            <div className="mt-3 text-xs text-purple-400 opacity-0 group-hover:opacity-100 transition-opacity">
-              Click to view profile →
-            </div>
-          </button>
-        ))}
-      </div>
+              {/* View Profile Indicator */}
+              <div className="mt-3 text-xs text-purple-400 opacity-0 group-hover:opacity-100 transition-opacity">
+                Click to view profile →
+              </div>
+            </button>
+          ))}
+        </div>
+      )}
 
       {/* No Results */}
-      {filteredUsers.length === 0 && (
+      {!loading && filteredUsers.length === 0 && (
         <div className="text-center py-12">
           <Users className="w-16 h-16 text-gray-600 mx-auto mb-4" />
           <h3 className="text-white text-lg font-semibold mb-2">No users found</h3>
@@ -125,12 +163,14 @@ export function UserDiscovery() {
       )}
 
       {/* Stats */}
-      <div className="mt-8 pt-6 border-t border-gray-800">
-        <div className="flex items-center justify-between text-sm text-gray-400">
-          <span>Showing {filteredUsers.length} of {allUsers.length} users</span>
-          <span>Click any user to view their profile</span>
+      {!loading && (
+        <div className="mt-8 pt-6 border-t border-gray-800">
+          <div className="flex items-center justify-between text-sm text-gray-400">
+            <span>Showing {filteredUsers.length} of {allUsers.length} users</span>
+            <span>Click any user to view their profile</span>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }

@@ -10,6 +10,7 @@
  */
 
 import { UserDiscovery } from "../../components/UserDiscovery";
+import { Users, Sparkles } from "lucide-react";
 
 /**
  * Community Page Content
@@ -21,19 +22,31 @@ import { UserDiscovery } from "../../components/UserDiscovery";
  */
 export default function CommunityPageContent() {
   return (
-    <div className="p-8">
+    <div className="min-h-screen bg-black text-white">
       {/* Page Header */}
-      <div className="mb-8">
-        <h1 className="text-4xl font-black bg-green-400 text-white mb-4">
-          Community
-        </h1>
-        <p className="text-gray-400 text-lg">
-          Connect with fellow game developers, share your progress, and get inspired by the community
-        </p>
+      <div className="border-b border-gray-800">
+        <div className="max-w-7xl mx-auto px-8 py-12">
+          <div className="flex items-center gap-4 mb-4">
+            <div className="w-14 h-14 bg-linear-to-br from-purple-500 to-pink-500 rounded-xl flex items-center justify-center">
+              <Users className="w-8 h-8 text-white" />
+            </div>
+            <div>
+              <h1 className="text-4xl font-black">Community</h1>
+              <div className="flex items-center gap-2 mt-2">
+                <Sparkles className="w-4 h-4 text-purple-400" />
+                <p className="text-gray-400">
+                  Connect with 15,000+ game developers worldwide
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* User Discovery Component */}
-      <UserDiscovery />
+      <div className="max-w-7xl mx-auto px-8 py-8">
+        <UserDiscovery />
+      </div>
     </div>
   );
 }

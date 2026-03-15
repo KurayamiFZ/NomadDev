@@ -246,6 +246,8 @@ export interface UserProfile {
   username: string;
   /** Display name */
   displayName: string;
+  /** User email */
+  email: string;
   /** User bio/description */
   bio: string;
   /** Avatar initial */
@@ -276,4 +278,103 @@ export interface UserProfile {
   skills: ProfileSkill[];
   /** Whether this is the current user's profile */
   isOwnProfile: boolean;
+}
+
+/**
+ * Feedback question data structure
+ */
+export interface FeedbackQuestion {
+  /** Unique feedback identifier */
+  id: string;
+  
+  /** User who submitted the question */
+  userId: string;
+  
+  /** Question title/subject */
+  title: string;
+  
+  /** Full question content */
+  content: string;
+  
+  /** Question category */
+  category: 'general' | 'technical' | 'billing' | 'course' | 'bug' | 'feature';
+  
+  /** Current status */
+  status: 'open' | 'in_progress' | 'resolved' | 'closed';
+  
+  /** Priority level */
+  priority: 'low' | 'medium' | 'high' | 'urgent';
+  
+  /** When the question was created */
+  createdAt: string;
+  
+  /** When the question was last updated */
+  updatedAt: string;
+  
+  /** Admin's response (if any) */
+  adminResponse?: string;
+  
+  /** Admin who responded (if any) */
+  adminId?: string;
+  
+  /** When admin responded (if any) */
+  respondedAt?: string;
+  
+  /** User's follow-up replies */
+  userReplies?: FeedbackReply[];
+  
+  /** User info for display */
+  user?: {
+    displayName: string;
+    email: string;
+  };
+  
+  /** Admin info for display */
+  admin?: {
+    displayName: string;
+    email: string;
+  };
+}
+
+/**
+ * Feedback reply structure for conversation threads
+ */
+export interface FeedbackReply {
+  /** Unique reply identifier */
+  id: string;
+  
+  /** Feedback question this reply belongs to */
+  feedbackId: string;
+  
+  /** Reply content */
+  content: string;
+  
+  /** Who sent the reply (user or admin) */
+  senderType: 'user' | 'admin';
+  
+  /** Sender ID */
+  senderId: string;
+  
+  /** When the reply was created */
+  createdAt: string;
+  
+  /** Sender info for display */
+  sender?: {
+    displayName: string;
+    email: string;
+  };
+}
+
+/**
+ * Feedback form data for submission
+ */
+export interface FeedbackFormData {
+  /** Question title */
+  title: string;
+  
+  /** Question content */
+  content: string;
+  
+  /** Question category */
+  category: FeedbackQuestion['category'];
 }

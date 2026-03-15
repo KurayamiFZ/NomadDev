@@ -1,9 +1,11 @@
-export interface Lesson {
-  title: string;
-  subtitle: string;
-  level: string;
-  levelColor: string;
-}
+/**
+ * Constants and Data for GameDev Academy Platform
+ * 
+ * This file contains shared constants, data structures, and configuration
+ * used throughout the application for consistency and maintainability.
+ * 
+ * @fileoverview Central constants and data definitions
+ */
 
 export interface RoadmapPhase {
   weeks: string;
@@ -24,7 +26,14 @@ export interface Guarantee {
   desc: string;
 }
 
-export const LESSONS: Lesson[] = [
+export interface LandingLesson {
+  title: string;
+  subtitle: string;
+  level: string;
+  levelColor: string;
+}
+
+export const LANDING_LESSONS: LandingLesson[] = [
   {
     title: "Player Movement",
     subtitle: "Learn 2D controls",

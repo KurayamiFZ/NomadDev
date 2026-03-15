@@ -21,7 +21,7 @@
 
 import { useEffect, useState, use } from "react";
 import { useRouter } from "next/navigation";
-import { ProfileComponent } from "../../components/ProfileComponent";
+import { ProfileComponent } from "../../components/profile";
 import { getUserProfile } from "../../../lib/profile-data";
 import { UserProfile } from "../../../lib/types";
 
@@ -60,14 +60,14 @@ export default function DynamicProfilePage({ params }: DynamicProfilePageProps) 
       try {
         setLoading(true);
         setError(null);
+        console.log(`Fetching profile for username: ${username}`);
 
-        // Simulate API delay for demonstration
-        await new Promise(resolve => setTimeout(resolve, 500));
-
-        // Get profile data (in production: await fetch(`/api/users/${username}`))
-        const userProfile = getUserProfile(username);
+        // Get profile data from database
+        const userProfile = await getUserProfile(username);
+        console.log('Profile data received:', userProfile);
 
         if (!userProfile) {
+          console.log(`User "${username}" not found`);
           setError(`User "${username}" not found`);
           return;
         }

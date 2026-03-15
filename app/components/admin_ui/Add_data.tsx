@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Icon from "../icons";
 import NewAchievement from "./NewAchievement";
+import NewCourse from "./NewCourse";
 
 const selectTabWidget = () => {
   const [activeTab, setActiveTab] = useState("courses");
@@ -10,7 +11,7 @@ const selectTabWidget = () => {
     {
       id: "courses",
       label: "Courses",
-      content: <div></div>,
+      content: <NewCourse isActive={activeTab === "courses"} />,
     },
     {
       id: "achievement",
