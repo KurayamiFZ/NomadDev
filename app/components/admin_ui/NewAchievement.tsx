@@ -1,6 +1,6 @@
 "use client";
 
-import { supabase } from "@/app/supabaseclient";
+import { supabase } from "@/lib/supabaseclient";
 import { useState, useEffect } from "react";
 import { Trophy, Star, Award, Zap, Edit, Trash2 } from "lucide-react";
 import { AchievementCard } from "@/app/components/AchievementCard";

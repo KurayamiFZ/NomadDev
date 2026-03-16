@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { Trophy, Lock, Search } from "lucide-react";
 import { AchievementCard } from "../../components/AchievementCard";
-import { supabase } from "@/app/supabaseclient";
+import { supabase } from "@/lib/supabaseclient";
 import Icon from "@/app/components/icons";
 
 const rarityConfig = {

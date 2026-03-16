@@ -13,7 +13,7 @@
 import { useState, useEffect } from "react";
 import SelectTabWidget from "@/app/components/admin_ui/Add_data";
 import { AchievementCard } from "@/app/components/AchievementCard";
-import { supabase } from "@/app/supabaseclient";
+import { supabase } from "@/lib/supabaseclient";
 
 export default function Add() {
   const [achievements, setAchievements] = useState<any[]>([]);
