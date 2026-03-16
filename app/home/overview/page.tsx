@@ -6,7 +6,7 @@ import { WelcomeBanner } from "../../components/WelcomeBanner";
 import { StatsCard } from "../../components/StatsCard";
 import { LessonCard } from "../../components/LessonCard";
 import { LiveClassCard } from "../../components/LiveClassCard";
-import { AchievementCard } from "../../components/AchievementCard";
+import { AchievementOver } from "../../components/AchievementOver";
 import { CommunityActivityItem } from "../../components/CommunityActivityItem";
 import { 
   UPCOMING_CLASSES, 
@@ -159,7 +159,7 @@ export default function Overview() {
               <div className="p-6">
                 <div className="grid grid-cols-3 gap-3">
                   {ACHIEVEMENTS.slice(0, 5).map((achievement, i) => (
-                    <AchievementCard key={i} achievement={achievement} />
+                    <AchievementOver key={i} overachievement={achievement} />
                   ))}
                 </div>
                 <button className="w-full bg-gray-800 hover:bg-gray-700 text-white py-3 rounded-lg font-medium mt-4 transition">
