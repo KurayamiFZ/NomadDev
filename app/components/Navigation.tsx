@@ -134,39 +134,3 @@ export function Navigation({ onNavigate }: NavigationProps) {
     </>
   );
 }
-
-/**
- * Navigation Component Documentation
- * 
- * The Navigation component is a sticky navigation header with branding, menu items, and mobile responsiveness.
- * It handles navigation between different sections and external pages.
- * 
- * ### Features
- * 
- * - Responsive design with mobile hamburger menu
- * - Smooth scroll navigation to page sections
- * - Integration with Next.js router
- * - Gradient branding with game controller icon
- * 
- * ### Props
- * 
- * - `onNavigate`: Optional callback function triggered on navigation
- * 
- * ### Returns
- * 
- * - `JSX.Element`: Sticky navigation header
- * 
- * ### Usage
- * 
- * ```tsx
- * import { Navigation } from './Navigation';
- * 
- * function App() {
- *   return (
- *     <div>
- *       <Navigation onNavigate={(section) => console.log(section)} />
- *     </div>
- *   );
- * }
- * ```
- */

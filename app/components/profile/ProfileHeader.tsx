@@ -144,9 +144,9 @@ function SocialLinks({ profile }: { profile: UserProfile }) {
           href={`https://${profile.website}`}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-purple-400 hover:text-purple-300 font-medium transition-colors flex items-center gap-1 sm:gap-1.5 text-xs sm:text-sm truncate max-w-[200px] sm:max-w-none"
+          className="text-purple-400 hover:text-purple-300 font-medium transition-colors flex items-center gap-1 sm:gap-1.5 text-xs sm:text-sm truncate max-w-50 sm:max-w-none"
         >
-          <Globe className="w-3.5 h-3.5 sm:w-4 sm:h-4 flex-shrink-0" /> 
+          <Globe className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" /> 
           <span className="truncate">{profile.website}</span>
         </a>
       )}

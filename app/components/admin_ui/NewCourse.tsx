@@ -817,7 +817,7 @@ export default function NewCourse({ isActive = false }: NewCourseProps) {
           <button
             onClick={handleSubmit}
             disabled={!courseTitle || !courseDescription || videos.length === 0 || isSubmitting}
-            className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 disabled:from-gray-700 disabled:to-gray-700 text-white rounded-lg font-medium transition disabled:cursor-not-allowed"
+            className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-linear-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 disabled:from-gray-700 disabled:to-gray-700 text-white rounded-lg font-medium transition disabled:cursor-not-allowed"
           >
             <Save className="w-5 h-5" />
             {isSubmitting ? 'Creating Course...' : 'Create Course'}
