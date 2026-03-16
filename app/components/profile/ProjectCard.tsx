@@ -14,6 +14,8 @@
 
 import { Heart, Eye } from "lucide-react";
 import { UserProfile } from "@/lib/types";
+import { BaseCard } from "../ui/BaseCard";
+import { StatusBadge } from "../ui/StatusBadge";
 
 interface ProjectCardProps {
   project: UserProfile['projects'][0];
@@ -27,15 +29,19 @@ interface ProjectCardProps {
  */
 export function ProjectCard({ project }: ProjectCardProps) {
   return (
-    <button className="flex flex-col items-start mt-4 space-y-3 w-full rounded-2xl bg-gray-800 border border-gray-700 hover:border-purple-500/50 transition-all overflow-hidden group">
+    <BaseCard 
+      variant="default"
+      className="flex-col items-start mt-4 space-y-3 w-full rounded-2xl bg-gray-800 border-gray-700 hover:border-purple-500/50 overflow-hidden group p-0"
+      hoverable
+    >
       {/* Project Preview with Gradient Background */}
       <div
         className={`flex justify-end items-start w-full h-48 bg-linear-to-br ${project.color} relative`}
       >
         {project.featured && (
-          <span className="flex justify-center items-center bg-linear-to-r from-yellow-400 to-orange-500 px-3 py-1.5 m-3 text-black rounded-full text-xs font-bold">
+          <StatusBadge variant="warning" size="sm" className="m-3">
             ⭐ Featured
-          </span>
+          </StatusBadge>
         )}
       </div>
 
@@ -54,12 +60,14 @@ export function ProjectCard({ project }: ProjectCardProps) {
         {/* Technology Tags */}
         <div className="flex gap-2 flex-wrap">
           {project.tags.map((tag) => (
-            <span
+            <StatusBadge 
               key={tag}
-              className="px-3 py-1 rounded-full bg-gray-700 text-gray-300 text-xs font-medium"
+              variant="default"
+              size="sm"
+              className="px-3 py-1"
             >
               {tag}
-            </span>
+            </StatusBadge>
           ))}
         </div>
 
@@ -73,6 +81,6 @@ export function ProjectCard({ project }: ProjectCardProps) {
           </span>
         </div>
       </div>
-    </button>
+    </BaseCard>
   );
 }

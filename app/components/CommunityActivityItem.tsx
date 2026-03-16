@@ -1,4 +1,5 @@
-import Icon from "./icons";
+import { IconWrapper } from "./ui/IconWrapper";
+import { FlexRow } from "./ui/FlexRow";
 import { CommunityActivity } from "@/lib/types";
 
 interface CommunityActivityItemProps {
@@ -7,10 +8,20 @@ interface CommunityActivityItemProps {
 
 export function CommunityActivityItem({ activity }: CommunityActivityItemProps) {
   return (
-    <div className="flex items-start gap-3">
-      <div className="w-8 h-8 bg-linear-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-xs font-bold shrink-0">
-        {activity.user.charAt(0)}
-      </div>
+    <FlexRow align="start" gap="sm">
+      {/* User Avatar */}
+      <IconWrapper 
+        icon={() => (
+          <span className="text-xs font-bold text-white">
+            {activity.user.charAt(0)}
+          </span>
+        )}
+        size="md"
+        variant="gradient"
+        color="purple"
+      />
+      
+      {/* Activity Content */}
       <div className="flex-1 min-w-0">
         <p className="text-sm">
           <span className="font-bold text-white">
@@ -28,6 +39,6 @@ export function CommunityActivityItem({ activity }: CommunityActivityItemProps) 
           {activity.time}
         </p>
       </div>
-    </div>
+    </FlexRow>
   );
 }

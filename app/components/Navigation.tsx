@@ -18,10 +18,15 @@
 
 "use client";
 
-import { Gamepad2, Menu, X } from "lucide-react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { Menu, X } from "lucide-react";
+import { NavigationLink } from "./ui/NavigationLink";
+import { GradientBackground } from "./ui/GradientBackground";
+import { IconWrapper } from "./ui/IconWrapper";
+import { FlexRow } from "./ui/FlexRow";
 import { Button } from "./button";
+import { Gamepad2 } from "lucide-react";
 
 interface NavigationProps {
   /** Optional callback function triggered on navigation */
@@ -40,67 +45,40 @@ interface NavigationProps {
 export function Navigation({ onNavigate }: NavigationProps) {
   // State management for mobile menu toggle
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  // Next.js router for programmatic navigation
-  const router = useRouter();
-
-  /**
-   * Handle navigation click with menu cleanup
-   * Closes mobile menu and triggers optional callback
-   * 
-   * @param {string} section - The section to navigate to
-   */
-  const handleNavClick = (section: string) => {
-    setMobileMenuOpen(false);
-    if (onNavigate) {
-      onNavigate(section);
-    }
-  };
 
   return (
     <>
       {/* Main navigation bar - Sticky positioning with backdrop blur */}
       <nav className="sticky top-0 z-50 flex w-full items-center justify-between border-b border-border/50 bg-background/80 px-6 py-4 backdrop-blur-xl lg:px-12">
         {/* Logo and branding section */}
-        <div className="flex items-center gap-2">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-linear-to-br from-purple-500 to-pink-500">
-            <Gamepad2 className="h-5 w-5 text-foreground" />
-          </div>
+        <FlexRow align="center" gap="sm">
+          <GradientBackground 
+            variant="purple-pink" 
+            className="flex h-10 w-10 items-center justify-center rounded-xl"
+          >
+            <IconWrapper icon={Gamepad2} size="md" variant="transparent" />
+          </GradientBackground>
           <span className="text-xl font-bold text-foreground">
             GameDev Academy
           </span>
-        </div>
+        </FlexRow>
 
         {/* Desktop navigation links - Hidden on mobile */}
-        <div className="hidden items-center gap-8 md:flex">
-          <a
-            href="#demo"
-            className="text-sm text-muted-foreground transition-colors hover:text-foreground"
-            onClick={() => handleNavClick("demo")}
-          >
+        <FlexRow align="center" gap="lg" className="hidden md:flex">
+          <NavigationLink href="#demo" onNavigate={onNavigate}>
             Demo
-          </a>
-          <a
-            href="#roadmap"
-            className="text-sm text-muted-foreground transition-colors hover:text-foreground"
-            onClick={() => handleNavClick("roadmap")}
-          >
+          </NavigationLink>
+          <NavigationLink href="#roadmap" onNavigate={onNavigate}>
             Roadmap
-          </a>
-          <a
-            href="#pricing"
-            className="text-sm text-muted-foreground transition-colors hover:text-foreground"
-            onClick={() => handleNavClick("pricing")}
-          >
+          </NavigationLink>
+          <NavigationLink href="#pricing" onNavigate={onNavigate}>
             Pricing
-          </a>
+          </NavigationLink>
           {/* Primary call-to-action button */}
-          <Button
-            className="bg-linear-to-r from-purple-500 to-pink-500 text-foreground hover:opacity-90"
-            onClick={() => router.push("/login")}
-          >
+          <NavigationLink to="/login" variant="button">
             Start Learning
-          </Button>
-        </div>
+          </NavigationLink>
+        </FlexRow>
 
         {/* Mobile menu toggle button - Hamburger/Close icon */}
         <button
@@ -121,34 +99,35 @@ export function Navigation({ onNavigate }: NavigationProps) {
         <div className="fixed inset-x-0 top-16 z-40 border-b border-border bg-background/95 backdrop-blur-xl p-4 md:hidden">
           <div className="mx-auto max-w-md flex flex-col gap-3">
             {/* Mobile navigation links with click handlers */}
-            <a
-              href="#demo"
-              className="px-4 py-3 text-foreground rounded-lg hover:bg-accent transition-colors"
-              onClick={() => handleNavClick("demo")}
+            <NavigationLink 
+              href="#demo" 
+              onNavigate={onNavigate}
+              variant="mobile"
             >
               Demo
-            </a>
-            <a
-              href="#roadmap"
-              className="px-4 py-3 text-foreground rounded-lg hover:bg-accent transition-colors"
-              onClick={() => handleNavClick("roadmap")}
+            </NavigationLink>
+            <NavigationLink 
+              href="#roadmap" 
+              onNavigate={onNavigate}
+              variant="mobile"
             >
               Roadmap
-            </a>
-            <a
-              href="#pricing"
-              className="px-4 py-3 text-foreground rounded-lg hover:bg-accent transition-colors"
-              onClick={() => handleNavClick("pricing")}
+            </NavigationLink>
+            <NavigationLink 
+              href="#pricing" 
+              onNavigate={onNavigate}
+              variant="mobile"
             >
               Pricing
-            </a>
+            </NavigationLink>
             {/* Mobile call-to-action button */}
-            <Button 
-              className="w-full bg-linear-to-r from-purple-500 to-pink-500 text-foreground hover:opacity-90 transition-opacity"
-              onClick={() => router.push("/login")}
+            <NavigationLink 
+              to="/login" 
+              variant="button"
+              className="w-full"
             >
               Start Learning
-            </Button>
+            </NavigationLink>
           </div>
         </div>
       )}

@@ -1,5 +1,11 @@
-import Icon from "./icons";
+import { BaseCard } from "./ui/BaseCard";
+import { StatusBadge } from "./ui/StatusBadge";
+import { IconWrapper } from "./ui/IconWrapper";
+import { ProgressBar } from "./ui/ProgressBar";
+import { GradientBackground } from "./ui/GradientBackground";
+import { FlexRow } from "./ui/FlexRow";
 import { Trophy, Lock, Star } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface AchievementCardProps {
   achievement: {
@@ -31,35 +37,27 @@ export function AchievementCard({
   const rarityConfig = {
     common: {
       label: "Bronze",
-      bgFrom: "from-blue-500/20",
-      bgTo: "to-cyan-500/20",
-      borderColor: "border-blue-500/50",
-      textColor: "text-blue-400",
-      iconColor: "text-blue-500",
+      variant: "info" as const,
+      gradientVariant: "blue-cyan" as const,
+      iconColor: "blue" as const,
     },
     uncommon: {
       label: "Silver",
-      bgFrom: "from-purple-500/20",
-      bgTo: "to-pink-500/20",
-      borderColor: "border-purple-500/50",
-      textColor: "text-purple-400",
-      iconColor: "text-purple-500",
+      variant: "purple" as const,
+      gradientVariant: "purple-pink" as const,
+      iconColor: "purple" as const,
     },
     rare: {
       label: "Gold",
-      bgFrom: "from-yellow-500/20",
-      bgTo: "to-orange-500/20",
-      borderColor: "border-yellow-500/50",
-      textColor: "text-yellow-400",
-      iconColor: "text-yellow-500",
+      variant: "warning" as const,
+      gradientVariant: "yellow-orange" as const,
+      iconColor: "yellow" as const,
     },
     epic: {
       label: "Platinum",
-      bgFrom: "from-red-500/20",
-      bgTo: "to-rose-500/20",
-      borderColor: "border-red-500/50",
-      textColor: "text-red-400",
-      iconColor: "text-red-500",
+      variant: "error" as const,
+      gradientVariant: "red-rose" as const,
+      iconColor: "red" as const,
     },
   };
 
@@ -68,39 +66,44 @@ export function AchievementCard({
     rarityConfig.common;
 
   return (
-    <div
-      className={`relative bg-gray-900 rounded-xl border-2 overflow-hidden transition-all hover:scale-105 cursor-pointer ${
-        achievement.unlocked
-          ? `bg-linear-to-br ${config.bgFrom} ${config.bgTo} ${config.borderColor}`
-          : "bg-gray-800 border-gray-700 opacity-60"
-      }`}
+    <BaseCard
+      variant="bordered"
+      className={cn(
+        "relative overflow-hidden transition-all hover:scale-105 cursor-pointer",
+        achievement.unlocked && config.iconColor === "blue" && "border-blue-500/50",
+        achievement.unlocked && config.iconColor === "purple" && "border-purple-500/50",
+        achievement.unlocked && config.iconColor === "yellow" && "border-yellow-500/50",
+        achievement.unlocked && config.iconColor === "red" && "border-red-500/50",
+        !achievement.unlocked && "border-gray-700 opacity-60"
+      )}
       onClick={onClick}
     >
       {/* Achievement Header */}
       <div className="p-4">
-        <div className="flex items-start justify-between mb-3">
+        <FlexRow justify="between" align="start" className="mb-3">
           {/* Icon */}
-          <div
-            className={`w-12 h-12 rounded-lg flex items-center justify-center text-2xl ${
-              achievement.unlocked
-                ? `bg-linear-to-br ${config.bgFrom} ${config.bgTo}`
-                : "bg-gray-700"
-            }`}
-          >
-            {achievement.unlocked ? (
-              achievement.icon
-            ) : (
-              <Lock className="w-6 h-6 text-gray-500" />
-            )}
-          </div>
+          {achievement.unlocked ? (
+            <GradientBackground
+              variant={config.gradientVariant}
+              className="w-12 h-12 rounded-lg flex items-center justify-center text-2xl"
+            >
+              {achievement.icon}
+            </GradientBackground>
+          ) : (
+            <IconWrapper
+              icon={Lock}
+              size="xl"
+              variant="solid"
+              color="gray"
+              className="rounded-lg"
+            />
+          )}
 
           {/* Rarity Badge */}
-          <div
-            className={`px-2 py-1 rounded-full text-xs font-medium ${config.textColor} ${config.bgFrom}`}
-          >
+          <StatusBadge variant={config.variant} size="sm">
             {config.label}
-          </div>
-        </div>
+          </StatusBadge>
+        </FlexRow>
 
         {/* Title */}
         <h3
@@ -120,33 +123,25 @@ export function AchievementCard({
         {achievement.progress !== undefined &&
           achievement.total !== undefined &&
           !achievement.unlocked && (
-            <div className="mb-3">
-              <div className="flex justify-between text-xs text-gray-400 mb-1">
-                <span>Progress</span>
-                <span>
-                  {achievement.progress}/{achievement.total}
-                </span>
-              </div>
-              <div className="w-full bg-gray-700 rounded-full h-2">
-                <div
-                  className="bg-linear-to-r from-purple-500 to-pink-500 h-2 rounded-full transition-all"
-                  style={{
-                    width: `${(achievement.progress / achievement.total) * 100}%`,
-                  }}
-                ></div>
-              </div>
-            </div>
+            <ProgressBar
+              current={achievement.progress}
+              total={achievement.total}
+              size="sm"
+              variant="gradient"
+              showLabel
+              className="mb-3"
+            />
           )}
 
-        {/* XP Reward */}
-        <div className="flex items-center justify-between">
-          <div
-            className={`flex items-center gap-1 text-sm font-medium ${
-              achievement.unlocked ? "text-yellow-400" : "text-gray-500"
-            }`}
+        {/* XP Reward and Expand Button */}
+        <FlexRow justify="between" align="center">
+          <StatusBadge 
+            variant={achievement.unlocked ? "warning" : "default"}
+            size="sm"
+            icon={Star}
           >
-            <Star className="w-4 h-4" />+{achievement.xpReward} XP
-          </div>
+            +{achievement.xpReward} XP
+          </StatusBadge>
 
           {/* Expand Button */}
           {onExpand && (
@@ -162,12 +157,18 @@ export function AchievementCard({
               />
             </button>
           )}
-        </div>
+        </FlexRow>
       </div>
 
       {/* Unlocked Date */}
       {achievement.unlocked && achievement.unlockedDate && (
-        <div className={`px-4 py-2 bg-black/20 border-t ${config.borderColor}`}>
+        <div className={cn(
+          "px-4 py-2 bg-black/20 border-t",
+          config.iconColor === "blue" && "border-blue-500/50",
+          config.iconColor === "purple" && "border-purple-500/50",
+          config.iconColor === "yellow" && "border-yellow-500/50",
+          config.iconColor === "red" && "border-red-500/50"
+        )}>
           <div className="text-xs text-gray-400">
             Unlocked on{" "}
             {new Date(achievement.unlockedDate).toLocaleDateString()}
@@ -181,6 +182,6 @@ export function AchievementCard({
           <Lock className="w-8 h-8 text-gray-600" />
         </div>
       )}
-    </div>
+    </BaseCard>
   );
 }

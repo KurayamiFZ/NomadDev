@@ -23,8 +23,11 @@
  * @returns {JSX.Element} Styled statistics card
  */
 
-import Icon from "./icons";
+import { BaseCard } from "./ui/BaseCard";
+import { StatusBadge } from "./ui/StatusBadge";
+import { IconWrapper } from "./ui/IconWrapper";
 import { LucideProps } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface StatsCardProps {
   /** Lucide icon component to display in the card */
@@ -61,11 +64,20 @@ interface StatsCardProps {
  * @returns {JSX.Element} The complete statistics card
  */
 export function StatsCard({ icon: IconComponent, value, label, color, subtitle, progress }: StatsCardProps) {
+  // Convert color prop to IconWrapper color format
+  const iconColor = color.replace('text-', '') as any;
+  
   return (
-    <div className="bg-linear-to-br from-gray-900 to-black rounded-xl p-6 border border-gray-800">
+    <BaseCard variant="default" className="bg-linear-to-br from-gray-900 to-black border-gray-800">
       {/* Header section with icon and primary value */}
       <div className="flex items-center justify-between mb-4">
-        <IconComponent className={`size-8 ${color}`} />
+        <IconWrapper 
+          icon={IconComponent} 
+          size="lg" 
+          variant="transparent" 
+          color={iconColor}
+          className={color}
+        />
         <div className="text-2xl font-black">{value}</div>
       </div>
       
@@ -76,7 +88,15 @@ export function StatsCard({ icon: IconComponent, value, label, color, subtitle, 
       {progress && (
         <div className="bg-gray-800 rounded-full h-2 overflow-hidden">
           <div
-            className={`${color.replace('text-', 'bg-')} h-full rounded-full`}
+            className={cn(
+              "h-full rounded-full",
+              color.includes('purple') && "bg-purple-500",
+              color.includes('green') && "bg-green-500", 
+              color.includes('blue') && "bg-blue-500",
+              color.includes('yellow') && "bg-yellow-500",
+              color.includes('red') && "bg-red-500",
+              color.includes('pink') && "bg-pink-500"
+            )}
             style={{ width: `${(progress.current / progress.total) * 100}%` }}
           ></div>
         </div>
@@ -84,10 +104,14 @@ export function StatsCard({ icon: IconComponent, value, label, color, subtitle, 
       
       {/* Optional subtitle */}
       {subtitle && (
-        <div className={`${color} text-xs mt-2 font-medium`}>
+        <StatusBadge 
+          variant={iconColor}
+          size="sm"
+          className="mt-2"
+        >
           {subtitle}
-        </div>
+        </StatusBadge>
       )}
-    </div>
+    </BaseCard>
   );
 }

@@ -1,4 +1,8 @@
-import Icon from "./icons";
+import { BaseCard } from "./ui/BaseCard";
+import { StatusBadge } from "./ui/StatusBadge";
+import { IconWrapper } from "./ui/IconWrapper";
+import { FlexRow } from "./ui/FlexRow";
+import { Clock } from "lucide-react";
 import { UpcomingClass } from "@/lib/types";
 
 interface LiveClassCardProps {
@@ -7,25 +11,32 @@ interface LiveClassCardProps {
 
 export function LiveClassCard({ class: classData }: LiveClassCardProps) {
   return (
-    <div className="bg-gray-800 rounded-xl p-4 border border-gray-700 hover:border-purple-500 transition">
-      <div className="flex items-start justify-between mb-3">
+    <BaseCard variant="default" className="hover:border-purple-500">
+      {/* Header with title and live indicator */}
+      <FlexRow justify="between" align="start" className="mb-3">
         <div>
-          <div className="flex items-center gap-2 mb-2">
+          <FlexRow align="center" gap="sm" className="mb-2">
             <h3 className="font-bold text-lg">{classData.title}</h3>
             {classData.live && (
-              <div className="bg-red-500 text-white text-xs px-2 py-1 rounded-full font-bold flex items-center gap-1 animate-pulse">
-                <div className="w-2 h-2 bg-white rounded-full"></div>
+              <StatusBadge variant="live" size="sm" animated>
                 LIVE TODAY
-              </div>
+              </StatusBadge>
             )}
-          </div>
+          </FlexRow>
           <div className="text-sm text-gray-400">
             with {classData.instructor}
           </div>
         </div>
-        <Icon name="Clock" className="size-5 text-gray-400" />
-      </div>
-      <div className="flex items-center justify-between">
+        <IconWrapper 
+          icon={Clock}
+          size="md"
+          variant="transparent"
+          color="gray"
+        />
+      </FlexRow>
+      
+      {/* Footer with time and action button */}
+      <FlexRow justify="between" align="center">
         <span className="text-purple-400 font-medium">
           {classData.time}
         </span>
@@ -38,7 +49,7 @@ export function LiveClassCard({ class: classData }: LiveClassCardProps) {
         >
           {classData.live ? "Join Now" : "Set Reminder"}
         </button>
-      </div>
-    </div>
+      </FlexRow>
+    </BaseCard>
   );
 }
