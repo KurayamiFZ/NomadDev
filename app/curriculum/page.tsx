@@ -75,7 +75,6 @@ export default function Curriculum() {
                 priceSubtext="forever"
                 features={freeFeatures}
                 variant="free"
-                onSelect={() => {}}
                 className="h-full w-full"
               />
             </NavigationLink>

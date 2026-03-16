@@ -43,7 +43,7 @@ export function PlanCard({
     >
       {/* Premium shimmer bar */}
       {isPremium && (
-        <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-black to-transparent" />
+        <div className="absolute top-0 left-0 right-0 h-0.5 bg-linear-to-r from-transparent via-black to-transparent" />
       )}
 
       {/* Recommended pill */}
@@ -86,7 +86,7 @@ export function PlanCard({
           {/* Divider */}
           <div className={cn(
             "h-px w-full mt-1",
-            isPremium ? "bg-black/8" : "bg-white/[0.06]"
+            isPremium ? "bg-black/8" : "bg-white/6"
           )} />
         </div>
 
@@ -108,10 +108,10 @@ export function PlanCard({
                 )}
               >
                 <span className={cn(
-                  "flex-shrink-0 w-4 h-4 rounded-full flex items-center justify-center",
+                  "shrink-0 w-4 h-4 rounded-full flex items-center justify-center",
                   isDisabled
                     ? isPremium ? "bg-black/5" : "bg-white/5"
-                    : isPremium ? "bg-black/8" : "bg-white/[0.08]"
+                    : isPremium ? "bg-black/8" : "bg-white/8"
                 )}>
                   {isDisabled ? (
                     <svg width="8" height="8" viewBox="0 0 8 8" fill="none">
@@ -147,7 +147,7 @@ export function PlanCard({
           {/* Subtle sheen on hover */}
           <span className={cn(
             "absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500",
-            "bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full",
+            "bg-linear-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full",
             "transition-transform duration-700"
           )} />
           <span className="relative z-10">{buttonText}</span>
