@@ -1,5 +1,3 @@
-"use client";
-
 import { EnhancedFeedbackWidget } from "../../components/admin/EnhancedFeedbackWidget";
 
 export default function Dashboard() {
@@ -7,7 +5,7 @@ export default function Dashboard() {
     <div className="p-6 min-h-screen w-screen bg-background bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(120,40,180,0.3),transparent)] bg-fixed">
       <div className="max-w-7xl mx-auto">
         <h1 className="text-3xl font-bold text-white mb-8">Admin Dashboard</h1>
-        
+
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <EnhancedFeedbackWidget />
           {/* Add more widgets here */}
