@@ -75,7 +75,7 @@ export function Navigation({ onNavigate }: NavigationProps) {
             Pricing
           </NavigationLink>
           {/* Primary call-to-action button */}
-          <NavigationLink to="/login" variant="button">
+          <NavigationLink to="/login" variant="button" className="flex justify-center items-center rounded-xl px-2 py-0.5">
             Start Learning
           </NavigationLink>
         </FlexRow>
