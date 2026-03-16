@@ -30,7 +30,7 @@ export function AchievementCard({
 }: AchievementCardProps) {
   const rarityConfig = {
     common: {
-      label: "Common",
+      label: "Bronze",
       bgFrom: "from-blue-500/20",
       bgTo: "to-cyan-500/20",
       borderColor: "border-blue-500/50",
@@ -38,7 +38,7 @@ export function AchievementCard({
       iconColor: "text-blue-500",
     },
     uncommon: {
-      label: "Uncommon",
+      label: "Silver",
       bgFrom: "from-purple-500/20",
       bgTo: "to-pink-500/20",
       borderColor: "border-purple-500/50",
@@ -46,7 +46,7 @@ export function AchievementCard({
       iconColor: "text-purple-500",
     },
     rare: {
-      label: "Rare",
+      label: "Gold",
       bgFrom: "from-yellow-500/20",
       bgTo: "to-orange-500/20",
       borderColor: "border-yellow-500/50",
@@ -54,7 +54,7 @@ export function AchievementCard({
       iconColor: "text-yellow-500",
     },
     epic: {
-      label: "Epic",
+      label: "Platinum",
       bgFrom: "from-red-500/20",
       bgTo: "to-rose-500/20",
       borderColor: "border-red-500/50",

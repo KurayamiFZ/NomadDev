@@ -118,33 +118,33 @@ export function Navigation({ onNavigate }: NavigationProps) {
 
       {/* Mobile navigation dropdown - Conditional rendering */}
       {mobileMenuOpen && (
-        <div className="fixed inset-x-0 top-18.25 z-40 border-b border-border bg-background p-6 md:hidden">
-          <div className="flex flex-col gap-4">
+        <div className="fixed inset-x-0 top-16 z-40 border-b border-border bg-background/95 backdrop-blur-xl p-4 md:hidden">
+          <div className="mx-auto max-w-md flex flex-col gap-3">
             {/* Mobile navigation links with click handlers */}
             <a
               href="#demo"
-              className="text-foreground"
+              className="px-4 py-3 text-foreground rounded-lg hover:bg-accent transition-colors"
               onClick={() => handleNavClick("demo")}
             >
               Demo
             </a>
             <a
               href="#roadmap"
-              className="text-foreground"
+              className="px-4 py-3 text-foreground rounded-lg hover:bg-accent transition-colors"
               onClick={() => handleNavClick("roadmap")}
             >
               Roadmap
             </a>
             <a
               href="#pricing"
-              className="text-foreground"
+              className="px-4 py-3 text-foreground rounded-lg hover:bg-accent transition-colors"
               onClick={() => handleNavClick("pricing")}
             >
               Pricing
             </a>
             {/* Mobile call-to-action button */}
             <Button 
-              className="w-full bg-linear-to-r from-purple-500 to-pink-500 text-foreground"
+              className="w-full bg-linear-to-r from-purple-500 to-pink-500 text-foreground hover:opacity-90 transition-opacity"
               onClick={() => router.push("/login")}
             >
               Start Learning

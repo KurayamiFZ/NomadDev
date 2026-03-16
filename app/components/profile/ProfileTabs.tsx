@@ -44,7 +44,7 @@ export function ProfileTabs({ profile, onNavigate }: ProfileTabsProps) {
   ];
 
   return (
-    <div className="bg-gray-900 rounded-2xl w-11/12 max-w-6xl overflow-hidden border border-gray-800">
+    <div className="bg-gray-900 rounded-2xl w-11/12 max-w-6xl mt-8 overflow-hidden border border-gray-800">
       {/* Tab Navigation */}
       <TabNavigation 
         tabs={tabs} 
@@ -53,7 +53,7 @@ export function ProfileTabs({ profile, onNavigate }: ProfileTabsProps) {
       />
 
       {/* Tab Content */}
-      <div className="p-6">
+      <div className="p-4 sm:p-6">
         {activeTab === "overview" && (
           <OverviewTab profile={profile} onNavigate={onNavigate} />
         )}
@@ -94,7 +94,7 @@ function TabNavigation({
         <button
           key={tab.id}
           onClick={() => onTabChange(tab.id)}
-          className={`px-6 py-4 font-bold transition whitespace-nowrap ${
+          className={`px-3 sm:px-6 py-3 sm:py-4 font-bold transition whitespace-nowrap text-xs sm:text-sm ${
             activeTab === tab.id
               ? "text-purple-400 border-b-2 border-purple-400 bg-purple-500/10"
               : "text-gray-400 hover:text-white hover:bg-gray-800/50"

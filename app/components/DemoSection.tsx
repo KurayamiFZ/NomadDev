@@ -11,7 +11,7 @@ export function DemoSection() {
   return (
     <section
       id="demo"
-      className="mx-4 flex w-[calc(100%-2rem)] max-w-4xl flex-col overflow-hidden rounded-2xl border border-purple-500/30 bg-black/60 backdrop-blur-sm sm:mx-6 sm:w-[calc(100%-3rem)] sm:rounded-3xl"
+      className="mx-4 flex w-[calc(100%-2rem)] max-w-4xl flex-col overflow-hidden rounded-2xl border border-purple-500/30 bg-black/60 backdrop-blur-sm sm:mx-6 sm:w-[calc(100%-3rem)] sm:rounded-3xl lg:mx-auto lg:w-full"
     >
       <div className="flex flex-col gap-2 bg-secondary/80 px-4 py-3 sm:flex-row sm:items-center sm:justify-between sm:px-6 sm:py-4">
         <div className="flex items-center gap-2 sm:gap-3">
@@ -42,7 +42,7 @@ export function DemoSection() {
           </span>
         </div>
 
-        <div className="grid gap-2 sm:grid-cols-3 sm:gap-3">
+        <div className="mt-4 grid gap-2 grid-cols-1 sm:mt-6 sm:grid-cols-2 sm:gap-3">
           {LANDING_LESSONS.map((lesson: LandingLesson, index: number) => (
             <button
               key={lesson.title}
