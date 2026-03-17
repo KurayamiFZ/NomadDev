@@ -13,6 +13,7 @@
 
 "use client";
 
+import { memo } from "react";
 import {
   BookOpen,
   Flame,
@@ -49,7 +50,7 @@ const iconMap: Record<string, React.ComponentType<any>> = {
  * Renders the appropriate icon component based on the icon name.
  * Returns null if the icon is not found in the mapping.
  */
-export function IconRenderer({ iconName, className = "" }: IconRendererProps) {
+export const IconRenderer = memo(function IconRenderer({ iconName, className = "" }: IconRendererProps) {
   const IconComponent = iconMap[iconName];
   return IconComponent ? <IconComponent className={className} /> : null;
-}
+});

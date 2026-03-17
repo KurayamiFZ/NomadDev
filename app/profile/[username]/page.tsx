@@ -19,7 +19,7 @@
 
 "use client";
 
-import { useEffect, useState, use } from "react";
+import { useEffect, useState, use, memo } from "react";
 import { useRouter } from "next/navigation";
 import { ProfileComponent } from "../../components/profile";
 import { getUserProfile } from "../../../lib/profile-data";
@@ -41,7 +41,7 @@ interface DynamicProfilePageProps {
  * @param {DynamicProfilePageProps} props - Component props
  * @returns {JSX.Element} Profile page or error state
  */
-export default function DynamicProfilePage({ params }: DynamicProfilePageProps) {
+const DynamicProfilePage = memo(function DynamicProfilePage({ params }: DynamicProfilePageProps) {
   const router = useRouter();
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
@@ -53,16 +53,17 @@ export default function DynamicProfilePage({ params }: DynamicProfilePageProps) 
 
   useEffect(() => {
     /**
-     * Fetch user profile data
-     * In production, this would be an API call to your backend
+     * Fetch user profile data with error handling
      */
     const fetchProfile = async () => {
+      if (!username) return;
+      
       try {
         setLoading(true);
         setError(null);
         console.log(`Fetching profile for username: ${username}`);
 
-        // Get profile data from database
+        // Get profile data from database (with caching)
         const userProfile = await getUserProfile(username);
         console.log('Profile data received:', userProfile);
 
@@ -81,9 +82,7 @@ export default function DynamicProfilePage({ params }: DynamicProfilePageProps) 
       }
     };
 
-    if (username) {
-      fetchProfile();
-    }
+    fetchProfile();
   }, [username]);
 
   /**
@@ -94,7 +93,7 @@ export default function DynamicProfilePage({ params }: DynamicProfilePageProps) 
   };
 
   /**
-   * Loading state
+   * Loading state with skeleton
    */
   if (loading) {
     return (
@@ -144,4 +143,6 @@ export default function DynamicProfilePage({ params }: DynamicProfilePageProps) 
    * Success state - render profile
    */
   return <ProfileComponent profile={profile} onNavigate={handleNavigate} />;
-}
+});
+
+export default DynamicProfilePage;

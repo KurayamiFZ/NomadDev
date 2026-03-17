@@ -13,6 +13,7 @@
 
 "use client";
 
+import { memo } from "react";
 import { useRouter } from "next/navigation";
 import { UserProfile } from "@/lib/types";
 import { ProfileHeader } from "./profile/ProfileHeader";
@@ -37,7 +38,7 @@ interface ProfileComponentProps {
  * This approach follows the Single Responsibility Principle and makes
  * the codebase more maintainable and testable.
  */
-export function ProfileComponent({ profile, onNavigate }: ProfileComponentProps) {
+export const ProfileComponent = memo(function ProfileComponent({ profile, onNavigate }: ProfileComponentProps) {
   const router = useRouter();
 
   /**
@@ -67,4 +68,4 @@ export function ProfileComponent({ profile, onNavigate }: ProfileComponentProps)
       </main>
     </div>
   );
-}
+});

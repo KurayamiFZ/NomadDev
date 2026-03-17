@@ -66,34 +66,32 @@ export async function GET(
 
     let user: UserRow | null = null;
 
-    // 1️⃣ Dedicated username column (fastest, preferred)
-    {
-      const { data, error } = await supabase
-        .from("users")
-        .select("*")
-        .eq("username", username)
-        .single();
-      if (!error && data) user = data;
-    }
+    // Single optimized query with multiple conditions
+    const { data, error } = await supabase
+      .from("users")
+      .select("*")
+      .or(`username.eq.${username},id.eq.${username},id.eq.${Number(username)}`)
+      .limit(1)
+      .single();
 
-    // 2️⃣ UUID
-    if (!user && UUID_REGEX.test(username)) {
-      const { data, error } = await supabase
+    if (!error && data) {
+      user = data;
+    } else if (UUID_REGEX.test(username)) {
+      // Fallback for UUID if needed
+      const { data: uuidData, error: uuidError } = await supabase
         .from("users")
         .select("*")
         .eq("id", username)
         .single();
-      if (!error && data) user = data;
-    }
-
-    // 3️⃣ Integer ID
-    if (!user && /^\d+$/.test(username)) {
-      const { data, error } = await supabase
+      if (!uuidError && uuidData) user = uuidData;
+    } else if (/^\d+$/.test(username)) {
+      // Fallback for integer ID if needed
+      const { data: intData, error: intError } = await supabase
         .from("users")
         .select("*")
         .eq("id", Number(username))
         .single();
-      if (!error && data) user = data;
+      if (!intError && intData) user = intData;
     }
 
     if (!user) {

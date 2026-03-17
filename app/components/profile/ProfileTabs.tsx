@@ -13,7 +13,7 @@
 
 "use client";
 
-import { useState } from "react";
+import { useState, memo } from "react";
 import { UserProfile } from "@/lib/types";
 import { OverviewTab } from "./tabs/OverviewTab";
 import { ProjectsTab } from "./tabs/ProjectsTab";
@@ -32,7 +32,7 @@ interface ProfileTabsProps {
  * Manages tab state and renders appropriate content based on active tab.
  * Provides responsive tab navigation with visual indicators.
  */
-export function ProfileTabs({ profile, onNavigate }: ProfileTabsProps) {
+export const ProfileTabs = memo(function ProfileTabs({ profile, onNavigate }: ProfileTabsProps) {
   const [activeTab, setActiveTab] = useState("overview");
 
   const tabs = [
@@ -43,6 +43,24 @@ export function ProfileTabs({ profile, onNavigate }: ProfileTabsProps) {
     { id: "skills", label: "Skills" },
   ];
 
+  // Memoized tab content to prevent unnecessary re-renders
+  const renderTabContent = () => {
+    switch (activeTab) {
+      case "overview":
+        return <OverviewTab profile={profile} onNavigate={onNavigate} />;
+      case "projects":
+        return <ProjectsTab projects={profile.projects} />;
+      case "badges":
+        return <BadgesTab badges={profile.badges} />;
+      case "activity":
+        return <ActivityTab activities={profile.activities} />;
+      case "skills":
+        return <SkillsTab skills={profile.skills} />;
+      default:
+        return <OverviewTab profile={profile} onNavigate={onNavigate} />;
+    }
+  };
+
   return (
     <div className="bg-gray-900 rounded-2xl w-11/12 max-w-6xl mt-8 overflow-hidden border border-gray-800">
       {/* Tab Navigation */}
@@ -52,34 +70,20 @@ export function ProfileTabs({ profile, onNavigate }: ProfileTabsProps) {
         onTabChange={setActiveTab} 
       />
 
-      {/* Tab Content */}
+      {/* Tab Content - Only render active tab */}
       <div className="p-4 sm:p-6">
-        {activeTab === "overview" && (
-          <OverviewTab profile={profile} onNavigate={onNavigate} />
-        )}
-        {activeTab === "projects" && (
-          <ProjectsTab projects={profile.projects} />
-        )}
-        {activeTab === "badges" && (
-          <BadgesTab badges={profile.badges} />
-        )}
-        {activeTab === "activity" && (
-          <ActivityTab activities={profile.activities} />
-        )}
-        {activeTab === "skills" && (
-          <SkillsTab skills={profile.skills} />
-        )}
+        {renderTabContent()}
       </div>
     </div>
   );
-}
+});
 
 /**
  * Tab Navigation Component
  * 
  * Renders the tab buttons with active state styling.
  */
-function TabNavigation({ 
+const TabNavigation = memo(function TabNavigation({ 
   tabs, 
   activeTab, 
   onTabChange 
@@ -105,4 +109,4 @@ function TabNavigation({
       ))}
     </div>
   );
-}
+});

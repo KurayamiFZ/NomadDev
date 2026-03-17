@@ -12,6 +12,7 @@
 
 "use client";
 
+import { memo } from "react";
 import { Award } from "lucide-react";
 import { UserProfile } from "@/lib/types";
 import { IconRenderer } from "./IconRenderer";
@@ -26,7 +27,7 @@ interface ProfileStatusCardsProps {
  * Renders a responsive grid of status cards showing user statistics.
  * Each card displays an icon, value, title, and subtitle.
  */
-export function ProfileStatusCards({ stats }: ProfileStatusCardsProps) {
+export const ProfileStatusCards = memo(function ProfileStatusCards({ stats }: ProfileStatusCardsProps) {
   // Handle undefined or null stats
   if (!stats || !Array.isArray(stats)) {
     return (
@@ -45,14 +46,14 @@ export function ProfileStatusCards({ stats }: ProfileStatusCardsProps) {
       ))}
     </div>
   );
-}
+});
 
 /**
  * Individual Status Card Component
  * 
  * Displays a single statistic with icon and details.
  */
-function StatusCard({ status }: { status: UserProfile['stats'][0] }) {
+const StatusCard = memo(function StatusCard({ status }: { status: UserProfile['stats'][0] }) {
   return (
     <div className="flex flex-col justify-center px-6 py-6 bg-gray-900 w-full sm:w-[calc(50%-0.625rem)] lg:w-[calc(25%-0.9375rem)] rounded-2xl border border-gray-800 hover:border-purple-500/50 transition-all">
       <div className="flex flex-row justify-between items-start mb-4">
@@ -70,4 +71,4 @@ function StatusCard({ status }: { status: UserProfile['stats'][0] }) {
       <span className="text-sm text-gray-500 mt-1">{status.subtitle}</span>
     </div>
   );
-}
+});

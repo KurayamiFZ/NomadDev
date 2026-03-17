@@ -420,16 +420,29 @@ export const sampleProfiles: Record<string, UserProfile> = {
   },
 };
 
+// Simple in-memory cache for profile data
+const profileCache = new Map<string, { data: UserProfile; timestamp: number }>();
+const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
+
 /**
- * Get user profile by username from database
+ * Get user profile by username from database with caching
  * In production, this fetches from the database via API
  */
 export async function getUserProfile(
   username: string,
 ): Promise<UserProfile | null> {
   try {
+    // Check cache first
+    const cached = profileCache.get(username);
+    if (cached && Date.now() - cached.timestamp < CACHE_DURATION) {
+      console.log(`Returning cached profile for: ${username}`);
+      return cached.data;
+    }
+
     console.log(`getUserProfile called with username: ${username}`);
-    const response = await fetch(`/api/profile/${username}`);
+    const response = await fetch(`/api/profile/${username}`, {
+      cache: 'no-store', // Prevent Next.js caching since we handle our own
+    });
 
     console.log(`API response status: ${response.status}`);
 
@@ -445,10 +458,25 @@ export async function getUserProfile(
 
     const profile = await response.json();
     console.log("Profile data from API:", profile);
+    
+    // Cache the result
+    profileCache.set(username, { data: profile, timestamp: Date.now() });
+    
     return profile;
   } catch (error) {
     console.error("Error fetching user profile:", error);
     return null;
+  }
+}
+
+/**
+ * Clear profile cache (useful for updates)
+ */
+export function clearProfileCache(username?: string) {
+  if (username) {
+    profileCache.delete(username);
+  } else {
+    profileCache.clear();
   }
 }
 
