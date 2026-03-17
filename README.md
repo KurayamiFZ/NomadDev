@@ -10,6 +10,7 @@ A modern, high-performance web application built with Next.js 16, React 19, and 
 - **Modern UI/UX** - Beautiful dark theme with responsive design
 - **Real-time Data** - Supabase integration for authentication and database
 - **Component Architecture** - Modular, reusable components with TypeScript
+- **Device Detection** - Optimized for desktop and tablet, mobile-friendly messaging
 
 ### Technical Highlights
 - **Optimized Database Queries** - Single-query approach with fallback handling
@@ -116,6 +117,15 @@ app/
 - **Hardware Acceleration**: `will-change` properties for animations
 - **Optimized Transitions**: Reduced transition durations
 - **Smooth Scrolling**: Enhanced scroll behavior
+- **Mobile Detection**: Blur effect and user guidance on mobile devices
+
+### Device Optimization
+- **Desktop/Tablet Only**: Optimized for larger screens and mouse interaction
+- **Mobile Detection**: Automatic detection of mobile devices
+- **iPad Rotation**: Asks iPad users to rotate to landscape mode
+- **User Guidance**: Clear messaging for mobile users to switch to desktop
+- **Blur Effect**: Aesthetically pleasing blur overlay on mobile
+- **Responsive Design**: Adapts to different device orientations
 
 ## 🔧 Development
 

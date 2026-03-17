@@ -159,4 +159,24 @@
   .transition-colors {
     transition: color 0.2s ease, background-color 0.2s ease;
   }
+
+  /* Mobile-specific optimizations */
+  .filter {
+    filter: blur(3xl);
+    -webkit-filter: blur(3xl);
+  }
+
+  .backdrop-blur-xl {
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+  }
+
+  /* Prevent zoom on mobile */
+  @media (max-width: 767px) {
+    body {
+      -webkit-text-size-adjust: 100%;
+      -ms-text-size-adjust: 100%;
+      touch-action: manipulation;
+    }
+  }
 }

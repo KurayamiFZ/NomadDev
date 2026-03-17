@@ -1,8 +1,9 @@
 "use client";
 import { useRouter, usePathname } from "next/navigation";
-import type { ReactNode } from "react";
+import { ReactNode, useState, useEffect } from "react";
 import Footer from "../components/footer";
 import Icon, { type IconName } from "../components/icons";
+import { supabase } from "@/lib/supabaseclient";
 
 const TAB_ICONS: Record<string, IconName> = {
   overview: "LayoutDashboard",
@@ -25,6 +26,28 @@ export default function HomeLayout({ children }: { children: ReactNode }) {
     "achievements",
     "community",
   ];
+  const [achievements, setAchievements] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchAchievements() {
+      const { data, error } = await supabase.from("achievement").select("*");
+
+      if (error) {
+        console.error("Supabase error:", error);
+        return;
+      }
+
+      setAchievements(data || []);
+      setLoading(false);
+    }
+
+    fetchAchievements();
+  }, []);
+
+  const totalXP = achievements
+    .filter((a) => a.unlocked)
+    .reduce((sum, a) => sum + (a.XP || a.XP || 0), 0);
 
   return (
     <div className="flex h-screen w-screen overflow-hidden bg-[#080810] text-white">
@@ -128,13 +151,13 @@ export default function HomeLayout({ children }: { children: ReactNode }) {
           <div className="flex items-center justify-between mb-1.5">
             <span className="text-xs font-bold text-white">Level 4</span>
             <span className="text-[10px] text-purple-400 font-bold">
-              2,340 / 5,000
+              {totalXP} / 5,000
             </span>
           </div>
           <div className="h-1.5 rounded-full bg-white/5 overflow-hidden">
             <div
               className="h-full rounded-full bg-linear-to-r from-purple-500 to-pink-500"
-              style={{ width: "46.8%" }}
+              style={{ width: `${(totalXP / 5000) * 100}%` }}
             />
           </div>
         </div>
