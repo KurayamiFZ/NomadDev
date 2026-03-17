@@ -7,20 +7,22 @@ import { GradientBackground } from "./ui/GradientBackground";
 import { FlexRow } from "./ui/FlexRow";
 import { IconWrapper } from "./ui/IconWrapper";
 import { CheckCircle, Clock, Target } from "lucide-react";
+import Icon from "./icons";
 
 export function CTASection() {
   const router = useRouter();
 
   return (
-    <GradientBackground 
-      variant="purple-pink" 
-      direction="to-r"
-      className="m-8 w-[calc(100%-2rem)] max-w-4xl rounded-2xl p-px sm:mx-6 sm:rounded-3xl"
-    >
-      <section
-        id="pricing"
-        className="flex w-full flex-col items-center gap-5 rounded-2xl bg-black/60 p-6 text-center sm:gap-6 sm:rounded-3xl sm:p-8 lg:gap-8 lg:p-12"
-      >
+    <GradientBackground
+  variant="purple-pink"
+  direction="to-r"
+  overlay="dark"
+  className="m-8 w-[calc(100%-2rem)] border-2 max-w-4xl rounded-3xl p-px overflow-hidden"
+>
+  <section
+    id="pricing"
+    className="flex w-full flex-col items-center gap-5 rounded-3xl p-6 text-center sm:gap-6 sm:p-8 lg:gap-8 lg:p-12"
+  >
         <Heading size="2xl" className="sm:text-3xl lg:text-5xl">
           Ready to Start Your Journey?
         </Heading>
@@ -31,21 +33,15 @@ export function CTASection() {
         </p>
 
         <FlexRow className="w-full flex-col gap-3 sm:w-auto sm:flex-row sm:gap-4">
-          <Button
-            size="lg"
-            className="w-full bg-foreground text-purple-900 hover:bg-foreground/90 sm:w-auto"
-            onClick={() => router.push("/curriculum")}
-          >
-            Enroll Now - $299
-          </Button>
 
           <Button
             size="lg"
             variant="outline"
-            className="w-full border-foreground/50 bg-transparent text-foreground hover:bg-foreground/10 sm:w-auto"
+            className="group w-full flex items-center gap-2 border-white/20 bg-white/5 text-white/80 hover:bg-white/10 hover:text-white sm:w-auto"
             onClick={() => router.push("/curriculum")}
           >
             View Full Curriculum
+            <Icon name="ArrowRight" className="h-4 w-4 transition-transform group-hover:translate-x-1" />
           </Button>
         </FlexRow>
 

@@ -6,7 +6,7 @@ export function StatsSection() {
       {STATS.map((stat: Stat) => (
         <div
           key={stat.label}
-          className="flex flex-col items-center justify-center rounded-xl border border-border bg-linear-to-b from-secondary/50 to-black p-4 text-center sm:rounded-2xl sm:p-6"
+          className="flex flex-col items-center justify-center rounded-xl bg-linear-to-b from-secondary/50 to-black p-4 text-center sm:p-6"
         >
           <span className="text-2xl font-extrabold text-purple-400 sm:text-3xl">
             {stat.value}

@@ -3,6 +3,7 @@
 import { useRouter, usePathname } from "next/navigation";
 import type { ReactNode } from "react";
 import Footer from "../components/footer";
+import Icon from "../components/icons";
 
 export default function HomeLayout({ children }: { children: ReactNode }) {
   const router = useRouter();
@@ -45,19 +46,12 @@ export default function HomeLayout({ children }: { children: ReactNode }) {
       {/* RIGHT SIDE */}
       <div className="flex flex-col flex-1 h-full overflow-hidden">
         {/* HEADER (NON-SCROLLING) */}
-        <header className="h-25 shrink-0 bg-gray-900 border-b border-gray-700 px-8 flex items-center justify-between">
-          <div className="flex items-center h-10 w-70 bg-black border border-gray-700 rounded-xl">
-            <textarea
-              placeholder="Search"
-              className="ml-4 w-full h-full outline-none text-lg text-white resize-none bg-transparent"
-            />
-          </div>
-
+        <header className="h-25 shrink-0 bg-gray-900 border-b border-gray-700 px-8 flex items-center justify-end">
           <button
-            className="w-25 h-15 bg-gray-800 border border-gray-700 rounded-xl flex items-center justify-center hover:bg-gray-700 text-white font-semibold text-xl"
+            className="p-4 bg-gray-800 border border-gray-700 rounded-xl flex items-center justify-center hover:bg-gray-700 text-white font-semibold text-xl"
             onClick={() => router.push("/profile")}
           >
-            Kura
+            <Icon name="User" className="size-7 text-white"/>
           </button>
         </header>
 

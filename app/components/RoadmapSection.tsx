@@ -25,7 +25,7 @@ export function RoadmapSection() {
               </span>
             </div>
 
-            <div className="flex-1 overflow-hidden rounded-xl border border-border bg-linear-to-r from-secondary/80 to-black sm:rounded-2xl">
+            <div className="flex-1 overflow-hidden rounded-xl bg-linear-to-r from-secondary/80 to-black">
               <div className="p-4 sm:p-6 lg:p-8">
                 <span
                   className={`bg-linear-to-r ${phase.gradient} bg-clip-text text-xs font-bold text-transparent sm:text-sm`}
