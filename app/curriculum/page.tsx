@@ -68,7 +68,7 @@ export default function Curriculum() {
 
           {/* Free — slightly inset vertically to let Basic/Premium feel elevated */}
           <div className="md:pt-6">
-            <NavigationLink to="/login" className="w-full">
+            <NavigationLink href="/login" className="w-full">
               <PlanCard
                 title="Free"
                 price="$0"
@@ -76,6 +76,7 @@ export default function Curriculum() {
                 features={freeFeatures}
                 variant="free"
                 className="h-full w-full"
+                buttonText="Get started for free"
               />
             </NavigationLink>
           </div>

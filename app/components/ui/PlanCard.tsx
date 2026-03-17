@@ -13,6 +13,7 @@ interface PlanCardProps {
   buttonText?: string;
   children?: ReactNode;
   className?: string;
+  showButton?: boolean;
 }
 
 export function PlanCard({
@@ -26,6 +27,7 @@ export function PlanCard({
   buttonText = "Get started",
   children,
   className,
+  showButton = true,
 }: PlanCardProps) {
   const isPremium = variant === "premium";
   const isFree = variant === "free";
@@ -131,27 +133,29 @@ export function PlanCard({
 
         {children}
 
-        {/* CTA Button */}
-        <button
-          onClick={onSelect}
-          className={cn(
-            "relative w-full h-12 rounded-xl text-sm font-semibold tracking-wide transition-all duration-300 overflow-hidden",
-            "active:scale-[0.98]",
-            isPremium
-              ? "bg-black text-white hover:bg-black/85"
-              : isFree
-              ? "bg-white/5 text-white/60 border border-white/8 hover:bg-white/10 hover:text-white/80"
-              : "bg-white text-black hover:bg-white/90"
-          )}
-        >
-          {/* Subtle sheen on hover */}
-          <span className={cn(
-            "absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500",
-            "bg-linear-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full",
-            "transition-transform duration-700"
-          )} />
-          <span className="relative z-10">{buttonText}</span>
-        </button>
+        {/* CTA Button - Only show if showButton is true */}
+        {showButton && (
+          <button
+            onClick={onSelect}
+            className={cn(
+              "relative w-full h-12 rounded-xl text-sm font-semibold tracking-wide transition-all duration-300 overflow-hidden",
+              "active:scale-[0.98]",
+              isPremium
+                ? "bg-black text-white hover:bg-black/85"
+                : isFree
+                ? "bg-white/5 text-white/60 border border-white/8 hover:bg-white/10 hover:text-white/80"
+                : "bg-white text-black hover:bg-white/90"
+            )}
+          >
+            {/* Subtle sheen on hover */}
+            <span className={cn(
+              "absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500",
+              "bg-linear-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full",
+              "transition-transform duration-700"
+            )} />
+            <span className="relative z-10">{buttonText}</span>
+          </button>
+        )}
       </div>
     </div>
   );
