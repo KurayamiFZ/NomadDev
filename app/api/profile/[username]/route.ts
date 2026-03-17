@@ -1,204 +1,235 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextRequest, NextResponse } from "next/server";
+import { cookies } from "next/headers";
+
+const UUID_REGEX =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+type UserRow = {
+  id: string | number;
+  username?: string;
+  name?: string;
+  email?: string;
+  role?: string;
+  level?: string;
+  age?: number;
+  location?: string;
+  created_at?: string;
+};
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: Promise<{ username: string }> }
+  { params }: { params: Promise<{ username: string }> },
 ) {
-  console.log('=== PROFILE API CALLED ===');
-  console.log('Full request URL:', request.url);
-  
-  try {
-    const resolvedParams = await params;
-    const username = resolvedParams.username;
-    console.log('Username parameter:', username);
-    console.log(`Fetching profile for username: ${username}`);
+  const { username } = await params;
 
-    // Check environment variables
-    if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
-      console.error('Missing Supabase environment variables');
+  try {
+    if (
+      !process.env.NEXT_PUBLIC_SUPABASE_URL ||
+      !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+    ) {
       return NextResponse.json(
-        { error: 'Database configuration missing' },
-        { status: 500 }
+        { error: "Database configuration missing" },
+        { status: 500 },
       );
     }
 
-    console.log('Creating Supabase client...');
+    const cookieStore = await cookies();
+
     const supabase = createServerClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
       {
         cookies: {
-          getAll() { return []; },
-          setAll() { /* no-op */ },
+          getAll() {
+            return cookieStore.getAll();
+          },
+          setAll(
+            cookiesToSet: { name: string; value: string; options?: object }[],
+          ) {
+            cookiesToSet.forEach(({ name, value, options }) => {
+              cookieStore.set(
+                name,
+                value,
+                options as Parameters<typeof cookieStore.set>[2],
+              );
+            });
+          },
         },
       },
     );
 
-    // Try multiple approaches to find the user
-    let user = null;
-    let searchMethod = '';
+    // Determine the authenticated user for isOwnProfile check
+    const {
+      data: { user: authUser },
+    } = await supabase.auth.getUser();
 
-    // Method 1: Try as UUID (for Supabase auth IDs)
-    if (username.includes('-') && username.length === 36) {
-      console.log(`Trying UUID search for: ${username}`);
-      const { data: uuidUser, error: uuidError } = await supabase
-        .from('users')
-        .select('*')
-        .eq('id', username)
+    let user: UserRow | null = null;
+
+    // 1️⃣ Dedicated username column (fastest, preferred)
+    {
+      const { data, error } = await supabase
+        .from("users")
+        .select("*")
+        .eq("username", username)
         .single();
-      
-      console.log('UUID search result:', { uuidUser, uuidError });
-      
-      if (!uuidError && uuidUser) {
-        user = uuidUser;
-        searchMethod = 'UUID';
-      }
+      if (!error && data) user = data;
     }
 
-    // Method 2: Try as integer ID
-    if (!user && !isNaN(parseInt(username))) {
-      console.log(`Trying integer ID search for: ${username}`);
-      const { data: idUser, error: idError } = await supabase
-        .from('users')
-        .select('*')
-        .eq('id', parseInt(username))
+    // 2️⃣ UUID
+    if (!user && UUID_REGEX.test(username)) {
+      const { data, error } = await supabase
+        .from("users")
+        .select("*")
+        .eq("id", username)
         .single();
-      
-      console.log('Integer ID search result:', { idUser, idError });
-      
-      if (!idError && idUser) {
-        user = idUser;
-        searchMethod = 'integer_ID';
-      }
+      if (!error && data) user = data;
     }
 
-    // Method 3: Try as email prefix if ID searches failed
-    if (!user) {
-      console.log(`Trying email prefix search for: ${username}`);
-      const { data: emailUser, error: emailError } = await supabase
-        .from('users')
-        .select('*')
-        .like('email', `${username}@%`)
-        .limit(1);
-      
-      console.log('Email prefix search result:', { emailUser, emailError });
-      
-      if (!emailError && emailUser && emailUser.length > 0) {
-        user = emailUser[0];
-        searchMethod = 'email_prefix';
-      }
-    }
-
-    // Method 4: Try exact email match if other methods failed
-    if (!user) {
-      console.log(`Trying exact email search for: ${username}`);
-      const { data: exactEmailUser, error: exactEmailError } = await supabase
-        .from('users')
-        .select('*')
-        .eq('email', username)
+    // 3️⃣ Integer ID
+    if (!user && /^\d+$/.test(username)) {
+      const { data, error } = await supabase
+        .from("users")
+        .select("*")
+        .eq("id", Number(username))
         .single();
-      
-      console.log('Exact email search result:', { exactEmailUser, exactEmailError });
-      
-      if (!exactEmailError && exactEmailUser) {
-        user = exactEmailUser;
-        searchMethod = 'exact_email';
-      }
-    }
-
-    // Method 5: Try as name/email prefix if other methods failed
-    if (!user) {
-      console.log(`Trying name search for: ${username}`);
-      const { data: nameUser, error: nameError } = await supabase
-        .from('users')
-        .select('*')
-        .ilike('name', `%${username}%`) // Use ilike for case-insensitive partial match
-        .limit(1);
-      
-      console.log('Name search result:', { nameUser, nameError });
-      
-      if (!nameError && nameUser && nameUser.length > 0) {
-        user = nameUser[0];
-        searchMethod = 'name_partial';
-      }
+      if (!error && data) user = data;
     }
 
     if (!user) {
-      console.error('User not found with any method');
+      // If user not found in database, check if they exist in auth but haven't created a profile yet
+      const { data: authUser } = await supabase.auth.getUser();
+      
+      if (authUser.user && (String(authUser.user.id) === username || authUser.user.email === username)) {
+        // User exists in auth but not in database, create a basic profile
+        const basicProfile = {
+          username: authUser.user.email?.split("@")[0] || String(authUser.user.id),
+          displayName: authUser.user.email?.split("@")[0] || "New User",
+          email: authUser.user.email,
+          bio: "Game developer passionate about learning and creating amazing experiences.",
+          avatarInitial: authUser.user.email?.charAt(0).toUpperCase() || "U",
+          rank: "Beginner",
+          location: "Not specified",
+          joinDate: authUser.user.created_at
+            ? new Date(authUser.user.created_at).toLocaleDateString("en-US", {
+                month: "long",
+                year: "numeric",
+              })
+            : "Unknown",
+          website: "",
+          github: "",
+          linkedin: "",
+          twitter: "",
+          isOwnProfile: true,
+          stats: [
+            {
+              value: "0",
+              title: "Lessons Completed",
+              subtitle: "Just getting started",
+              icon: "BookOpen",
+            },
+            {
+              value: "1",
+              title: "Days Streak",
+              subtitle: "Welcome aboard!",
+              icon: "Flame",
+            },
+            {
+              value: "0",
+              title: "Games Built",
+              subtitle: "Your first game awaits",
+              icon: "Gamepad2",
+            },
+            {
+              value: "0h",
+              title: "Learning Time",
+              subtitle: "Start your journey",
+              icon: "Clock",
+            },
+          ],
+          projects: [],
+          badges: [],
+          activities: [],
+          skills: [],
+        };
+
+        return NextResponse.json(basicProfile);
+      }
+
       return NextResponse.json(
-        { 
-          error: 'User not found', 
-          username,
-          searchMethods: ['UUID', 'integer_ID', 'email_prefix', 'exact_email', 'name']
-        },
-        { status: 404 }
+        { error: "User not found", username },
+        { status: 404 },
       );
     }
 
-    console.log(`User found using method: ${searchMethod}`, user);
+    const isOwnProfile =
+      authUser != null && String(authUser.id) === String(user.id);
 
-    // Transform database user to profile format with safe defaults
     const profile = {
-      username: user.id, // Use the actual ID (UUID or integer)
-      displayName: user.name || (user.email ? user.email.split('@')[0] : 'Unknown User'),
-      email: user.email, // Add email field
-      bio: user.role ? `User with role: ${user.role}` : 'Game Developer',
-      avatarInitial: user.name ? user.name.charAt(0).toUpperCase() : (user.email ? user.email.charAt(0).toUpperCase() : 'U'),
-      rank: user.level || 'Beginner',
-      location: user.email || 'Not specified',
-      joinDate: user.created_at ? new Date(user.created_at).toLocaleDateString('en-US', { month: 'long', year: 'numeric' }) : 'Unknown',
-      website: '',
-      github: '',
-      linkedin: '',
-      twitter: '',
-      isOwnProfile: false,
+      username: user.username ?? String(user.id),
+      displayName: user.name ?? user.email?.split("@")[0] ?? "Unknown User",
+      // Only expose email to the profile owner
+      ...(isOwnProfile ? { email: user.email } : {}),
+      bio: user.role ? `User with role: ${user.role}` : "Game Developer",
+      avatarInitial:
+        user.name?.charAt(0).toUpperCase() ??
+        user.email?.charAt(0).toUpperCase() ??
+        "U",
+      rank: user.level ?? "Beginner",
+      location: user.location ?? "Not specified",
+      joinDate: user.created_at
+        ? new Date(user.created_at).toLocaleDateString("en-US", {
+            month: "long",
+            year: "numeric",
+          })
+        : "Unknown",
+      website: "",
+      github: "",
+      linkedin: "",
+      twitter: "",
+      isOwnProfile,
       stats: [
         {
-          value: user.age ? user.age.toString() : 'N/A',
+          value: user.age?.toString() ?? "N/A",
           title: "Age",
           subtitle: "Years old",
           icon: "User",
         },
         {
-          value: user.level || 'Beginner',
+          value: user.level ?? "Beginner",
           title: "Level",
           subtitle: "Current rank",
           icon: "Trophy",
         },
         {
-          value: user.role || 'Member',
+          value: user.role ?? "Member",
           title: "Role",
           subtitle: "User role",
           icon: "Shield",
         },
         {
-          value: user.created_at ? new Date(user.created_at).toLocaleDateString() : 'Unknown',
+          value: user.created_at
+            ? new Date(user.created_at).toLocaleDateString()
+            : "Unknown",
           title: "Joined",
           subtitle: "Member since",
           icon: "Calendar",
         },
       ],
-      projects: [], // Empty since no project data in database
-      badges: [], // Empty since no badge data in database
-      activities: [], // Empty since no activity data in database
-      skills: [], // Empty since no skills data in database
+      projects: [],
+      badges: [],
+      activities: [],
+      skills: [],
     };
 
-    console.log(`Successfully created profile for ${username} using ${searchMethod}`);
     return NextResponse.json(profile);
-
   } catch (error) {
-    console.error('Unexpected error in profile API:', error);
-    const resolvedParams = await params;
-    const username = resolvedParams.username;
     return NextResponse.json(
-      { 
-        error: 'Internal server error', 
-        details: error instanceof Error ? error.message : 'Unknown error',
-        username: username
+      {
+        error: "Internal server error",
+        details: error instanceof Error ? error.message : "Unknown error",
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

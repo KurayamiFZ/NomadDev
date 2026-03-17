@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabaseclient";
 import { useRouter } from "next/navigation";
 
@@ -22,6 +22,7 @@ export default function Auther() {
   const [error, setError] = useState("");
   const [successMsg, setSuccessMsg] = useState("");
   const [name, setName] = useState("");
+  const [username, setUsername] = useState("");
   const [level, setLevel] = useState("");
 
   // Sign-up only fields
@@ -45,6 +46,22 @@ export default function Auther() {
         setError("Date of birth is required.");
         return;
       }
+      if (!username.trim()) {
+        setError("Username is required.");
+        return;
+      }
+      if (username.length < 3) {
+        setError("Username must be at least 3 characters long.");
+        return;
+      }
+      if (usernameAvailable === false) {
+        setError("Username is already taken. Please choose a different one.");
+        return;
+      }
+      if (usernameAvailable === null) {
+        setError("Please wait for username validation to complete.");
+        return;
+      }
 
       setLoading(true);
       const { data, error: signUpError } = await supabase.auth.signUp({
@@ -60,9 +77,23 @@ export default function Auther() {
         const birthYear = new Date(dob).getFullYear();
         const age = new Date().getFullYear() - birthYear;
 
+        // Double-check username availability before insertion
+        try {
+          const checkRes = await fetch(`/api/check-username?username=${encodeURIComponent(username.trim())}`);
+          const checkData = await checkRes.json();
+          
+          if (!checkData.available) {
+            setError("Username was taken by another user. Please choose a different one.");
+            return;
+          }
+        } catch (error) {
+          console.error("Failed to re-check username:", error);
+        }
+
         const { error: insertError } = await supabase.from("users").insert({
           id: data.user.id,
           name: name,
+          username: username.trim(), // Ensure trimmed username
           email: email,
           age: age,
           level: level,
@@ -70,14 +101,20 @@ export default function Auther() {
         });
 
         if (insertError) {
-          setError(
-            "Account created but profile save failed: " + insertError.message,
-          );
+          console.error("Profile insert error:", insertError);
+          if (insertError.message.includes("duplicate key") || insertError.message.includes("unique constraint")) {
+            setError("Username became unavailable. Please try a different username.");
+          } else {
+            setError(
+              "Account created but profile save failed: " + insertError.message,
+            );
+          }
         } else {
           setSuccessMsg("Account created! Please sign in.");
           setPassword("");
           setConfirmPassword("");
           setName("");
+          setUsername("");
           setDob("");
           setIsSignUp(false);
         }
@@ -98,6 +135,45 @@ export default function Auther() {
     setLoading(false);
   };
 
+  const [usernameAvailable, setUsernameAvailable] = useState<boolean | null>(null);
+  const [usernameError, setUsernameError] = useState("");
+
+  useEffect(() => {
+    const checkUsername = async () => {
+      if (!username.trim()) {
+        setUsernameAvailable(null);
+        setUsernameError("");
+        return;
+      }
+
+      if (username.length < 3) {
+        setUsernameAvailable(false);
+        setUsernameError("Username must be at least 3 characters long");
+        return;
+      }
+
+      try {
+        const res = await fetch(`/api/check-username?username=${encodeURIComponent(username.trim())}`);
+        const data = await res.json();
+        
+        if (!res.ok) {
+          setUsernameAvailable(false);
+          setUsernameError(data.error || "Failed to check username");
+          return;
+        }
+
+        setUsernameAvailable(data.available);
+        setUsernameError(data.available ? "" : data.message || "Username is already taken");
+      } catch (error) {
+        setUsernameAvailable(false);
+        setUsernameError("Network error checking username");
+      }
+    };
+
+    const timeoutId = setTimeout(checkUsername, 300); // Debounce
+    return () => clearTimeout(timeoutId);
+  }, [username]);
+
   const switchMode = () => {
     setIsSignUp(!isSignUp);
     setError("");
@@ -105,7 +181,10 @@ export default function Auther() {
     setPassword("");
     setConfirmPassword("");
     setName("");
+    setUsername("");
     setDob("");
+    setUsernameAvailable(null);
+    setUsernameError("");
   };
 
   const inputClass =
@@ -136,9 +215,32 @@ export default function Auther() {
               <label className={labelClass}>Username</label>
               <input
                 type="text"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                placeholder="Enter Your Username"
+                className={`${inputClass} ${
+                  usernameAvailable === false ? 'border-red-500' : 
+                  usernameAvailable === true ? 'border-green-500' : 
+                  ''
+                }`}
+              />
+              {usernameError && (
+                <p className="text-xs mt-1 text-red-400">{usernameError}</p>
+              )}
+              {usernameAvailable === true && (
+                <p className="text-xs mt-1 text-green-400">Username is available!</p>
+              )}
+            </div>
+          )}
+
+          {isSignUp && (
+            <div className="mb-6">
+              <label className={labelClass}>Display name</label>
+              <input
+                type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder="John Doe"
+                placeholder="Enter Your Display Name"
                 className={inputClass}
               />
             </div>

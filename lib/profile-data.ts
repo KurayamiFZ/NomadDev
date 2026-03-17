@@ -1,20 +1,27 @@
 /**
  * Profile Data - GameDev Academy Platform
- * 
+ *
  * This file contains sample user profile data for demonstration purposes.
  * In a real application, this data would come from a database or API.
- * 
+ *
  * @fileoverview Sample user profiles for the profile system
  */
 
-import { UserProfile, ProfileProject, ProfileBadge, ProfileActivity, ProfileSkill, ProfileStatus } from "./types";
+import {
+  UserProfile,
+  ProfileProject,
+  ProfileBadge,
+  ProfileActivity,
+  ProfileSkill,
+  ProfileStatus,
+} from "./types";
 
 /**
  * Sample user profiles for demonstration
  * In production, these would come from your database/API
  */
 export const sampleProfiles: Record<string, UserProfile> = {
-  kurayami: {
+  user: {
     username: "kurayami",
     displayName: "Kurayami",
     email: "kurayami@example.com",
@@ -57,7 +64,8 @@ export const sampleProfiles: Record<string, UserProfile> = {
     projects: [
       {
         name: "Space Shooter 2D",
-        description: "Classic arcade-style space shooter with power-ups and boss battles",
+        description:
+          "Classic arcade-style space shooter with power-ups and boss battles",
         tags: ["Unity", "C#", "Pixel Art"],
         likes: 234,
         views: 1205,
@@ -66,7 +74,8 @@ export const sampleProfiles: Record<string, UserProfile> = {
       },
       {
         name: "Platformer Adventure",
-        description: "Retro platformer with smooth movement and challenging levels",
+        description:
+          "Retro platformer with smooth movement and challenging levels",
         tags: ["Unity", "C#", "2D animation"],
         likes: 189,
         views: 892,
@@ -159,7 +168,7 @@ export const sampleProfiles: Record<string, UserProfile> = {
       { name: "Physics System", percent: 60 },
     ],
   },
-  
+
   alexchen: {
     username: "alexchen",
     displayName: "Alex Chen",
@@ -291,7 +300,7 @@ export const sampleProfiles: Record<string, UserProfile> = {
       { name: "Mobile Dev", percent: 88 },
     ],
   },
-  
+
   sarahmartinez: {
     username: "sarahmartinez",
     displayName: "Sarah Martinez",
@@ -415,28 +424,30 @@ export const sampleProfiles: Record<string, UserProfile> = {
  * Get user profile by username from database
  * In production, this fetches from the database via API
  */
-export async function getUserProfile(username: string): Promise<UserProfile | null> {
+export async function getUserProfile(
+  username: string,
+): Promise<UserProfile | null> {
   try {
     console.log(`getUserProfile called with username: ${username}`);
     const response = await fetch(`/api/profile/${username}`);
-    
+
     console.log(`API response status: ${response.status}`);
-    
+
     if (!response.ok) {
       if (response.status === 404) {
-        console.log('User not found (404)');
+        console.log("User not found (404)");
         return null; // User not found
       }
       const errorText = await response.text();
       console.error(`API error (${response.status}): ${errorText}`);
       throw new Error(`Failed to fetch profile: ${response.status}`);
     }
-    
+
     const profile = await response.json();
-    console.log('Profile data from API:', profile);
+    console.log("Profile data from API:", profile);
     return profile;
   } catch (error) {
-    console.error('Error fetching user profile:', error);
+    console.error("Error fetching user profile:", error);
     return null;
   }
 }
@@ -445,8 +456,13 @@ export async function getUserProfile(username: string): Promise<UserProfile | nu
  * Get list of all users for discovery
  * In production, this would come from your user database
  */
-export function getAllUsers(): Array<{ username: string; displayName: string; rank: string; email: string }> {
-  return Object.values(sampleProfiles).map(profile => ({
+export function getAllUsers(): Array<{
+  username: string;
+  displayName: string;
+  rank: string;
+  email: string;
+}> {
+  return Object.values(sampleProfiles).map((profile) => ({
     username: profile.username,
     displayName: profile.displayName,
     rank: profile.rank,
