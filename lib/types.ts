@@ -45,7 +45,7 @@ export interface Lesson {
 
 /**
  * Achievement interface for gamification elements
- * Represents unlockable achievements with XP rewards
+ * Represents unlockable achievements with xp rewards
  */
 export interface Achievement {
   /** Unique achievement identifier */
@@ -242,6 +242,8 @@ export interface ProfileStatus {
  * Complete user profile data
  */
 export interface UserProfile {
+  /** Unique user ID (UUID) */
+  id: string;
   /** Unique username */
   username: string;
   /** Display name */

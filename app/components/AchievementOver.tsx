@@ -101,7 +101,7 @@ export function AchievementOver({
           {overachievement.title}
         </h3>
 
-        {/* XP Reward and Expand Button */}
+        {/* xp Reward and Expand Button */}
         <FlexRow justify="between" align="center">
 
           {/* Expand Button */}

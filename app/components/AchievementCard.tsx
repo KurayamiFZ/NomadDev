@@ -133,14 +133,14 @@ export function AchievementCard({
             />
           )}
 
-        {/* XP Reward and Expand Button */}
+        {/* xp Reward and Expand Button */}
         <FlexRow justify="between" align="center">
           <StatusBadge 
             variant={achievement.unlocked ? "warning" : "default"}
             size="sm"
             icon={Star}
           >
-            +{achievement.xpReward} XP
+            +{achievement.xpReward} xp
           </StatusBadge>
 
           {/* Expand Button */}

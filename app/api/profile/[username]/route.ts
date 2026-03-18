@@ -5,6 +5,95 @@ import { cookies } from "next/headers";
 const UUID_REGEX =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
+// Type definitions for database rows
+interface UserAchievementRow {
+  id: number;
+  user_id: string;
+  achievement_id: number;
+  unlocked_at: string;
+  created_at: string;
+}
+
+interface AchievementRow {
+  id: number;
+  icon: string;
+  title: string;
+  description: string;
+  rarity: string;
+  tier: number;
+  xp: number;
+  unlocked: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+/**
+ * Get user's badges/achievements from database
+ */
+async function getUserBadges(supabase: any, userId: string) {
+  try {
+    // Get user's unlocked achievements with achievement details
+    const { data: userAchievements, error } = await supabase
+      .from("user_achievements")
+      .select(`
+        *,
+        achievement:achievement_id(*)
+      `)
+      .eq("user_id", userId)
+      .order("unlocked_at", { ascending: false });
+
+    if (error) {
+      console.error("Error fetching user achievements:", error);
+      return [];
+    }
+
+    // Get all achievements to determine which ones are locked
+    const { data: allAchievements, error: allAchievementsError } = await supabase
+      .from("achievement")
+      .select("*")
+      .order("tier", { ascending: true });
+
+    if (allAchievementsError) {
+      console.error("Error fetching all achievements:", allAchievementsError);
+      return [];
+    }
+
+    // Create a map of unlocked achievement IDs
+    const unlockedAchievementIds = new Set(
+      (userAchievements as UserAchievementRow[])?.map((ua: UserAchievementRow) => ua.achievement_id) || []
+    );
+
+    // Transform achievements into badge format
+    const badges = (allAchievements as AchievementRow[])?.map((achievement: AchievementRow) => {
+      const userAchievement = (userAchievements as UserAchievementRow[])?.find((ua: UserAchievementRow) => ua.achievement_id === achievement.id);
+      const isUnlocked = unlockedAchievementIds.has(achievement.id);
+
+      return {
+        title: achievement.title,
+        description: achievement.description,
+        date: userAchievement?.unlocked_at 
+          ? new Date(userAchievement.unlocked_at).toLocaleDateString("en-US", {
+              month: "short",
+              day: "numeric", 
+              year: "numeric"
+            })
+          : "",
+        earned: isUnlocked,
+        icon: achievement.icon || "🏆",
+        achievementId: achievement.id,
+        tier: achievement.tier,
+        xpReward: achievement.xp || 0,
+        unlockedAt: userAchievement?.unlocked_at
+      };
+    }) || [];
+
+    return badges;
+  } catch (error) {
+    console.error("Error in getUserBadges:", error);
+    return [];
+  }
+}
+
 type UserRow = {
   id: string | number;
   username?: string;
@@ -164,7 +253,8 @@ export async function GET(
       authUser != null && String(authUser.id) === String(user.id);
 
     const profile = {
-      username: user.username ?? String(user.id),
+      id: String(user.id),
+      username: user.username || username,
       displayName: user.name ?? user.email?.split("@")[0] ?? "Unknown User",
       // Only expose email to the profile owner
       ...(isOwnProfile ? { email: user.email } : {}),
@@ -215,7 +305,7 @@ export async function GET(
         },
       ],
       projects: [],
-      badges: [],
+      badges: await getUserBadges(supabase, String(user.id)),
       activities: [],
       skills: [],
     };

@@ -75,9 +75,9 @@ export default function AchievementsEnhanced() {
 
   const unlockedCount = achievements.filter((a) => a.unlocked).length;
   const totalCount = achievements.length;
-  const totalXP = achievements
+  const totalxp = achievements
     .filter((a) => a.unlocked)
-    .reduce((sum, a) => sum + (a.XP || a.XP || 0), 0);
+    .reduce((sum, a) => sum + (a.xp || a.xpReward || 0), 0);
 
   const filteredAchievements = achievements.filter((a) => {
     const matchesSearch = a.title
@@ -156,7 +156,7 @@ export default function AchievementsEnhanced() {
                         className="size-5 text-purple-400"
                       />
                       <span className="font-bold text-purple-400">
-                        {totalXP.toLocaleString()} XP
+                        {totalxp.toLocaleString()} xp
                       </span>
                     </div>
                   </div>
@@ -197,8 +197,8 @@ export default function AchievementsEnhanced() {
                       <span className="text-yellow-400 font-medium">
                         +
                         {achievements.find((a) => a.unlocked && a.tier >= 3)
-                          ?.XP || 500}{" "}
-                        XP
+                          ?.xp || 500}{" "}
+                        xp
                       </span>
                       <span className="text-gray-400">
                         Tier{" "}
@@ -327,7 +327,7 @@ export default function AchievementsEnhanced() {
                         ...achievement,
                         icon: achievement.icon || "🏆",
                         rarity: achievement.tier,
-                        xpReward: achievement.XP || achievement.xpReward || 0,
+                        xpReward: achievement.xp || achievement.xpReward || 0,
                       }}
                       onClick={() =>
                         setExpandedAchievement(
@@ -404,7 +404,7 @@ export default function AchievementsEnhanced() {
                               {achievement.unlocked ? (
                                 <>
                                   <Icon name="Star" className="size-3" />
-                                  {achievement.XP} XP
+                                  {achievement.xp} xp
                                 </>
                               ) : (
                                 <>

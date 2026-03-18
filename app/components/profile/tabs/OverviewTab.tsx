@@ -16,6 +16,8 @@
 import { UserProfile } from "@/lib/types";
 import { ProjectCard } from "../ProjectCard";
 import { BadgeCard } from "../BadgeCard";
+import { useState, useEffect } from "react";
+import { getUserBadges } from "@/lib/achievements";
 
 interface OverviewTabProps {
   profile: UserProfile;
@@ -29,6 +31,30 @@ interface OverviewTabProps {
  * and recent badges. Includes navigation to full views.
  */
 export function OverviewTab({ profile, onNavigate }: OverviewTabProps) {
+  const [userBadges, setUserBadges] = useState<any[]>([]);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (profile.id) {
+      fetchUserBadges();
+    }
+  }, [profile.id]);
+
+  const fetchUserBadges = async () => {
+    if (!profile.id) return;
+    
+    setLoading(true);
+    try {
+      const result = await getUserBadges(profile.id);
+      setUserBadges(result.badges);
+    } catch (error) {
+      console.error('Error fetching user badges:', error);
+      setUserBadges([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="space-y-8">
       {/* Featured Projects Section */}
@@ -71,13 +97,19 @@ export function OverviewTab({ profile, onNavigate }: OverviewTabProps) {
           </button>
         </div>
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          {profile.badges && profile.badges.length > 0 ? (
-            profile.badges.slice(0, 4).map((badge) => (
-              <BadgeCard key={badge.title} badge={badge} />
+          {loading ? (
+            <div className="col-span-full text-center py-8">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-500 mx-auto mb-4"></div>
+              <div className="text-gray-400">Loading badges...</div>
+            </div>
+          ) : userBadges.length > 0 ? (
+            userBadges.slice(0, 4).map((badge) => (
+              <BadgeCard key={badge.achievementId || badge.title} badge={badge} />
             ))
           ) : (
             <div className="col-span-full text-gray-400 text-center py-8">
-              No badges available
+              <div className="text-gray-400 mb-2">No badges earned yet</div>
+              <div className="text-sm text-gray-500">Start learning to unlock your first badge!</div>
             </div>
           )}
         </div>

@@ -14,7 +14,7 @@ type Achievement = {
   unlocked: boolean;
   unlockedDate?: string;
   tier: number;
-  XP: number;
+  xp: number;
   xpReward?: number; // Add optional xpReward field
   progress?: number;
   total?: number;
@@ -121,7 +121,7 @@ export default function NewAchievement({ isActive = false }: NewAchievementProps
         tier: parseInt(tier),
         title,
         description,
-        XP: parseInt(xpReward),
+        xp: parseInt(xpReward),
         unlocked,
       };
 
@@ -187,7 +187,7 @@ export default function NewAchievement({ isActive = false }: NewAchievementProps
     setTier(achievement.tier.toString());
     setTitle(achievement.title);
     setDescription(achievement.description);
-    setXpReward(achievement.XP?.toString() || achievement.xpReward?.toString() || "0");
+    setXpReward(achievement.xp?.toString() || achievement.xpReward?.toString() || "0");
     setUnlocked(achievement.unlocked);
     
     console.log('Edit mode activated:', true);
@@ -370,17 +370,17 @@ export default function NewAchievement({ isActive = false }: NewAchievementProps
             />
           </div>
 
-          {/* XP Reward */}
+          {/* xp Reward */}
           <div>
             <label className="block text-sm font-medium text-gray-300 mb-2">
-              XP Reward
+              xp reward
             </label>
             <input
               type="number"
               value={xpReward}
               onChange={(e) => setXpReward(e.target.value)}
               className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500"
-              placeholder="Enter XP reward amount"
+              placeholder="Enter xp reward amount"
               required
             />
           </div>
@@ -454,7 +454,7 @@ export default function NewAchievement({ isActive = false }: NewAchievementProps
                             ...achievement,
                             icon: achievement.icon || "🏆",
                             rarity: achievement.rarity || "common",
-                            xpReward: achievement.XP || achievement.xpReward || 0,
+                            xpReward: achievement.xp || achievement.xpReward || 0,
                           }}
                           onClick={() => handleSelectAchievement(achievement)}
                           expanded={expandedAchievement === achievement.id}

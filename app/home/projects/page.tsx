@@ -58,7 +58,7 @@ export default function LessonsEnhanced() {
     { id: "projects", name: "Build Track", icon: Gamepad2, color: "green" },
   ];
 
-  // Enhanced lessons with XP and skill points
+  // Enhanced lessons with xp and skill points
   const currentWeekLessons = [
     {
       id: 1,
@@ -150,7 +150,7 @@ export default function LessonsEnhanced() {
 
   // Power-ups and boosts
   const activePowerUps = [
-    { name: "2x XP Boost", icon: Zap, color: "yellow", timeLeft: "2h 15m" },
+    { name: "2x xp Boost", icon: Zap, color: "yellow", timeLeft: "2h 15m" },
     { name: "Focus Mode", icon: Brain, color: "blue", timeLeft: "45m" },
     { name: "Streak Shield", icon: Shield, color: "green", timeLeft: "1 day" },
   ];
@@ -169,21 +169,21 @@ export default function LessonsEnhanced() {
       title: "Complete 3 Lessons",
       progress: 2,
       total: 3,
-      reward: "250 XP",
+      reward: "250 xp",
       icon: BookOpen,
     },
     {
       title: "Perfect Score",
       progress: 1,
       total: 1,
-      reward: "500 XP",
+      reward: "500 xp",
       icon: Star,
     },
     {
       title: "Help 2 Students",
       progress: 0,
       total: 2,
-      reward: "150 XP",
+      reward: "150 xp",
       icon: Users,
     },
   ];
@@ -192,9 +192,9 @@ export default function LessonsEnhanced() {
   const stats = {
     totalLessons: 24,
     completedLessons: 3,
-    totalXP: 12750,
+    totalxp: 12750,
     currentLevel: 8,
-    nextLevelXP: 15000,
+    nextLevelxp: 15000,
     totalDuration: "8h 45m",
     weekProgress: 2,
     totalWeeks: 8,
@@ -209,7 +209,7 @@ export default function LessonsEnhanced() {
   const progressPercentage = Math.round(
     (stats.completedLessons / stats.totalLessons) * 100,
   );
-  const levelProgress = Math.round((stats.totalXP / stats.nextLevelXP) * 100);
+  const levelProgress = Math.round((stats.totalxp / stats.nextLevelxp) * 100);
 
   return (
     <div className="flex flex-col min-h-screen w-full bg-black text-white">
@@ -236,7 +236,7 @@ export default function LessonsEnhanced() {
               />
             </div>
 
-            {/* Level & XP Badge */}
+            {/* Level & xp Badge */}
             <div className="flex items-center gap-4">
               <div className="bg-linear-to-r from-purple-500/20 to-pink-500/20 border border-purple-500/30 rounded-xl px-4 py-2 backdrop-blur-sm">
                 <div className="flex items-center gap-3">
@@ -250,7 +250,7 @@ export default function LessonsEnhanced() {
                   <div className="flex items-center gap-2">
                     <Sparkles className="w-5 h-5 text-purple-400" />
                     <span className="font-bold text-purple-400">
-                      {stats.totalXP.toLocaleString()} XP
+                      {stats.totalxp.toLocaleString()} xp
                     </span>
                   </div>
                 </div>
@@ -313,8 +313,8 @@ export default function LessonsEnhanced() {
                           Level {stats.currentLevel} → {stats.currentLevel + 1}
                         </span>
                         <span className="font-bold text-yellow-300">
-                          {stats.totalXP.toLocaleString()}/
-                          {stats.nextLevelXP.toLocaleString()} XP
+                          {stats.totalxp.toLocaleString()}/
+                          {stats.nextLevelxp.toLocaleString()} xp
                         </span>
                       </div>
                       <div className="h-3 bg-white/10 rounded-full overflow-hidden backdrop-blur-sm">
@@ -511,7 +511,7 @@ export default function LessonsEnhanced() {
                         <div className="flex items-center gap-2 px-3 py-2 bg-white/5 rounded-lg border border-white/10">
                           <Sparkles className="w-4 h-4 text-yellow-400" />
                           <span className="text-sm">
-                            +{currentWeekLessons.find((l) => l.current)?.xp} XP
+                            +{currentWeekLessons.find((l) => l.current)?.xp} xp
                           </span>
                         </div>
                         <div className="flex items-center gap-2 px-3 py-2 bg-white/5 rounded-lg border border-white/10">
@@ -679,7 +679,7 @@ export default function LessonsEnhanced() {
                 <div>
                   <h3 className="text-xl font-black">Daily Challenges</h3>
                   <p className="text-sm text-gray-400">
-                    Complete to earn bonus XP
+                    Complete to earn bonus xp
                   </p>
                 </div>
                 <div className="ml-auto">
@@ -780,7 +780,7 @@ export default function LessonsEnhanced() {
                     {
                       rank: 3,
                       name: "You",
-                      xp: stats.totalXP,
+                      xp: stats.totalxp,
                       avatar: "ME",
                       highlight: true,
                     },
@@ -802,7 +802,7 @@ export default function LessonsEnhanced() {
                       <div className="flex-1">
                         <div className="font-bold text-sm">{user.name}</div>
                         <div className="text-xs text-gray-400">
-                          {user.xp.toLocaleString()} XP
+                          {user.xp.toLocaleString()} xp
                         </div>
                       </div>
                       {user.rank === 1 && (

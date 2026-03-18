@@ -74,7 +74,6 @@ export default function NewCourse({ isActive = false }: NewCourseProps) {
   
   return (
     <div className="max-w-4xl mx-auto p-6 space-y-6">
-      <Heading size="2xl">Create New Course</Heading>
       
       {/* Course Form */}
       <CourseForm

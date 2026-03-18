@@ -45,9 +45,9 @@ export default function HomeLayout({ children }: { children: ReactNode }) {
     fetchAchievements();
   }, []);
 
-  const totalXP = achievements
+  const totalxp = achievements
     .filter((a) => a.unlocked)
-    .reduce((sum, a) => sum + (a.XP || a.XP || 0), 0);
+    .reduce((sum, a) => sum + (a.xp || a.xpReward || 0), 0);
 
   return (
     <div className="flex h-screen w-screen overflow-hidden bg-[#080810] text-white">
@@ -146,18 +146,18 @@ export default function HomeLayout({ children }: { children: ReactNode }) {
         {/* Bottom user hint */}
         <div className="relative mt-auto mx-3 mb-4 p-3 rounded-xl bg-white/3 border border-white/5">
           <p className="text-[10px] text-gray-500 font-semibold tracking-wide uppercase mb-1">
-            Current XP
+            Current xp
           </p>
           <div className="flex items-center justify-between mb-1.5">
             <span className="text-xs font-bold text-white">Level 4</span>
             <span className="text-[10px] text-purple-400 font-bold">
-              {totalXP} / 5,000
+              {totalxp} / 5,000
             </span>
           </div>
           <div className="h-1.5 rounded-full bg-white/5 overflow-hidden">
             <div
               className="h-full rounded-full bg-linear-to-r from-purple-500 to-pink-500"
-              style={{ width: `${(totalXP / 5000) * 100}%` }}
+              style={{ width: `${(totalxp / 5000) * 100}%` }}
             />
           </div>
         </div>
