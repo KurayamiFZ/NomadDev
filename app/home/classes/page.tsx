@@ -288,9 +288,7 @@ export default function LiveClassesPage() {
       {/* Header Section */}
       <div 
         ref={headerRef}
-        className={`sticky top-0 z-50 backdrop-blur-xl bg-black/80 border-b border-white/10 transform transition-all duration-1000 ease-out ${
-          headerVisible ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0'
-        }`}
+        className="sticky top-0 z-50 backdrop-blur-xl bg-black/80 border-b border-white/10"
       >
         {/* Search Bar */}
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
@@ -358,7 +356,7 @@ export default function LiveClassesPage() {
                       <div className="flex items-center gap-3 mb-4">
                         {/* Animated pulse dot to indicate live status */}
                         <div className="w-4 h-4 bg-white rounded-full animate-pulse"></div>
-                        <span className="text-white font-black text-lg bg-gradient-to-r from-white to-red-100 bg-clip-text text-transparent">
+                        <span className="text-white font-black text-lg bg-linear-to-r from-white to-red-100 bg-clip-text text-transparent">
                           LIVE NOW
                         </span>
                         <span className="text-white opacity-90 transform transition-transform duration-300 hover:scale-110">
@@ -368,7 +366,7 @@ export default function LiveClassesPage() {
                       {/* Main class info and CTA button */}
                       <div className="flex items-end justify-between">
                         <div>
-                          <h2 className="text-4xl font-black mb-3 bg-gradient-to-r from-white to-red-100 bg-clip-text text-transparent">
+                          <h2 className="text-4xl font-black mb-3 bg-linear-to-r from-white to-red-100 bg-clip-text text-transparent">
                             {currentLiveClass.title}
                           </h2>
                           {/* Instructor info and duration */}
@@ -498,7 +496,7 @@ export default function LiveClassesPage() {
                         >
                           {/* Video thumbnail placeholder */}
                           <div className="relative bg-gray-800 h-48 flex items-center justify-center">
-                            <div className="absolute inset-0 bg-gradient-to-br from-green-500/20 to-blue-500/20"></div>
+                            <div className="absolute inset-0 bg-linear-to-br from-green-500/20 to-blue-500/20"></div>
                             <Icon 
                               name="PlayCircle" 
                               className="w-16 h-16 text-white/80 relative z-10 transform transition-transform duration-300 group-hover:scale-110" 
@@ -599,7 +597,7 @@ export default function LiveClassesPage() {
                     scheduleVisible ? 'translate-y-0 opacity-100 scale-100' : 'translate-y-8 opacity-0 scale-95'
                   }`}
                 >
-                  <h3 className="font-black text-lg mb-4 flex items-center gap-2 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+                  <h3 className="font-black text-lg mb-4 flex items-center gap-2 bg-linear-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
                     <Icon name="Calendar" className="w-5 h-5 text-purple-400 animate-pulse" />
                     This Week&apos;s Schedule
                   </h3>
@@ -645,7 +643,7 @@ export default function LiveClassesPage() {
                     instructorsVisible ? 'translate-y-0 opacity-100 scale-100' : 'translate-y-8 opacity-0 scale-95'
                   }`}
                 >
-                  <h3 className="font-black text-lg mb-4 bg-gradient-to-r from-green-400 to-blue-400 bg-clip-text text-transparent">
+                  <h3 className="font-black text-lg mb-4 bg-linear-to-r from-green-400 to-blue-400 bg-clip-text text-transparent">
                     Featured Instructors
                   </h3>
                   <div className="space-y-4">
@@ -693,7 +691,7 @@ export default function LiveClassesPage() {
                   <div className="absolute inset-0 bg-black opacity-20"></div>
                   {/* CTA Content */}
                   <div className="relative z-10">
-                    <h3 className="font-black text-lg mb-2 bg-gradient-to-r from-white to-purple-100 bg-clip-text text-transparent">Join Live</h3>
+                    <h3 className="font-black text-lg mb-2 bg-linear-to-r from-white to-purple-100 bg-clip-text text-transparent">Join Live</h3>
                     <p className="text-sm text-white opacity-90 mb-4">
                       Connect with 15k+ developers in real-time classes
                     </p>
