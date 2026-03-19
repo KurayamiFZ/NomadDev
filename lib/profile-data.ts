@@ -167,6 +167,7 @@ export const sampleProfiles: Record<string, UserProfile> = {
       { name: "Game Design", percent: 70 },
       { name: "Physics System", percent: 60 },
     ],
+    id: "",
   },
 
   alexchen: {
@@ -299,6 +300,7 @@ export const sampleProfiles: Record<string, UserProfile> = {
       { name: "AI Programming", percent: 80 },
       { name: "Mobile Dev", percent: 88 },
     ],
+    id: "",
   },
 
   sarahmartinez: {
@@ -417,11 +419,15 @@ export const sampleProfiles: Record<string, UserProfile> = {
       { name: "Game Design", percent: 75 },
       { name: "Animation", percent: 88 },
     ],
+    id: "",
   },
 };
 
 // Simple in-memory cache for profile data
-const profileCache = new Map<string, { data: UserProfile; timestamp: number }>();
+const profileCache = new Map<
+  string,
+  { data: UserProfile; timestamp: number }
+>();
 const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
 
 /**
@@ -441,7 +447,7 @@ export async function getUserProfile(
 
     console.log(`getUserProfile called with username: ${username}`);
     const response = await fetch(`/api/profile/${username}`, {
-      cache: 'no-store', // Prevent Next.js caching since we handle our own
+      cache: "no-store", // Prevent Next.js caching since we handle our own
     });
 
     console.log(`API response status: ${response.status}`);
@@ -458,10 +464,10 @@ export async function getUserProfile(
 
     const profile = await response.json();
     console.log("Profile data from API:", profile);
-    
+
     // Cache the result
     profileCache.set(username, { data: profile, timestamp: Date.now() });
-    
+
     return profile;
   } catch (error) {
     console.error("Error fetching user profile:", error);

@@ -47,11 +47,19 @@ export function DemoSection() {
             <button
               key={lesson.title}
               onClick={() => setActiveLesson(index)}
-              className={`flex flex-col items-start rounded-lg p-3 text-left transition-all sm:rounded-xl sm:p-4 ${
-                activeLesson === index
-                  ? "bg-linear-to-r from-purple-500/40 to-pink-500/60"
-                  : "bg-secondary/60 hover:bg-secondary"
-              }`}
+              style={{
+                animationDelay: `${index * 100}ms`,
+              }}
+              className={`
+        flex flex-col items-start rounded-lg p-3 text-left transition-all
+        sm:rounded-xl sm:p-4
+        animate-fade-in-left
+        ${
+          activeLesson === index
+            ? "bg-linear-to-r from-purple-500/40 to-pink-500/60"
+            : "bg-secondary/60 hover:bg-secondary"
+        }
+      `}
             >
               <span className="text-sm font-bold text-foreground sm:text-base">
                 {lesson.title}

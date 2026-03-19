@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Trophy, Lock, Search } from "lucide-react";
 import { AchievementCard } from "../../components/AchievementCard";
 import { supabase } from "@/lib/supabaseclient";
@@ -42,9 +42,20 @@ export default function AchievementsEnhanced() {
   const [loading, setLoading] = useState(true);
   const [selectedTier, setSelectedTier] = useState<number | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
-  const [expandedAchievement, setExpandedAchievement] = useState<number | null>(
-    null,
-  );
+  const [expandedAchievement, setExpandedAchievement] = useState<number | null>(null);
+  
+  // Animation states
+  const [isVisible, setIsVisible] = useState(false);
+  const [headerVisible, setHeaderVisible] = useState(false);
+  const [statsVisible, setStatsVisible] = useState(false);
+  const [filtersVisible, setFiltersVisible] = useState(false);
+  const [achievementsVisible, setAchievementsVisible] = useState(false);
+  
+  // Refs for scroll-triggered animations
+  const headerRef = useRef<HTMLDivElement>(null);
+  const statsRef = useRef<HTMLDivElement>(null);
+  const filtersRef = useRef<HTMLDivElement>(null);
+  const achievementsRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     async function fetchAchievements() {
@@ -60,6 +71,38 @@ export default function AchievementsEnhanced() {
     }
 
     fetchAchievements();
+    
+    // Trigger initial animations
+    setTimeout(() => setIsVisible(true), 100);
+    
+    // Setup scroll observers
+    const setupScrollObserver = (ref: React.RefObject<HTMLDivElement | null>, setState: (visible: boolean) => void) => {
+      if (!ref.current) return;
+      
+      const observer = new IntersectionObserver(
+        ([entry]) => {
+          if (entry.isIntersecting) {
+            setState(true);
+          }
+        },
+        { threshold: 0.1 }
+      );
+      
+      observer.observe(ref.current);
+      return () => observer.disconnect();
+    };
+    
+    const cleanupHeader = setupScrollObserver(headerRef, setHeaderVisible);
+    const cleanupStats = setupScrollObserver(statsRef, setStatsVisible);
+    const cleanupFilters = setupScrollObserver(filtersRef, setFiltersVisible);
+    const cleanupAchievements = setupScrollObserver(achievementsRef, setAchievementsVisible);
+    
+    return () => {
+      cleanupHeader?.();
+      cleanupStats?.();
+      cleanupFilters?.();
+      cleanupAchievements?.();
+    };
   }, []);
 
   if (loading) {
@@ -106,7 +149,7 @@ export default function AchievementsEnhanced() {
   };
 
   return (
-    <div className="flex min-h-screen w-full bg-black">
+    <div className="flex flex-col min-h-screen w-full bg-black text-white">
       {/* Animated Background - Unique Aurora Effect */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-0 left-1/4 w-96 h-96 bg-cyan-500/15 rounded-full blur-[150px] animate-pulse"></div>
@@ -116,57 +159,71 @@ export default function AchievementsEnhanced() {
       </div>
 
       {/* Main Content */}
-      <div className="relative z-10 w-full">
+      <div className="relative z-10 w-full flex-1">
         {/* Header */}
-        <div className="top-0 z-50 backdrop-blur-xl bg-black/60 border-b border-white/5">
+        <div 
+          ref={headerRef}
+          className={`top-0 z-50 backdrop-blur-xl bg-black/60 border-b border-white/5 transform transition-all duration-1000 ease-out ${
+            headerVisible ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0'
+          }`}
+        >
           <div className="max-w-7xl mx-auto px-6 py-4">
-            <div className="flex items-center justify-between gap-4">
-              {/* Search and Filters */}
-              <div className="relative flex-1 max-w-md">
-                <Icon
-                  name="Search"
-                  className="size-5 absolute left-3 top-1/2 -translate-y-1/2 text-gray-500"
-                />
+            <div className="flex items-center justify-between">
+              <div>
+                <h1 className="text-3xl font-black mb-2 bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+                  Achievements
+                </h1>
+                <p className="text-gray-400">
+                  Unlock rewards and showcase your game development journey
+                </p>
+              </div>
+              
+              <div className="relative">
+                <Search className="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 transform transition-transform duration-300 hover:scale-110" />
                 <input
                   type="text"
                   placeholder="Search achievements..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="bg-white/5 border border-white/10 rounded-lg pl-10 pr-4 py-2 w-full focus:border-purple-500 focus:outline-none text-sm backdrop-blur-sm"
+                  className="bg-white/5 border border-white/10 rounded-xl pl-10 pr-4 py-3 w-64 focus:border-purple-500 focus:outline-none text-sm backdrop-blur-sm transition-all duration-300 hover:border-white/20 focus:shadow-lg focus:shadow-purple-500/20"
                 />
               </div>
-              {/* Stats */}
+            </div>
+          </div>
+        </div>
 
-              <div className="flex items-center gap-4">
-                <div className="bg-linear-to-r from-purple-500/20 to-pink-500/20 border border-purple-500/30 rounded-full px-4 py-2 backdrop-blur-sm">
-                  <div className="flex items-center gap-3">
-                    <div className="flex items-center gap-2">
-                      <Icon
-                        name="BookOpen"
-                        className="size-5 text-yellow-400"
-                      />
-                      <span className="font-black text-lg">
-                        Collection {unlockedCount}/{totalCount}
-                      </span>
-                    </div>
-                    <div className="w-px h-6 bg-white/20"></div>
-                    <div className="flex items-center gap-2">
-                      <Icon
-                        name="Sparkles"
-                        className="size-5 text-purple-400"
-                      />
-                      <span className="font-bold text-purple-400">
-                        {totalxp.toLocaleString()} xp
-                      </span>
-                    </div>
-                  </div>
+        {/* Stats Bar */}
+        <div 
+          ref={statsRef}
+          className={`bg-linear-to-r from-purple-600/20 to-pink-600/20 backdrop-blur-sm border border-purple-500/30 rounded-2xl p-6 mx-8 transform transition-all duration-700 ease-out hover:shadow-lg hover:shadow-purple-500/20 ${
+            statsVisible ? 'translate-y-0 opacity-100 scale-100' : 'translate-y-8 opacity-0 scale-95'
+          }`}
+        >
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <Trophy className="w-6 h-6 text-yellow-400 animate-pulse" />
+              <div>
+                <div className="flex items-center gap-2">
+                  <span className="font-black text-lg">
+                    Collection {unlockedCount}/{totalCount}
+                  </span>
                 </div>
-                <button className="relative p-3 bg-white/5 hover:bg-white/10 rounded-xl transition border border-white/10">
-                  <Icon name="Bell" className="size-5" />
-                  <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
-                </button>
+                <div className="w-px h-6 bg-white/20"></div>
+                <div className="flex items-center gap-2">
+                  <Icon
+                    name="Sparkles"
+                    className="w-5 h-5 text-purple-400"
+                  />
+                  <span className="font-bold text-purple-400">
+                    {totalxp.toLocaleString()} xp
+                  </span>
+                </div>
               </div>
             </div>
+            <button className="relative p-3 bg-white/5 hover:bg-white/10 rounded-xl transition-all duration-300 border border-white/10 transform hover:scale-110 hover:shadow-lg">
+              <Icon name="Bell" className="w-5 h-5" />
+              <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
+            </button>
           </div>
         </div>
 

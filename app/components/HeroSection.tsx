@@ -1,14 +1,14 @@
 /**
  * Hero Section Component - GameDev Academy
- * 
+ *
  * Displays main headline, value proposition, and live status badge.
  * This is the first major section users see on the landing page.
- * 
+ *
  * Features:
  * - Animated live learner count badge
  * - Responsive typography with gradient text
  * - Clear value proposition messaging
- * 
+ *
  * @component
  * @returns {JSX.Element} Hero section with headline and status
  */
@@ -33,9 +33,10 @@ export function HeroSection() {
         <Heading size="3xl" className="sm:text-4xl md:text-5xl lg:text-6xl">
           Your 3-Month Journey
         </Heading>
-        <Heading 
-          size="2xl" 
-          gradient 
+        <Heading
+          size="2xl"
+          gradient
+          animationDelay={300}
           className="mt-2 sm:text-3xl md:text-4xl lg:text-5xl"
         >
           From Zero to Game Developer
