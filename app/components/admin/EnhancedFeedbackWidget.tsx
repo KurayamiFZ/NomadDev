@@ -18,9 +18,9 @@ import {
   Lock,
   User,
 } from "lucide-react";
-import { FeedbackQuestion } from "../../../lib/types";
-import { supabase } from "../../../lib/supabase";
-import { useAuth } from "../../../lib/auth";
+import { FeedbackQuestion } from "@/lib/types";
+import { supabase } from "@/lib/supabase";
+import { useAuth } from "@/lib/auth";
 
 interface FeedbackStats {
   total: number;

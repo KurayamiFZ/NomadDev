@@ -16,9 +16,9 @@ import {
   Reply,
   X
 } from "lucide-react";
-import { FeedbackQuestion, FeedbackFormData, FeedbackReply } from "../../lib/types";
-import { supabase } from "../../lib/supabase";
-import { useAuth } from "../../lib/auth";
+import { FeedbackQuestion, FeedbackFormData, FeedbackReply } from "@/lib/types";
+import { supabase } from "@/lib/supabase";
+import { useAuth } from "@/lib/auth";
 
 export default function FeedbackPage() {
   const router = useRouter();
