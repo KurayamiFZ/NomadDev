@@ -130,7 +130,6 @@ export default function AchievementsEnhanced() {
     2: achievements.filter((a) => a.tier === 2),
     3: achievements.filter((a) => a.tier === 3),
     4: achievements.filter((a) => a.tier === 4),
-    5: achievements.filter((a) => a.tier === 5),
   };
 
   const tierLabels = {
@@ -138,7 +137,6 @@ export default function AchievementsEnhanced() {
     2: "Journeyman",
     3: "Expert",
     4: "Master",
-    5: "Legend",
   };
 
   return (
@@ -252,7 +250,7 @@ export default function AchievementsEnhanced() {
               Achievement Tiers
             </h3>
             <div className="space-y-4">
-              {[1, 2, 3, 4, 5].map((tier) => {
+              {[1, 2, 3, 4].map((tier) => {
                 const tierAchievements =
                   achievementsByTier[tier as keyof typeof achievementsByTier];
                 const unlocked = tierAchievements.filter(
@@ -302,9 +300,6 @@ export default function AchievementsEnhanced() {
                               name="Crown"
                               className="size-5 text-yellow-400"
                             />
-                          )}
-                          {tier === 5 && (
-                            <Icon name="Gem" className="size-5 text-red-400" />
                           )}
                         </div>
                         <div>
