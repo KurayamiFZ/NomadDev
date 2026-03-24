@@ -18,8 +18,8 @@ import { BadgeCard } from "../BadgeCard";
 import { getUserBadges, UserBadge } from "@/lib/achievements";
 
 interface BadgesTabProps {
-  badges: UserProfile['badges'];
-  userId?: string;
+  badges: UserBadge[];
+  username: string;
 }
 
 /**
@@ -29,22 +29,22 @@ interface BadgesTabProps {
  * Shows both earned and locked achievements.
  * Fetches real-time achievement data from the database.
  */
-export function BadgesTab({ badges, userId }: BadgesTabProps) {
+export function BadgesTab({ badges, username }: BadgesTabProps) {
   const [userBadges, setUserBadges] = useState<UserBadge[]>(badges);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (userId) {
+    if (username) {
       fetchUserBadges();
     }
-  }, [userId]);
+  }, [username]);
 
   const fetchUserBadges = async () => {
-    if (!userId) return;
+    if (!username) return;
     
     setLoading(true);
     try {
-      const result = await getUserBadges(userId);
+      const result = await getUserBadges(username);
       setUserBadges(result.badges);
     } catch (error) {
       console.error('Error fetching user badges:', error);

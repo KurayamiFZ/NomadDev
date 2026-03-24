@@ -51,8 +51,8 @@ export async function GET() {
     }
 
     const formattedUsers = users.map(user => ({
-      username: user.id, // Use the actual ID (could be UUID or integer)
-      displayName: user.name || (user.email ? user.email.split('@')[0] : 'Unknown User'),
+      id: user.id, // User ID from users table (for sharing)
+      displayName: user.name || (user.email ? user.email.split('@')[0] : 'Unknown User'), // Display name from users table (for sharing)
       rank: user.level || 'Beginner',
       email: user.email, // Include email for display
     }));

@@ -106,11 +106,96 @@ type UserRow = {
   created_at?: string;
 };
 
+export async function POST(
+  request: NextRequest,
+  { params }: { params: Promise<{ userId: string }> },
+) {
+  const { userId } = await params;
+  
+  try {
+    const body = await request.json();
+    
+    if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+      return NextResponse.json(
+        { error: "Database configuration missing" },
+        { status: 500 }
+      );
+    }
+
+    const cookieStore = await cookies();
+    const supabase = createServerClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      {
+        cookies: {
+          getAll() {
+            return cookieStore.getAll();
+          },
+          setAll(
+            cookiesToSet: { name: string; value: string; options?: object }[],
+          ) {
+            cookiesToSet.forEach(({ name, value, options }) => {
+              cookieStore.set(
+                name,
+                value,
+                options as Parameters<typeof cookieStore.set>[2],
+              );
+            });
+          },
+        },
+      },
+    );
+
+    // Get authenticated user
+    const { data: { user: authUser } } = await supabase.auth.getUser();
+    
+    if (!authUser || String(authUser.id) !== userId) {
+      return NextResponse.json(
+        { error: "Unauthorized - can only update own profile" },
+        { status: 401 }
+      );
+    }
+
+    // Update user_profiles table
+    const { error: updateError } = await supabase
+      .from('user_profiles')
+      .upsert({
+        user_id: userId,
+        bio: body.bio,
+        location: body.location,
+        website: body.website,
+        github: body.github,
+        linkedin: body.linkedin,
+        twitter: body.twitter,
+        avatar_url: body.avatarUrl,
+        banner_url: body.bannerUrl,
+        updated_at: new Date().toISOString()
+      });
+
+    if (updateError) {
+      console.error('Profile update error:', updateError);
+      return NextResponse.json(
+        { error: "Failed to update profile", details: updateError.message },
+        { status: 500 }
+      );
+    }
+
+    return NextResponse.json({ success: true, message: "Profile updated successfully" });
+
+  } catch (error) {
+    console.error("Unexpected error in profile POST:", error);
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 }
+    );
+  }
+}
+
 export async function GET(
   request: NextRequest,
-  { params }: { params: Promise<{ username: string }> },
+  { params }: { params: Promise<{ userId: string }> },
 ) {
-  const { username } = await params;
+  const { userId } = await params;
 
   try {
     if (
@@ -159,26 +244,26 @@ export async function GET(
     const { data, error } = await supabase
       .from("users")
       .select("*")
-      .or(`username.eq.${username},id.eq.${username},id.eq.${Number(username)}`)
+      .or(`username.eq.${userId},id.eq.${userId},id.eq.${Number(userId)}`)
       .limit(1)
       .single();
 
     if (!error && data) {
       user = data;
-    } else if (UUID_REGEX.test(username)) {
+    } else if (UUID_REGEX.test(userId)) {
       // Fallback for UUID if needed
       const { data: uuidData, error: uuidError } = await supabase
         .from("users")
         .select("*")
-        .eq("id", username)
+        .eq("id", userId)
         .single();
       if (!uuidError && uuidData) user = uuidData;
-    } else if (/^\d+$/.test(username)) {
+    } else if (/^\d+$/.test(userId)) {
       // Fallback for integer ID if needed
       const { data: intData, error: intError } = await supabase
         .from("users")
         .select("*")
-        .eq("id", Number(username))
+        .eq("id", Number(userId))
         .single();
       if (!intError && intData) user = intData;
     }
@@ -187,7 +272,7 @@ export async function GET(
       // If user not found in database, check if they exist in auth but haven't created a profile yet
       const { data: authUser } = await supabase.auth.getUser();
       
-      if (authUser.user && (String(authUser.user.id) === username || authUser.user.email === username)) {
+      if (authUser.user && (String(authUser.user.id) === userId || authUser.user.email === userId)) {
         // User exists in auth but not in database, create a basic profile
         const basicProfile = {
           username: authUser.user.email?.split("@")[0] || String(authUser.user.id),
@@ -244,7 +329,7 @@ export async function GET(
       }
 
       return NextResponse.json(
-        { error: "User not found", username },
+        { error: "User not found", userId },
         { status: 404 },
       );
     }
@@ -252,29 +337,37 @@ export async function GET(
     const isOwnProfile =
       authUser != null && String(authUser.id) === String(user.id);
 
+    // Get extended profile from user_profiles table (private details)
+    const { data: profileData, error: profileError } = await supabase
+      .from('user_profiles')
+      .select('*')
+      .eq('user_id', String(user.id))
+      .single();
+
+    // Combine the data - users table provides shareable info, user_profiles provides extended details
     const profile = {
-      id: String(user.id),
-      username: user.username || username,
-      displayName: user.name ?? user.email?.split("@")[0] ?? "Unknown User",
+      id: String(user.id),              // From users table (for sharing)
+      username: user.username || userId,     // From users table (for sharing)
+      displayName: user.name ?? user.email?.split("@")[0] ?? "Unknown User", // From users table (for sharing)
       // Only expose email to the profile owner
       ...(isOwnProfile ? { email: user.email } : {}),
-      bio: user.role ? `User with role: ${user.role}` : "Game Developer",
+      bio: profileData?.bio || "Game developer passionate about learning and creating amazing experiences.",
       avatarInitial:
         user.name?.charAt(0).toUpperCase() ??
-        user.email?.charAt(0).toUpperCase() ??
-        "U",
+          user.email?.charAt(0).toUpperCase() ??
+          "U",
       rank: user.level ?? "Beginner",
-      location: user.location ?? "Not specified",
+      location: profileData?.location || "Not specified",
       joinDate: user.created_at
         ? new Date(user.created_at).toLocaleDateString("en-US", {
-            month: "long",
-            year: "numeric",
-          })
+              month: "long",
+              year: "numeric",
+            })
         : "Unknown",
-      website: "",
-      github: "",
-      linkedin: "",
-      twitter: "",
+      website: profileData?.website || "",
+      github: profileData?.github || "",
+      linkedin: profileData?.linkedin || "",
+      twitter: profileData?.twitter || "",
       isOwnProfile,
       stats: [
         {

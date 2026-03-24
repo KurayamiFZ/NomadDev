@@ -27,6 +27,7 @@ import { IconWrapper } from "./ui/IconWrapper";
 import { FlexRow } from "./ui/FlexRow";
 import { Button } from "./button";
 import { Gamepad2 } from "lucide-react";
+import { useAuth } from "./AuthProvider";
 
 interface NavigationProps {
   /** Optional callback function triggered on navigation */
@@ -45,6 +46,7 @@ interface NavigationProps {
 export function Navigation({ onNavigate }: NavigationProps) {
   // State management for mobile menu toggle
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { user, signOut } = useAuth();
 
   return (
     <>
@@ -74,10 +76,24 @@ export function Navigation({ onNavigate }: NavigationProps) {
           <NavigationLink href="#pricing" onNavigate={onNavigate}>
             Pricing
           </NavigationLink>
-          {/* Primary call-to-action button */}
-          <NavigationLink to="/login" variant="button" className="flex justify-center items-center rounded-xl px-2 py-0.5">
-            Start Learning
-          </NavigationLink>
+          {/* Conditional rendering based on auth status */}
+          {user ? (
+            <>
+              <NavigationLink to="/home/overview" variant="button" className="flex justify-center items-center rounded-xl px-2 py-0.5">
+                Dashboard
+              </NavigationLink>
+              <button
+                onClick={signOut}
+                className="text-sm text-gray-300 hover:text-white transition-colors"
+              >
+                Sign Out
+              </button>
+            </>
+          ) : (
+            <NavigationLink to="/login" variant="button" className="flex justify-center items-center rounded-xl px-2 py-0.5">
+              Start Learning
+            </NavigationLink>
+          )}
         </FlexRow>
 
         {/* Mobile menu toggle button - Hamburger/Close icon */}
@@ -120,14 +136,32 @@ export function Navigation({ onNavigate }: NavigationProps) {
             >
               Pricing
             </NavigationLink>
-            {/* Mobile call-to-action button */}
-            <NavigationLink 
-              to="/login" 
-              variant="button"
-              className="w-full"
-            >
-              Start Learning
-            </NavigationLink>
+            {/* Conditional mobile call-to-action buttons */}
+            {user ? (
+              <>
+                <NavigationLink 
+                  to="/home/overview" 
+                  variant="button"
+                  className="w-full"
+                >
+                  Dashboard
+                </NavigationLink>
+                <button
+                  onClick={signOut}
+                  className="w-full text-sm text-gray-300 hover:text-white transition-colors text-center py-2"
+                >
+                  Sign Out
+                </button>
+              </>
+            ) : (
+              <NavigationLink 
+                to="/login" 
+                variant="button"
+                className="w-full"
+              >
+                Start Learning
+              </NavigationLink>
+            )}
           </div>
         </div>
       )}

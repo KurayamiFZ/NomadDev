@@ -4,6 +4,7 @@ import { ReactNode, useState, useEffect } from "react";
 import Footer from "../components/footer";
 import Icon, { type IconName } from "../components/icons";
 import { supabase } from "@/lib/supabaseclient";
+import { useAuth } from "../components/AuthProvider";
 
 const TAB_ICONS: Record<string, IconName> = {
   overview: "LayoutDashboard",
@@ -18,6 +19,7 @@ export default function HomeLayout({ children }: { children: ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
   const activeTab = pathname.split("/")[2] ?? "overview";
+  const { signOut } = useAuth();
   const tabs = [
     "overview",
     "lessons",
@@ -28,6 +30,15 @@ export default function HomeLayout({ children }: { children: ReactNode }) {
   ];
   const [achievements, setAchievements] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+
+  const handleLogout = async () => {
+    try {
+      await signOut();
+      router.push('/');
+    } catch (error) {
+      console.error('Error during logout:', error);
+    }
+  };
 
   useEffect(() => {
     async function fetchAchievements() {
@@ -144,7 +155,8 @@ export default function HomeLayout({ children }: { children: ReactNode }) {
         </nav>
 
         {/* Bottom user hint */}
-        <div className="relative mt-auto mx-3 mb-4 p-3 rounded-xl bg-white/3 border border-white/5">
+        <div className="relative mt-auto mx-3 mb-4 space-y-3 p-3 rounded-xl bg-white/3 border border-white/5">
+          
           <p className="text-[10px] text-gray-500 font-semibold tracking-wide uppercase mb-1">
             Current xp
           </p>
@@ -200,6 +212,13 @@ export default function HomeLayout({ children }: { children: ReactNode }) {
                 Profile
               </span>
             </button>
+
+            <button
+            onClick={handleLogout}
+            className="flex items-center justify-center p-3 rounded-lg bg-red-500/10 border border-red-500/20 hover:bg-red-500/20 transition-colors group"
+          >
+            <Icon name="LogOut" className="size-4 text-red-400 group-hover:text-red-300" />
+          </button>
           </div>
         </header>
 

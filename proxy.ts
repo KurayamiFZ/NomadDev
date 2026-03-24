@@ -26,7 +26,12 @@ export async function proxy(req: NextRequest) {
   } = await supabase.auth.getUser();
 
   if (!user) {
-    return NextResponse.redirect(new URL("/", req.url));
+    // If trying to access protected routes, redirect to login
+    if (req.nextUrl.pathname.startsWith("/home") || req.nextUrl.pathname.startsWith("/admin")) {
+      return NextResponse.redirect(new URL("/login", req.url));
+    }
+    // For other routes, continue normally
+    return response;
   }
 
   const { data: profile } = await supabase
@@ -50,9 +55,14 @@ export async function proxy(req: NextRequest) {
     return NextResponse.redirect(new URL("/home/overview", req.url));
   }
 
+  // If authenticated user tries to access login, redirect to home
+  if (user && req.nextUrl.pathname === "/login") {
+    return NextResponse.redirect(new URL("/home/overview", req.url));
+  }
+
   return response;
 }
 
 export const config = {
-  matcher: ["/home", "/home/:path*", "/admin", "/admin/:path*"],
+  matcher: ["/home", "/home/:path*", "/admin", "/admin/:path*", "/login"],
 };
