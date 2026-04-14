@@ -93,31 +93,6 @@ export function DemoSection() {
           </div>
         </div>
 
-        <div className="flex flex-col gap-3 rounded-lg bg-secondary/60 p-3 sm:gap-4 sm:rounded-xl sm:p-4">
-          <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-            <div className="flex items-center gap-2">
-              <Icon
-                name="Code"
-                className="h-4 w-4 text-purple-400 sm:h-5 sm:w-5"
-              />
-              <span className="text-sm font-bold text-foreground sm:text-base">
-                Try It Yourself
-              </span>
-            </div>
-            <Button
-              size="sm"
-              className="w-full bg-emerald-500 text-foreground hover:bg-emerald-400 sm:w-auto"
-            >
-              <Icon name="Play" className="mr-2 h-3 w-3 sm:h-4 sm:w-4" />
-              Run Code
-            </Button>
-          </div>
-          <textarea
-            placeholder={`// Write your code here...\nvoid Update() {\n    transform.Translate(Vector3.forward * Time.deltaTime);\n}`}
-            className="h-32 w-full resize-none rounded-lg border border-border bg-black p-3 font-mono text-xs text-emerald-400 placeholder:text-muted-foreground focus:border-purple-500 focus:outline-none sm:h-40 sm:p-4 sm:text-sm"
-          />
-        </div>
-
         <div className="flex flex-col gap-1.5 rounded-lg border border-purple-500/50 bg-purple-500/10 p-4 sm:gap-2 sm:rounded-xl sm:p-6">
           <span className="text-base font-extrabold text-purple-400 sm:text-xl">
             This is just 1 of 150+ lessons

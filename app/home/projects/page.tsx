@@ -306,10 +306,6 @@ export default function LessonsEnhanced() {
                   </div>
                 </div>
               </div>
-              <button className="relative p-3 bg-white/5 hover:bg-white/10 rounded-xl transition-all duration-300 border border-white/10 transform hover:scale-110 hover:shadow-lg">
-                <Bell className="w-5 h-5" />
-                <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
-              </button>
             </div>
           </div>
         </div>
