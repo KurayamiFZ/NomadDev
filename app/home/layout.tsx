@@ -65,8 +65,8 @@ export default function HomeLayout({ children }: { children: ReactNode }) {
       {/* ── SIDEBAR ───────────────────────────────────────────────── */}
       <aside className="relative flex flex-col w-64 h-full shrink-0 border-r border-white/5 overflow-hidden">
         {/* ambient glow behind sidebar */}
-        <div className="pointer-events-none absolute -top-20 -left-20 w-72 h-72 rounded-full bg-purple-600/20 blur-3xl" />
-        <div className="pointer-events-none absolute bottom-0 left-0 w-48 h-48 rounded-full bg-pink-600/10 blur-2xl" />
+        <div className="pointer-events-none absolute -top-20 -left-20 w-72 h-72 rounded-full bg-purple-700/15 blur-3xl" />
+        <div className="pointer-events-none absolute bottom-0 left-0 w-48 h-48 rounded-full bg-pink-700/8 blur-2xl" />
 
         {/* subtle grid texture */}
         <div
@@ -89,10 +89,10 @@ export default function HomeLayout({ children }: { children: ReactNode }) {
             <span className="relative text-white font-black text-sm">ND</span>
           </div>
           <div className="flex flex-col items-start">
-            <span className="font-black text-lg leading-none tracking-tight text-white group-hover:text-purple-300 transition-colors">
+            <span className="font-black text-lg leading-none tracking-tight text-white group-hover:text-purple-400 transition-colors">
               Nomad Dev
             </span>
-            <span className="text-[10px] font-semibold tracking-widest text-purple-400/70 uppercase mt-0.5">
+            <span className="text-[10px] font-semibold tracking-widest text-purple-500/60 uppercase mt-0.5">
               Academy
             </span>
           </div>
@@ -126,7 +126,7 @@ export default function HomeLayout({ children }: { children: ReactNode }) {
               >
                 {/* active pill background */}
                 {isActive && (
-                  <span className="absolute inset-0 rounded-lg bg-linear-to-r from-purple-600/40 to-pink-600/20 border border-purple-500/30" />
+                  <span className="absolute inset-0 rounded-lg bg-linear-to-r from-purple-700/30 to-pink-700/15 border border-purple-600/25" />
                 )}
                 {/* active left accent bar */}
                 {isActive && (
@@ -137,7 +137,7 @@ export default function HomeLayout({ children }: { children: ReactNode }) {
                   name={TAB_ICONS[tab]}
                   className={`relative size-4 shrink-0 transition-colors ${
                     isActive
-                      ? "text-purple-300"
+                      ? "text-purple-400"
                       : "text-gray-600 group-hover:text-gray-400"
                   }`}
                 />
@@ -147,7 +147,7 @@ export default function HomeLayout({ children }: { children: ReactNode }) {
 
                 {/* active dot */}
                 {isActive && (
-                  <span className="relative ml-auto size-1.5 rounded-full bg-purple-400 shadow-sm shadow-purple-400" />
+                  <span className="relative ml-auto size-1.5 rounded-full bg-purple-500 shadow-sm shadow-purple-500" />
                 )}
               </button>
             );
@@ -162,7 +162,7 @@ export default function HomeLayout({ children }: { children: ReactNode }) {
           </p>
           <div className="flex items-center justify-between mb-1.5">
             <span className="text-xs font-bold text-white">Level 4</span>
-            <span className="text-[10px] text-purple-400 font-bold">
+            <span className="text-[10px] text-purple-500 font-bold">
               {totalxp} / 5,000
             </span>
           </div>
@@ -197,7 +197,7 @@ export default function HomeLayout({ children }: { children: ReactNode }) {
             {/* notifications */}
             <button className="relative p-2 rounded-lg bg-white/5 border border-white/5 hover:bg-white/10 transition-colors">
               <Icon name="Bell" className="size-4 text-gray-400" />
-              <span className="absolute top-1.5 right-1.5 size-1.5 rounded-full bg-purple-400" />
+              <span className="absolute top-1.5 right-1.5 size-1.5 rounded-full bg-purple-500" />
             </button>
 
             {/* profile */}

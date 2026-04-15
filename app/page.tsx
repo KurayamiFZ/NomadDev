@@ -23,7 +23,6 @@ import { RoadmapSection } from "./components/RoadmapSection";
 import { TransformationSection } from "./components/TransformationSection";
 import { StatsSection } from "./components/StatsSection";
 import { GuaranteeSection } from "./components/GuaranteeSection";
-import { CTASection } from "./components/CTASection";
 import Footer from "./components/footer";
 
 /**
@@ -58,9 +57,6 @@ export default function Home() {
 
       {/* Guarantee Section - Risk-free promises and benefits */}
       <GuaranteeSection />
-
-      {/* Call-to-Action Section - Final enrollment prompt */}
-      <CTASection />
 
       {/* Footer Section - Site footer with branding and copyright */}
       <Footer />

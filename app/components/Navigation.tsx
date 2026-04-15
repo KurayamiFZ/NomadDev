@@ -1,15 +1,15 @@
 /**
  * Navigation Component - GameDev Academy
- * 
+ *
  * Sticky navigation header with branding, menu items, and mobile responsiveness.
  * Handles navigation between different sections and external pages.
- * 
+ *
  * Features:
  * - Responsive design with mobile hamburger menu
  * - Smooth scroll navigation to page sections
  * - Integration with Next.js router
  * - Gradient branding with game controller icon
- * 
+ *
  * @component
  * @param {Object} props - Component props
  * @param {Function} props.onNavigate - Optional callback for navigation events
@@ -36,10 +36,10 @@ interface NavigationProps {
 
 /**
  * Main Navigation Component
- * 
+ *
  * Renders the complete navigation header with desktop and mobile layouts.
  * Manages mobile menu state and handles navigation interactions.
- * 
+ *
  * @param {NavigationProps} props - Component props
  * @returns {JSX.Element} The navigation header
  */
@@ -54,8 +54,8 @@ export function Navigation({ onNavigate }: NavigationProps) {
       <nav className="sticky top-0 z-50 flex w-full items-center justify-between border-b border-border/50 bg-background/80 px-6 py-4 backdrop-blur-xl lg:px-12">
         {/* Logo and branding section */}
         <FlexRow align="center" gap="sm">
-          <GradientBackground 
-            variant="purple-pink" 
+          <GradientBackground
+            variant="purple-pink"
             className="flex h-10 w-10 items-center justify-center rounded-xl"
           >
             <IconWrapper icon={Gamepad2} size="md" variant="transparent" />
@@ -79,7 +79,11 @@ export function Navigation({ onNavigate }: NavigationProps) {
           {/* Conditional rendering based on auth status */}
           {user ? (
             <>
-              <NavigationLink to="/home/overview" variant="button" className="flex justify-center items-center rounded-xl px-2 py-0.5">
+              <NavigationLink
+                to="/home/overview"
+                variant="button"
+                className="flex justify-center items-center rounded-xl px-2 py-0.5"
+              >
                 Dashboard
               </NavigationLink>
               <button
@@ -90,7 +94,11 @@ export function Navigation({ onNavigate }: NavigationProps) {
               </button>
             </>
           ) : (
-            <NavigationLink to="/login" variant="button" className="flex justify-center items-center rounded-xl px-2 py-0.5">
+            <NavigationLink
+              to="/curriculum"
+              variant="button"
+              className="flex justify-center items-center rounded-xl px-2 py-0.5"
+            >
               Start Learning
             </NavigationLink>
           )}
@@ -115,22 +123,22 @@ export function Navigation({ onNavigate }: NavigationProps) {
         <div className="fixed inset-x-0 top-16 z-40 border-b border-border bg-background/95 backdrop-blur-xl p-4 md:hidden">
           <div className="mx-auto max-w-md flex flex-col gap-3">
             {/* Mobile navigation links with click handlers */}
-            <NavigationLink 
-              href="#demo" 
+            <NavigationLink
+              href="#demo"
               onNavigate={onNavigate}
               variant="mobile"
             >
               Demo
             </NavigationLink>
-            <NavigationLink 
-              href="#roadmap" 
+            <NavigationLink
+              href="#roadmap"
               onNavigate={onNavigate}
               variant="mobile"
             >
               Roadmap
             </NavigationLink>
-            <NavigationLink 
-              href="#pricing" 
+            <NavigationLink
+              href="#pricing"
               onNavigate={onNavigate}
               variant="mobile"
             >
@@ -139,8 +147,8 @@ export function Navigation({ onNavigate }: NavigationProps) {
             {/* Conditional mobile call-to-action buttons */}
             {user ? (
               <>
-                <NavigationLink 
-                  to="/home/overview" 
+                <NavigationLink
+                  to="/home/overview"
                   variant="button"
                   className="w-full"
                 >
@@ -154,11 +162,7 @@ export function Navigation({ onNavigate }: NavigationProps) {
                 </button>
               </>
             ) : (
-              <NavigationLink 
-                to="/login" 
-                variant="button"
-                className="w-full"
-              >
+              <NavigationLink to="/login" variant="button" className="w-full">
                 Start Learning
               </NavigationLink>
             )}
