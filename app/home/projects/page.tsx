@@ -293,7 +293,7 @@ export default function LessonsEnhanced() {
                 <div className="flex items-center gap-3">
                   <div className="flex items-center gap-2">
                     <Crown className="w-5 h-5 text-yellow-400 animate-pulse" />
-                    <span className="font-black text-lg bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent">
+                    <span className="font-black text-lg bg-linear-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent">
                       Level {stats.currentLevel}
                     </span>
                   </div>
@@ -469,7 +469,7 @@ export default function LessonsEnhanced() {
             pathsVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
           }`}
         >
-          <h2 className="text-xl font-black mb-4 flex items-center gap-2 bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+          <h2 className="text-xl font-black mb-4 flex items-center gap-2 bg-linear-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
             <Layers className="w-6 h-6 text-purple-400 animate-pulse" />
             Choose Your Path
           </h2>
