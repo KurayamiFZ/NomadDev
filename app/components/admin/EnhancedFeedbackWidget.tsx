@@ -19,7 +19,7 @@ import {
   User,
 } from "lucide-react";
 import { FeedbackQuestion } from "@/lib/types";
-import { supabase } from "@/lib/supabase";
+import { supabase } from "@/lib/supabaseclient";
 import { useAuth } from "@/lib/auth";
 
 interface FeedbackStats {
