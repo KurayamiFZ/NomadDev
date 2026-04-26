@@ -51,7 +51,7 @@ export const ProfileTabs = memo(function ProfileTabs({ profile, onNavigate }: Pr
       case "projects":
         return <ProjectsTab projects={profile.projects} />;
       case "badges":
-        return <BadgesTab badges={profile.badges} userId={profile.id} />;
+        return <BadgesTab badges={profile.badges} username={profile.username} />;
       case "activity":
         return <ActivityTab activities={profile.activities} />;
       case "skills":

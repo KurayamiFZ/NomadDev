@@ -21,7 +21,7 @@ export function HeroSection() {
   return (
     <>
       {/* Live status badge - Shows current active learners */}
-      <FlexRow className="mt-6 gap-2 rounded-full bg-linear-to-r from-purple-500 to-pink-500 px-3 py-1.5 sm:mt-8 sm:px-4 sm:py-2">
+      <FlexRow className="mt-6 gap-2 rounded-full bg-linear-to-r from-purple-500/30 to-pink-500/30 px-3 py-1.5 sm:mt-8 sm:px-4 sm:py-2">
         <div className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-400 sm:h-2 sm:w-2" />
         <span className="text-xs font-medium text-foreground sm:text-sm">
           2,847 students learning right now

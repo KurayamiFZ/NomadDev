@@ -13,7 +13,7 @@ export default function LiveClassesPage() {
   const [selectedFilter, setSelectedFilter] = useState("all");
   // State for managing search query input
   const [searchQuery, setSearchQuery] = useState("");
-  
+
   // Animation states
   const [isVisible, setIsVisible] = useState(false);
   const [headerVisible, setHeaderVisible] = useState(false);
@@ -24,7 +24,7 @@ export default function LiveClassesPage() {
   const [scheduleVisible, setScheduleVisible] = useState(false);
   const [instructorsVisible, setInstructorsVisible] = useState(false);
   const [ctaVisible, setCtaVisible] = useState(false);
-  
+
   // Refs for scroll-triggered animations
   const headerRef = useRef<HTMLDivElement>(null);
   const filtersRef = useRef<HTMLDivElement>(null);
@@ -38,11 +38,14 @@ export default function LiveClassesPage() {
   useEffect(() => {
     // Trigger initial animations
     setTimeout(() => setIsVisible(true), 100);
-    
+
     // Setup scroll observers with error handling
-    const setupScrollObserver = (ref: React.RefObject<HTMLDivElement | null>, setState: (visible: boolean) => void) => {
+    const setupScrollObserver = (
+      ref: React.RefObject<HTMLDivElement | null>,
+      setState: (visible: boolean) => void,
+    ) => {
       if (!ref.current) return null;
-      
+
       try {
         const observer = new IntersectionObserver(
           ([entry]) => {
@@ -50,29 +53,45 @@ export default function LiveClassesPage() {
               setState(true);
             }
           },
-          { threshold: 0.1 }
+          { threshold: 0.1 },
         );
-        
+
         observer.observe(ref.current);
         return () => observer.disconnect();
       } catch (error) {
-        console.warn('IntersectionObserver setup failed:', error);
+        console.warn("IntersectionObserver setup failed:", error);
         // Fallback: set visible after delay
         setTimeout(() => setState(true), 500);
         return () => {};
       }
     };
-    
+
     // Only setup observers if refs exist
-    const cleanupHeader = headerRef.current ? setupScrollObserver(headerRef, setHeaderVisible) : null;
-    const cleanupFilters = filtersRef.current ? setupScrollObserver(filtersRef, setFiltersVisible) : null;
-    const cleanupLiveBanner = liveBannerRef.current ? setupScrollObserver(liveBannerRef, setLiveBannerVisible) : null;
-    const cleanupUpcoming = upcomingRef.current ? setupScrollObserver(upcomingRef, setUpcomingVisible) : null;
-    const cleanupRecordings = recordingsRef.current ? setupScrollObserver(recordingsRef, setRecordingsVisible) : null;
-    const cleanupSchedule = scheduleRef.current ? setupScrollObserver(scheduleRef, setScheduleVisible) : null;
-    const cleanupInstructors = instructorsRef.current ? setupScrollObserver(instructorsRef, setInstructorsVisible) : null;
-    const cleanupCta = ctaRef.current ? setupScrollObserver(ctaRef, setCtaVisible) : null;
-    
+    const cleanupHeader = headerRef.current
+      ? setupScrollObserver(headerRef, setHeaderVisible)
+      : null;
+    const cleanupFilters = filtersRef.current
+      ? setupScrollObserver(filtersRef, setFiltersVisible)
+      : null;
+    const cleanupLiveBanner = liveBannerRef.current
+      ? setupScrollObserver(liveBannerRef, setLiveBannerVisible)
+      : null;
+    const cleanupUpcoming = upcomingRef.current
+      ? setupScrollObserver(upcomingRef, setUpcomingVisible)
+      : null;
+    const cleanupRecordings = recordingsRef.current
+      ? setupScrollObserver(recordingsRef, setRecordingsVisible)
+      : null;
+    const cleanupSchedule = scheduleRef.current
+      ? setupScrollObserver(scheduleRef, setScheduleVisible)
+      : null;
+    const cleanupInstructors = instructorsRef.current
+      ? setupScrollObserver(instructorsRef, setInstructorsVisible)
+      : null;
+    const cleanupCta = ctaRef.current
+      ? setupScrollObserver(ctaRef, setCtaVisible)
+      : null;
+
     return () => {
       cleanupHeader?.();
       cleanupFilters?.();
@@ -286,11 +305,9 @@ export default function LiveClassesPage() {
   return (
     <div className="flex flex-col min-h-screen w-full bg-black text-white">
       {/* Header Section */}
-      <div 
+      <div
         ref={headerRef}
-        className={`sticky top-0 z-50 backdrop-blur-xl bg-black/80 border-b border-white/10 transform transition-all duration-1000 ease-out ${
-          headerVisible ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0'
-        }`}
+        className="sticky top-0 z-50 backdrop-blur-xl bg-black/80 border-b border-white/10"
       >
         {/* Search Bar */}
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
@@ -315,7 +332,7 @@ export default function LiveClassesPage() {
 
         <div className="max-w-7xl mx-auto px-6 py-8 w-full">
           {/* Filter Tabs */}
-          <div 
+          <div
             ref={filtersRef}
             className="flex items-center gap-3 mb-8 overflow-x-auto"
           >
@@ -346,9 +363,9 @@ export default function LiveClassesPage() {
               {/* Live Now Banner - Shows currently live class */}
               {currentLiveClass &&
                 (selectedFilter === "all" || selectedFilter === "live") && (
-                  <div 
+                  <div
                     ref={liveBannerRef}
-                    className="bg-red-600 rounded-2xl p-8 mb-8 relative overflow-hidden transform transition-all duration-700 ease-out hover:scale-[1.02] hover:shadow-2xl hover:shadow-red-500/30"
+                    className="bg-gray-700/10  border-2 border-gray-700 rounded-2xl p-8 mb-8 relative overflow-hidden transform transition-all duration-700 ease-out hover:scale-[1.02] hover:shadow-2xl hover:shadow-red-500/30"
                   >
                     {/* Overlay for depth effect */}
                     <div className="absolute inset-0 bg-black opacity-20"></div>
@@ -357,8 +374,8 @@ export default function LiveClassesPage() {
                       {/* Live indicator with pulsing dot and student count */}
                       <div className="flex items-center gap-3 mb-4">
                         {/* Animated pulse dot to indicate live status */}
-                        <div className="w-4 h-4 bg-white rounded-full animate-pulse"></div>
-                        <span className="text-white font-black text-lg bg-gradient-to-r from-white to-red-100 bg-clip-text text-transparent">
+                        <div className="w-4 h-4 bg-red-500 rounded-full animate-pulse"></div>
+                        <span className="text-white font-black text-lg bg-linear-to-r from-white to-red-100 bg-clip-text">
                           LIVE NOW
                         </span>
                         <span className="text-white opacity-90 transform transition-transform duration-300 hover:scale-110">
@@ -368,7 +385,7 @@ export default function LiveClassesPage() {
                       {/* Main class info and CTA button */}
                       <div className="flex items-end justify-between">
                         <div>
-                          <h2 className="text-4xl font-black mb-3 bg-gradient-to-r from-white to-red-100 bg-clip-text text-transparent">
+                          <h2 className="text-4xl font-black mb-3 bg-linear-to-r from-white to-red-100 bg-clip-text text-transparent">
                             {currentLiveClass.title}
                           </h2>
                           {/* Instructor info and duration */}
@@ -387,7 +404,7 @@ export default function LiveClassesPage() {
                           </div>
                         </div>
                         {/* Join Live Class Button */}
-                        <button className="bg-white text-red-600 px-8 py-4 rounded-xl font-black text-lg transition-all duration-300 transform hover:scale-105 hover:shadow-lg hover:shadow-white/30">
+                        <button className="bg-linear-to-tr from-red-800 to-pink-800 text-white/ px-8 py-4 rounded-xl font-black text-lg transition-all duration-300 transform hover:scale-105 hover:shadow-lg hover:shadow-white/30">
                           Join Live Class
                         </button>
                       </div>
@@ -410,10 +427,7 @@ export default function LiveClassesPage() {
                   </div>
 
                   {/* Grid of upcoming class cards */}
-                  <div 
-                    ref={upcomingRef}
-                    className="grid md:grid-cols-2 gap-6"
-                  >
+                  <div ref={upcomingRef} className="grid md:grid-cols-2 gap-6">
                     {upcomingClasses.map((cls, index) => (
                       <div
                         key={cls.id}
@@ -423,11 +437,15 @@ export default function LiveClassesPage() {
                         {/* Class header with time and status */}
                         <div className="bg-gray-800 px-4 py-3 border-b border-gray-700">
                           <div className="flex items-center justify-between">
-                            <span className="text-xs text-gray-400 uppercase tracking-wide">Upcoming</span>
-                            <span className="text-xs text-blue-400 font-medium">{cls.time}</span>
+                            <span className="text-xs text-gray-400 uppercase tracking-wide">
+                              Upcoming
+                            </span>
+                            <span className="text-xs text-blue-400 font-medium">
+                              {cls.time}
+                            </span>
                           </div>
                         </div>
-                        
+
                         {/* Class content */}
                         <div className="p-6">
                           {/* Class title and instructor */}
@@ -442,7 +460,7 @@ export default function LiveClassesPage() {
                               <span className="text-sm">{cls.instructor}</span>
                             </div>
                           </div>
-                          
+
                           {/* Class metadata */}
                           <div className="flex items-center gap-4 text-sm text-gray-500 mb-4">
                             <span>{cls.duration}</span>
@@ -451,7 +469,7 @@ export default function LiveClassesPage() {
                             <span>•</span>
                             <span>{cls.attendees} registered</span>
                           </div>
-                          
+
                           {/* Action buttons */}
                           <div className="flex gap-3">
                             <button className="flex-1 bg-purple-600 hover:bg-purple-700 text-white py-2 rounded-lg font-medium text-sm transition-all duration-300 transform hover:scale-105">
@@ -474,7 +492,10 @@ export default function LiveClassesPage() {
                   {/* Section header with "View All" link */}
                   <div className="flex items-center justify-between mb-6">
                     <h2 className="text-2xl font-black text-white flex items-center gap-2">
-                      <Icon name="PlayCircle" className="w-6 h-6 text-green-400" />
+                      <Icon
+                        name="PlayCircle"
+                        className="w-6 h-6 text-green-400"
+                      />
                       Past Recordings
                     </h2>
                     <button className="text-purple-400 hover:text-purple-300 flex items-center gap-1 text-sm font-medium transition-all duration-300 hover:scale-105 transform">
@@ -483,7 +504,7 @@ export default function LiveClassesPage() {
                   </div>
 
                   {/* Grid of past class recordings */}
-                  <div 
+                  <div
                     ref={recordingsRef}
                     className="grid md:grid-cols-2 gap-6"
                   >
@@ -498,16 +519,16 @@ export default function LiveClassesPage() {
                         >
                           {/* Video thumbnail placeholder */}
                           <div className="relative bg-gray-800 h-48 flex items-center justify-center">
-                            <div className="absolute inset-0 bg-gradient-to-br from-green-500/20 to-blue-500/20"></div>
-                            <Icon 
-                              name="PlayCircle" 
-                              className="w-16 h-16 text-white/80 relative z-10 transform transition-transform duration-300 group-hover:scale-110" 
+                            <div className="absolute inset-0 bg-linear-to-br from-green-500/20 to-blue-500/20"></div>
+                            <Icon
+                              name="PlayCircle"
+                              className="w-16 h-16 text-white/80 relative z-10 transform transition-transform duration-300 group-hover:scale-110"
                             />
                             <div className="absolute bottom-2 right-2 bg-black/80 px-2 py-1 rounded text-xs text-white">
                               {cls.duration}
                             </div>
                           </div>
-                          
+
                           {/* Recording Details */}
                           <div className="p-4">
                             {/* Title */}
@@ -542,12 +563,17 @@ export default function LiveClassesPage() {
               {/* Fallback for when no content matches the filter */}
               {!currentLiveClass && selectedFilter === "live" && (
                 <div className="text-center py-12">
-                  <Icon name="VideoOff" className="w-16 h-16 text-gray-600 mx-auto mb-4" />
-                  <h3 className="text-white text-lg font-semibold mb-2">No Live Classes</h3>
+                  <Icon
+                    name="VideoOff"
+                    className="w-16 h-16 text-gray-600 mx-auto mb-4"
+                  />
+                  <h3 className="text-white text-lg font-semibold mb-2">
+                    No Live Classes
+                  </h3>
                   <p className="text-gray-400 mb-4">
                     There are no classes streaming right now
                   </p>
-                  <button 
+                  <button
                     onClick={() => setSelectedFilter("upcoming")}
                     className="text-purple-400 hover:text-purple-300 font-medium transition-colors duration-300"
                   >
@@ -556,51 +582,69 @@ export default function LiveClassesPage() {
                 </div>
               )}
 
-              {upcomingClasses.length === 0 && selectedFilter === "upcoming" && (
-                <div className="text-center py-12">
-                  <Icon name="Calendar" className="w-16 h-16 text-gray-600 mx-auto mb-4" />
-                  <h3 className="text-white text-lg font-semibold mb-2">No Upcoming Classes</h3>
-                  <p className="text-gray-400 mb-4">
-                    Check back later for new scheduled classes
-                  </p>
-                  <button 
-                    onClick={() => setSelectedFilter("past")}
-                    className="text-purple-400 hover:text-purple-300 font-medium transition-colors duration-300"
-                  >
-                    View Past Recordings →
-                  </button>
-                </div>
-              )}
+              {upcomingClasses.length === 0 &&
+                selectedFilter === "upcoming" && (
+                  <div className="text-center py-12">
+                    <Icon
+                      name="Calendar"
+                      className="w-16 h-16 text-gray-600 mx-auto mb-4"
+                    />
+                    <h3 className="text-white text-lg font-semibold mb-2">
+                      No Upcoming Classes
+                    </h3>
+                    <p className="text-gray-400 mb-4">
+                      Check back later for new scheduled classes
+                    </p>
+                    <button
+                      onClick={() => setSelectedFilter("past")}
+                      className="text-purple-400 hover:text-purple-300 font-medium transition-colors duration-300"
+                    >
+                      View Past Recordings →
+                    </button>
+                  </div>
+                )}
 
-              {liveClasses.filter((cls) => cls.status === "past").length === 0 && selectedFilter === "past" && (
-                <div className="text-center py-12">
-                  <Icon name="PlayCircle" className="w-16 h-16 text-gray-600 mx-auto mb-4" />
-                  <h3 className="text-white text-lg font-semibold mb-2">No Past Recordings</h3>
-                  <p className="text-gray-400 mb-4">
-                    No recorded classes available yet
-                  </p>
-                  <button 
-                    onClick={() => setSelectedFilter("upcoming")}
-                    className="text-purple-400 hover:text-purple-300 font-medium transition-colors duration-300"
-                  >
-                    View Upcoming Classes →
-                  </button>
-                </div>
-              )}
+              {liveClasses.filter((cls) => cls.status === "past").length ===
+                0 &&
+                selectedFilter === "past" && (
+                  <div className="text-center py-12">
+                    <Icon
+                      name="PlayCircle"
+                      className="w-16 h-16 text-gray-600 mx-auto mb-4"
+                    />
+                    <h3 className="text-white text-lg font-semibold mb-2">
+                      No Past Recordings
+                    </h3>
+                    <p className="text-gray-400 mb-4">
+                      No recorded classes available yet
+                    </p>
+                    <button
+                      onClick={() => setSelectedFilter("upcoming")}
+                      className="text-purple-400 hover:text-purple-300 font-medium transition-colors duration-300"
+                    >
+                      View Upcoming Classes →
+                    </button>
+                  </div>
+                )}
             </div>
             {/* Right Sidebar - Schedule and Instructors */}
             <div className="lg:col-span-1 self-start">
               {/* Sticky wrapper for sidebar content */}
               <div className="sticky top-24 space-y-6">
                 {/* This Week's Schedule Section */}
-                <div 
+                <div
                   ref={scheduleRef}
                   className={`bg-gray-900 rounded-xl border border-gray-800 p-6 transform transition-all duration-700 ease-out hover:shadow-lg hover:shadow-purple-500/20 ${
-                    scheduleVisible ? 'translate-y-0 opacity-100 scale-100' : 'translate-y-8 opacity-0 scale-95'
+                    scheduleVisible
+                      ? "translate-y-0 opacity-100 scale-100"
+                      : "translate-y-8 opacity-0 scale-95"
                   }`}
                 >
-                  <h3 className="font-black text-lg mb-4 flex items-center gap-2 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
-                    <Icon name="Calendar" className="w-5 h-5 text-purple-400 animate-pulse" />
+                  <h3 className="font-black text-lg mb-4 flex items-center gap-2 bg-linear-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+                    <Icon
+                      name="Calendar"
+                      className="w-5 h-5 text-purple-400 animate-pulse"
+                    />
                     This Week&apos;s Schedule
                   </h3>
                   <div className="space-y-4">
@@ -609,7 +653,9 @@ export default function LiveClassesPage() {
                       <div
                         key={cls.id}
                         className={`border-l-4 border-purple-500 pl-4 py-2 transform transition-all duration-500 hover:scale-105 ${
-                          scheduleVisible ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
+                          scheduleVisible
+                            ? "translate-y-0 opacity-100"
+                            : "translate-y-4 opacity-0"
                         }`}
                         style={{ transitionDelay: `${index * 100}ms` }}
                       >
@@ -639,22 +685,26 @@ export default function LiveClassesPage() {
                   </button>
                 </div>
                 {/* Featured Instructors Section */}
-                <div 
+                <div
                   ref={instructorsRef}
                   className={`bg-gray-900 rounded-xl border border-gray-800 p-6 transform transition-all duration-700 ease-out hover:shadow-lg hover:shadow-blue-500/20 ${
-                    instructorsVisible ? 'translate-y-0 opacity-100 scale-100' : 'translate-y-8 opacity-0 scale-95'
+                    instructorsVisible
+                      ? "translate-y-0 opacity-100 scale-100"
+                      : "translate-y-8 opacity-0 scale-95"
                   }`}
                 >
-                  <h3 className="font-black text-lg mb-4 bg-gradient-to-r from-green-400 to-blue-400 bg-clip-text text-transparent">
+                  <h3 className="font-black text-lg mb-4 bg-linear-to-r from-green-400 to-blue-400 bg-clip-text text-transparent">
                     Featured Instructors
                   </h3>
                   <div className="space-y-4">
                     {/* Display all featured instructors */}
                     {instructors.map((instructor, index) => (
-                      <div 
-                        key={index} 
+                      <div
+                        key={index}
                         className={`flex items-center gap-3 transform transition-all duration-500 hover:scale-105 ${
-                          instructorsVisible ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
+                          instructorsVisible
+                            ? "translate-y-0 opacity-100"
+                            : "translate-y-4 opacity-0"
                         }`}
                         style={{ transitionDelay: `${index * 100}ms` }}
                       >
@@ -683,17 +733,21 @@ export default function LiveClassesPage() {
                   </div>
                 </div>
                 {/* Call-to-Action Section - Join Live Classes */}
-                <div 
+                <div
                   ref={ctaRef}
                   className={`bg-purple-600 rounded-xl p-6 relative overflow-hidden transform transition-all duration-700 ease-out hover:scale-105 hover:shadow-2xl hover:shadow-purple-500/30 ${
-                    ctaVisible ? 'translate-y-0 opacity-100 scale-100' : 'translate-y-8 opacity-0 scale-95'
+                    ctaVisible
+                      ? "translate-y-0 opacity-100 scale-100"
+                      : "translate-y-8 opacity-0 scale-95"
                   }`}
                 >
                   {/* Overlay for depth effect */}
                   <div className="absolute inset-0 bg-black opacity-20"></div>
                   {/* CTA Content */}
                   <div className="relative z-10">
-                    <h3 className="font-black text-lg mb-2 bg-gradient-to-r from-white to-purple-100 bg-clip-text text-transparent">Join Live</h3>
+                    <h3 className="font-black text-lg mb-2 bg-linear-to-r from-white to-purple-100 bg-clip-text text-transparent">
+                      Join Live
+                    </h3>
                     <p className="text-sm text-white opacity-90 mb-4">
                       Connect with 15k+ developers in real-time classes
                     </p>

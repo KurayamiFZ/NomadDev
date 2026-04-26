@@ -251,7 +251,7 @@ const UserDiscovery = memo(function UserDiscovery({ isVisible = true }: UserDisc
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {filteredUsers.map((user, index) => (
-            <UserCard key={user.username} user={user} index={index} />
+            <UserCard key={`${user.username}-${index}`} user={user} index={index} />
           ))}
         </div>
       )}

@@ -87,7 +87,7 @@ export function OverviewTab({ profile, onNavigate }: OverviewTabProps) {
       cleanupProjects?.();
       cleanupBadges?.();
     };
-  }, [profile.id, fetchUserBadges]);
+  }, [profile.id]); // Removed fetchUserBadges from dependencies
 
   return (
     <div className="space-y-8">
@@ -99,7 +99,7 @@ export function OverviewTab({ profile, onNavigate }: OverviewTabProps) {
         }`}
       >
         <div className="flex justify-between items-center mb-4">
-          <h3 className="text-2xl text-white font-black bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+          <h3 className="text-2xl text-white font-black bg-linear-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
             Featured Projects
           </h3>
           <button 
@@ -139,7 +139,7 @@ export function OverviewTab({ profile, onNavigate }: OverviewTabProps) {
         style={{ transitionDelay: '300ms' }}
       >
         <div className="flex justify-between items-center mb-4">
-          <h3 className="text-2xl text-white font-black bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent">
+          <h3 className="text-2xl text-white font-black bg-linear-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent">
             Recent Badges
           </h3>
           <button 

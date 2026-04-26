@@ -1,15 +1,15 @@
 /**
  * Navigation Component - GameDev Academy
- * 
+ *
  * Sticky navigation header with branding, menu items, and mobile responsiveness.
  * Handles navigation between different sections and external pages.
- * 
+ *
  * Features:
  * - Responsive design with mobile hamburger menu
  * - Smooth scroll navigation to page sections
  * - Integration with Next.js router
  * - Gradient branding with game controller icon
- * 
+ *
  * @component
  * @param {Object} props - Component props
  * @param {Function} props.onNavigate - Optional callback for navigation events
@@ -27,6 +27,7 @@ import { IconWrapper } from "./ui/IconWrapper";
 import { FlexRow } from "./ui/FlexRow";
 import { Button } from "./button";
 import { Gamepad2 } from "lucide-react";
+import { useAuth } from "./AuthProvider";
 
 interface NavigationProps {
   /** Optional callback function triggered on navigation */
@@ -35,16 +36,17 @@ interface NavigationProps {
 
 /**
  * Main Navigation Component
- * 
+ *
  * Renders the complete navigation header with desktop and mobile layouts.
  * Manages mobile menu state and handles navigation interactions.
- * 
+ *
  * @param {NavigationProps} props - Component props
  * @returns {JSX.Element} The navigation header
  */
 export function Navigation({ onNavigate }: NavigationProps) {
   // State management for mobile menu toggle
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { user, signOut } = useAuth();
 
   return (
     <>
@@ -52,8 +54,8 @@ export function Navigation({ onNavigate }: NavigationProps) {
       <nav className="sticky top-0 z-50 flex w-full items-center justify-between border-b border-border/50 bg-background/80 px-6 py-4 backdrop-blur-xl lg:px-12">
         {/* Logo and branding section */}
         <FlexRow align="center" gap="sm">
-          <GradientBackground 
-            variant="purple-pink" 
+          <GradientBackground
+            variant="purple-pink"
             className="flex h-10 w-10 items-center justify-center rounded-xl"
           >
             <IconWrapper icon={Gamepad2} size="md" variant="transparent" />
@@ -74,10 +76,32 @@ export function Navigation({ onNavigate }: NavigationProps) {
           <NavigationLink href="#pricing" onNavigate={onNavigate}>
             Pricing
           </NavigationLink>
-          {/* Primary call-to-action button */}
-          <NavigationLink to="/login" variant="button" className="flex justify-center items-center rounded-xl px-2 py-0.5">
-            Start Learning
-          </NavigationLink>
+          {/* Conditional rendering based on auth status */}
+          {user ? (
+            <>
+              <NavigationLink
+                to="/home/overview"
+                variant="button"
+                className="flex justify-center items-center rounded-xl px-2 py-0.5"
+              >
+                Dashboard
+              </NavigationLink>
+              <button
+                onClick={signOut}
+                className="text-sm text-gray-300 hover:text-white transition-colors"
+              >
+                Sign Out
+              </button>
+            </>
+          ) : (
+            <NavigationLink
+              to="/curriculum"
+              variant="button"
+              className="flex justify-center items-center rounded-xl px-2 py-0.5"
+            >
+              Start Learning
+            </NavigationLink>
+          )}
         </FlexRow>
 
         {/* Mobile menu toggle button - Hamburger/Close icon */}
@@ -99,35 +123,49 @@ export function Navigation({ onNavigate }: NavigationProps) {
         <div className="fixed inset-x-0 top-16 z-40 border-b border-border bg-background/95 backdrop-blur-xl p-4 md:hidden">
           <div className="mx-auto max-w-md flex flex-col gap-3">
             {/* Mobile navigation links with click handlers */}
-            <NavigationLink 
-              href="#demo" 
+            <NavigationLink
+              href="#demo"
               onNavigate={onNavigate}
               variant="mobile"
             >
               Demo
             </NavigationLink>
-            <NavigationLink 
-              href="#roadmap" 
+            <NavigationLink
+              href="#roadmap"
               onNavigate={onNavigate}
               variant="mobile"
             >
               Roadmap
             </NavigationLink>
-            <NavigationLink 
-              href="#pricing" 
+            <NavigationLink
+              href="#pricing"
               onNavigate={onNavigate}
               variant="mobile"
             >
               Pricing
             </NavigationLink>
-            {/* Mobile call-to-action button */}
-            <NavigationLink 
-              to="/login" 
-              variant="button"
-              className="w-full"
-            >
-              Start Learning
-            </NavigationLink>
+            {/* Conditional mobile call-to-action buttons */}
+            {user ? (
+              <>
+                <NavigationLink
+                  to="/home/overview"
+                  variant="button"
+                  className="w-full"
+                >
+                  Dashboard
+                </NavigationLink>
+                <button
+                  onClick={signOut}
+                  className="w-full text-sm text-gray-300 hover:text-white transition-colors text-center py-2"
+                >
+                  Sign Out
+                </button>
+              </>
+            ) : (
+              <NavigationLink to="/login" variant="button" className="w-full">
+                Start Learning
+              </NavigationLink>
+            )}
           </div>
         </div>
       )}

@@ -16,24 +16,24 @@ export function LessonCard({ lesson, onClick }: LessonCardProps) {
     if (lesson.completed) return "default";
     return "default";
   };
-  
+
   const getCardClasses = () => {
     if (lesson.current) return "border-purple-500 bg-purple-900/30";
     if (lesson.completed) return "border-gray-700 bg-gray-800/50";
     return "border-gray-700 bg-gray-800 hover:border-gray-600";
   };
-  
+
   // Determine icon and color based on lesson state
   const getIconData = () => {
     if (lesson.completed) return { icon: CheckCircle, color: "green" as const };
     if (lesson.locked) return { icon: Lock, color: "gray" as const };
     return { icon: Play, color: "purple" as const };
   };
-  
+
   const { icon: IconComponent, color } = getIconData();
-  
+
   return (
-    <BaseCard 
+    <BaseCard
       variant={getCardVariant()}
       className={getCardClasses()}
       onClick={onClick}
@@ -41,7 +41,7 @@ export function LessonCard({ lesson, onClick }: LessonCardProps) {
     >
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
-          <IconWrapper 
+          <IconWrapper
             icon={IconComponent}
             size="md"
             variant="solid"

@@ -2,11 +2,11 @@
 import * as Icons from "lucide-react";
 import { LucideProps } from "lucide-react";
 
-export type IconName = keyof typeof Icons; // ← add this export
+export type Icon = keyof typeof Icons; // ← add this export
 
 interface IconComponentProps extends LucideProps {
   // ← also fix __LucideProps__ → LucideProps
-  name: IconName;
+  name: Icon;
 }
 
 export default function Icon({ name, ...props }: IconComponentProps) {

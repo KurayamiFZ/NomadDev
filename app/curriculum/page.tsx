@@ -32,7 +32,7 @@ export default function Curriculum() {
       <header className="relative z-10 flex items-center justify-between w-full px-8 h-16 border-b border-white/5">
         <NavigationLink
           to="/"
-          className="flex items-center gap-2 text-sm font-medium text-white/40 hover:text-white/80 transition-colors duration-200"
+          className="flex items-center gap-2 text-sm font-medium text-white/40 hover:text-white/80 transition-colors duration-200 ease-out"
         >
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
             <path d="M10 3L5 8l5 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />

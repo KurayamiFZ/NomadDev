@@ -1,7 +1,18 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { BookOpen, Code, MessageCircle, Award, Rocket, Clock, Calendar, Trophy, Users, ChevronRight } from "lucide-react";
+import {
+  BookOpen,
+  Code,
+  MessageCircle,
+  Award,
+  Rocket,
+  Clock,
+  Calendar,
+  Trophy,
+  Users,
+  ChevronRight,
+} from "lucide-react";
 import Icon from "../../components/icons";
 import { WelcomeBanner } from "../../components/WelcomeBanner";
 import { StatsCard } from "../../components/StatsCard";
@@ -9,18 +20,18 @@ import { LessonCard } from "../../components/LessonCard";
 import { LiveClassCard } from "../../components/LiveClassCard";
 import { AchievementOver } from "../../components/AchievementOver";
 import { CommunityActivityItem } from "../../components/CommunityActivityItem";
-import { 
-  UPCOMING_CLASSES, 
-  CURRENT_WEEK_LESSONS, 
-  ACHIEVEMENTS, 
-  COMMUNITY_ACTIVITY 
+import {
+  UPCOMING_CLASSES,
+  CURRENT_WEEK_LESSONS,
+  ACHIEVEMENTS,
+  COMMUNITY_ACTIVITY,
 } from "../../../lib/home-data";
 import { useRouter } from "next/navigation";
 
 export default function Overview() {
   const router = useRouter();
   const [isVisible, setIsVisible] = useState(false);
-  
+
   // Refs for scroll-triggered animations
   const statsRef = useRef<HTMLDivElement>(null);
   const learningRef = useRef<HTMLDivElement>(null);
@@ -28,7 +39,7 @@ export default function Overview() {
   const achievementsRef = useRef<HTMLDivElement>(null);
   const communityRef = useRef<HTMLDivElement>(null);
   const quickLinksRef = useRef<HTMLDivElement>(null);
-  
+
   const [statsVisible, setStatsVisible] = useState(false);
   const [learningVisible, setLearningVisible] = useState(false);
   const [liveClassesVisible, setLiveClassesVisible] = useState(false);
@@ -39,31 +50,49 @@ export default function Overview() {
   useEffect(() => {
     // Trigger initial animations after component mounts
     setTimeout(() => setIsVisible(true), 100);
-    
+
     // Setup scroll observers for section animations
-    const setupScrollObserver = (ref: React.RefObject<HTMLDivElement | null>, setState: (visible: boolean) => void) => {
+    const setupScrollObserver = (
+      ref: React.RefObject<HTMLDivElement | null>,
+      setState: (visible: boolean) => void,
+    ) => {
       if (!ref.current) return;
-      
+
       const observer = new IntersectionObserver(
         ([entry]) => {
           if (entry.isIntersecting) {
             setState(true);
           }
         },
-        { threshold: 0.1 }
+        { threshold: 0.1 },
       );
-      
+
       observer.observe(ref.current);
       return () => observer.disconnect();
     };
-    
+
     const cleanupStats = setupScrollObserver(statsRef, setStatsVisible);
-    const cleanupLearning = setupScrollObserver(learningRef, setLearningVisible);
-    const cleanupLiveClasses = setupScrollObserver(liveClassesRef, setLiveClassesVisible);
-    const cleanupAchievements = setupScrollObserver(achievementsRef, setAchievementsVisible);
-    const cleanupCommunity = setupScrollObserver(communityRef, setCommunityVisible);
-    const cleanupQuickLinks = setupScrollObserver(quickLinksRef, setQuickLinksVisible);
-    
+    const cleanupLearning = setupScrollObserver(
+      learningRef,
+      setLearningVisible,
+    );
+    const cleanupLiveClasses = setupScrollObserver(
+      liveClassesRef,
+      setLiveClassesVisible,
+    );
+    const cleanupAchievements = setupScrollObserver(
+      achievementsRef,
+      setAchievementsVisible,
+    );
+    const cleanupCommunity = setupScrollObserver(
+      communityRef,
+      setCommunityVisible,
+    );
+    const cleanupQuickLinks = setupScrollObserver(
+      quickLinksRef,
+      setQuickLinksVisible,
+    );
+
     return () => {
       cleanupStats?.();
       cleanupLearning?.();
@@ -78,37 +107,61 @@ export default function Overview() {
     <div className="flex w-full bg-black">
       {/* Content Area */}
       <div className="p-6 min-h-screen overflow-scroll">
-        <div className={`transform transition-all duration-1000 ease-out ${
-          isVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
-        }`}>
+        <div
+          className={`transform transition-all duration-1000 ease-out ${
+            isVisible ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"
+          }`}
+        >
           <WelcomeBanner />
         </div>
 
         {/* Stats Grid */}
-        <div 
-          ref={statsRef}
-          className="grid md:grid-cols-4 gap-4 mb-6"
-        >
+        <div ref={statsRef} className="grid md:grid-cols-4 gap-4 mb-6">
           {[
-            { icon: BookOpen, value: "12/150", label: "Lessons Completed", color: "text-blue-400", progress: { current: 12, total: 150 } },
-            { icon: Code, value: "7 Days", label: "Current Streak", color: "text-orange-400", subtitle: "🔥 Keep it going!" },
-            { icon: Award, value: "3/5", label: "Games Built", color: "text-green-400", subtitle: "✓ 2D Platformer complete" },
-            { icon: MessageCircle, value: "69%", label: "Completion Rate", color: "text-purple-400", subtitle: "Above average!" }
+            {
+              icon: BookOpen,
+              value: "12/150",
+              label: "Lessons Completed",
+              color: "text-blue-400",
+              progress: { current: 12, total: 150 },
+            },
+            {
+              icon: Code,
+              value: "7 Days",
+              label: "Current Streak",
+              color: "text-orange-400",
+              progress: { current: 7, total: 30 },
+            },
+            {
+              icon: Award,
+              value: "3/5",
+              label: "Games Built",
+              color: "text-green-400",
+              progress: { current: 3, total: 5 },
+            },
+            {
+              icon: MessageCircle,
+              value: "69%",
+              label: "Completion Rate",
+              color: "text-purple-500",
+              progress: { current: 69, total: 100 },
+            },
           ].map((stat, index) => (
             <div
               key={index}
               className={`transform transition-all duration-700 ease-out ${
-                statsVisible ? 'translate-y-0 opacity-100 scale-100' : 'translate-y-8 opacity-0 scale-95'
+                statsVisible
+                  ? "translate-y-0 opacity-100 scale-100"
+                  : "translate-y-8 opacity-0 scale-95"
               }`}
               style={{ transitionDelay: `${index * 150}ms` }}
             >
-              <StatsCard 
+              <StatsCard
                 icon={stat.icon}
                 value={stat.value}
                 label={stat.label}
                 color={stat.color}
                 progress={stat.progress}
-                subtitle={stat.subtitle}
               />
             </div>
           ))}
@@ -118,26 +171,31 @@ export default function Overview() {
           {/* Left Column - Continue Learning */}
           <div className="lg:col-span-2 space-y-6">
             {/* Continue Where You Left Off */}
-            <div 
+            <div
               ref={learningRef}
               className={`bg-linear-to-br from-gray-900 to-black rounded-xl border border-gray-800 overflow-hidden transform transition-all duration-700 ease-out ${
-                learningVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
+                learningVisible
+                  ? "translate-y-0 opacity-100"
+                  : "translate-y-8 opacity-0"
               }`}
             >
               <div className="p-6 border-b border-gray-800">
-                <h2 className="text-2xl font-bold flex items-center gap-2 bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
-                  <Icon name="Rocket" className="size-6 text-purple-400 animate-pulse" />
+                <h2 className="text-2xl font-bold flex items-center gap-2 bg-linear-to-r from-purple-500 to-pink-500 bg-clip-text text-transparent">
+                  <Icon
+                    name="Rocket"
+                    className="size-6 text-purple-500 animate-pulse"
+                  />
                   Continue Learning
                 </h2>
               </div>
               <div className="p-6">
-                <div className="bg-linear-to-r from-purple-900/50 to-pink-900/50 rounded-xl p-6 border border-purple-500/50 mb-6 transform transition-all duration-500 hover:scale-105 hover:shadow-2xl hover:shadow-purple-500/20 group">
+                <div className="bg-linear-to-r from-purple-950/60 to-pink-950/60 rounded-xl p-6 border border-purple-600/40 mb-6 transform transition-all duration-500 hover:scale-105 hover:shadow-2xl hover:shadow-purple-600/15 group">
                   <div className="flex items-start justify-between mb-4">
                     <div>
-                      <div className="text-purple-400 text-sm font-medium mb-1">
+                      <div className="text-purple-500 text-sm font-medium mb-1">
                         LESSON 4 • WEEK 2
                       </div>
-                      <h3 className="text-2xl font-bold mb-2 group-hover:text-purple-300 transition-colors">
+                      <h3 className="text-2xl font-bold mb-2 group-hover:text-purple-400 transition-colors">
                         Introduction to Physics
                       </h3>
                       <p className="text-gray-400 group-hover:text-gray-300 transition-colors">
@@ -146,7 +204,7 @@ export default function Overview() {
                       </p>
                     </div>
                     <div className="shrink-0 ml-4">
-                      <div className="w-16 h-16 bg-linear-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center transform transition-all duration-300 group-hover:scale-110 group-hover:rotate-12">
+                      <div className="w-16 h-16 bg-linear-to-br from-purple-500/60 to-pink-500/60 rounded-full flex items-center justify-center transform transition-all duration-300 group-hover:scale-110 group-hover:rotate-12">
                         <Icon name="Play" className="size-8 text-white" />
                       </div>
                     </div>
@@ -161,7 +219,7 @@ export default function Overview() {
                       <span>Coding Exercise</span>
                     </div>
                   </div>
-                  <button className="w-full bg-linear-to-r from-purple-600 to-pink-600 text-white py-3 rounded-lg font-bold mt-6 hover:scale-105 transition-all duration-300 hover:shadow-lg hover:shadow-purple-500/50">
+                  <button className="w-full bg-linear-to-r from-purple-600/40 to-pink-600/40 text-white py-3 rounded-lg font-bold mt-6 hover:scale-105 transition-all duration-300 hover:shadow-lg hover:shadow-purple-500/50">
                     Continue Lesson
                   </button>
                 </div>
@@ -190,7 +248,9 @@ export default function Overview() {
                     <div
                       key={lesson.id}
                       className={`transform transition-all duration-700 ease-out ${
-                        learningVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
+                        learningVisible
+                          ? "translate-y-0 opacity-100"
+                          : "translate-y-8 opacity-0"
                       }`}
                       style={{ transitionDelay: `${200 + index * 100}ms` }}
                     >
@@ -202,15 +262,20 @@ export default function Overview() {
             </div>
 
             {/* Live Classes */}
-            <div 
+            <div
               ref={liveClassesRef}
               className={`bg-linear-to-br from-gray-900 to-black rounded-xl border border-gray-800 overflow-hidden transform transition-all duration-700 ease-out ${
-                liveClassesVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
+                liveClassesVisible
+                  ? "translate-y-0 opacity-100"
+                  : "translate-y-8 opacity-0"
               }`}
             >
               <div className="p-6 border-b border-gray-800">
-                <h2 className="text-2xl font-bold flex items-center gap-2 bg-gradient-to-r from-pink-400 to-orange-400 bg-clip-text text-transparent">
-                  <Icon name="Calendar" className="size-6 text-pink-400 animate-pulse" />
+                <h2 className="text-2xl font-bold flex items-center gap-2 bg-linear-to-r from-pink-500 to-orange-500 bg-clip-text text-transparent">
+                  <Icon
+                    name="Calendar"
+                    className="size-6 text-pink-500 animate-pulse"
+                  />
                   Upcoming Live Classes
                 </h2>
               </div>
@@ -219,7 +284,9 @@ export default function Overview() {
                   <div
                     key={index}
                     className={`transform transition-all duration-700 ease-out ${
-                      liveClassesVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
+                      liveClassesVisible
+                        ? "translate-y-0 opacity-100"
+                        : "translate-y-8 opacity-0"
                     }`}
                     style={{ transitionDelay: `${index * 150}ms` }}
                   >
@@ -233,15 +300,20 @@ export default function Overview() {
           {/* Right Column - Community & Achievements */}
           <div className="space-y-6">
             {/* Achievements */}
-            <div 
+            <div
               ref={achievementsRef}
               className={`bg-linear-to-br from-gray-900 to-black rounded-xl border border-gray-800 overflow-hidden transform transition-all duration-700 ease-out ${
-                achievementsVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
+                achievementsVisible
+                  ? "translate-y-0 opacity-100"
+                  : "translate-y-8 opacity-0"
               }`}
             >
               <div className="p-6 border-b border-gray-800">
-                <h2 className="text-xl font-bold flex items-center gap-2 bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent">
-                  <Icon name="Trophy" className="size-5 text-yellow-400 animate-pulse" />
+                <h2 className="text-xl font-bold flex items-center gap-2 bg-linear-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent">
+                  <Icon
+                    name="Trophy"
+                    className="size-5 text-yellow-400 animate-pulse"
+                  />
                   Achievements
                 </h2>
               </div>
@@ -251,7 +323,9 @@ export default function Overview() {
                     <div
                       key={index}
                       className={`transform transition-all duration-700 ease-out ${
-                        achievementsVisible ? 'translate-y-0 opacity-100 scale-100' : 'translate-y-8 opacity-0 scale-95'
+                        achievementsVisible
+                          ? "translate-y-0 opacity-100 scale-100"
+                          : "translate-y-8 opacity-0 scale-95"
                       }`}
                       style={{ transitionDelay: `${index * 100}ms` }}
                     >
@@ -266,15 +340,20 @@ export default function Overview() {
             </div>
 
             {/* Community Activity */}
-            <div 
+            <div
               ref={communityRef}
               className={`bg-linear-to-br from-gray-900 to-black rounded-xl border border-gray-800 overflow-hidden transform transition-all duration-700 ease-out ${
-                communityVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
+                communityVisible
+                  ? "translate-y-0 opacity-100"
+                  : "translate-y-8 opacity-0"
               }`}
             >
               <div className="p-6 border-b border-gray-800">
-                <h2 className="text-xl font-bold flex items-center gap-2 bg-gradient-to-r from-green-400 to-blue-400 bg-clip-text text-transparent">
-                  <Icon name="Users" className="size-5 text-green-400 animate-pulse" />
+                <h2 className="text-xl font-bold flex items-center gap-2 bg-linear-to-r from-green-400 to-blue-400 bg-clip-text text-transparent">
+                  <Icon
+                    name="Users"
+                    className="size-5 text-green-400 animate-pulse"
+                  />
                   Community Activity
                 </h2>
               </div>
@@ -284,7 +363,9 @@ export default function Overview() {
                     <div
                       key={index}
                       className={`transform transition-all duration-700 ease-out ${
-                        communityVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
+                        communityVisible
+                          ? "translate-y-0 opacity-100"
+                          : "translate-y-8 opacity-0"
                       }`}
                       style={{ transitionDelay: `${index * 150}ms` }}
                     >
@@ -296,7 +377,7 @@ export default function Overview() {
                   href="https://discord.gg/wrRfkUydxQ"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-full bg-linear-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white py-3 rounded-lg font-bold mt-4 transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-purple-500/50 flex items-center justify-center gap-2"
+                  className="w-full bg-linear-to-r from-purple-900 to-pink-900 hover:from-purple-500 hover:to-pink-500 text-white py-3 rounded-lg font-bold mt-4 transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-purple-500/50 flex items-center justify-center gap-2"
                 >
                   <Icon name="MessageCircle" className="size-4" />
                   Join Discord Community
@@ -305,13 +386,17 @@ export default function Overview() {
             </div>
 
             {/* Quick Links */}
-            <div 
+            <div
               ref={quickLinksRef}
               className={`bg-linear-to-br from-gray-900 to-black rounded-xl border border-gray-800 p-6 transform transition-all duration-700 ease-out ${
-                quickLinksVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
+                quickLinksVisible
+                  ? "translate-y-0 opacity-100"
+                  : "translate-y-8 opacity-0"
               }`}
             >
-              <h2 className="text-xl font-bold mb-4 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">Quick Links</h2>
+              <h2 className="text-xl font-bold mb-4 bg-linear-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+                Quick Links
+              </h2>
               <div className="space-y-2">
                 {[
                   {
@@ -327,7 +412,7 @@ export default function Overview() {
                   {
                     icon: MessageCircle,
                     label: "Ask a Question",
-                    color: "text-purple-400",
+                    color: "text-purple-500",
                   },
                   {
                     icon: Award,
@@ -343,11 +428,15 @@ export default function Overview() {
                       }
                     }}
                     className={`w-full flex items-center gap-3 p-3 rounded-lg bg-gray-800 hover:bg-gray-700 transition-all duration-300 text-left transform hover:scale-105 hover:shadow-lg ${
-                      quickLinksVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
+                      quickLinksVisible
+                        ? "translate-y-0 opacity-100"
+                        : "translate-y-8 opacity-0"
                     }`}
                     style={{ transitionDelay: `${index * 100}ms` }}
                   >
-                    <link.icon className={`w-5 h-5 ${link.color} transform transition-transform duration-300 hover:scale-110`} />
+                    <link.icon
+                      className={`w-5 h-5 ${link.color} transform transition-transform duration-300 hover:scale-110`}
+                    />
                     <span className="font-medium">{link.label}</span>
                     <Icon
                       name="ChevronRight"

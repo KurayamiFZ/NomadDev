@@ -304,6 +304,7 @@ export default function Auther() {
                 name="level"
                 id="level"
                 onChange={(e) => setLevel(e.target.value)}
+                className="flex justify-center items-center font-bold p-1 bg-white/20 border border-white rounded"
               >
                 <option
                   value="Beginner"
@@ -324,8 +325,9 @@ export default function Auther() {
                   Advanced
                 </option>
               </select>
-              <span className="text-sm text-white/20 font-extralight font-[Italic]">
+              <span className="text-sm text-white/50 font-extralight font-[Italic]">
                 Please Choose Your Coding Experience Level.
+                <div className="flex-1 h-px bg-gray-100 w-2/3"></div>
               </span>
             </div>
           )}

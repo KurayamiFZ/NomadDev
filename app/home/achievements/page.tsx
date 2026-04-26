@@ -1,10 +1,10 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { Trophy, Lock, Search } from "lucide-react";
 import { AchievementCard } from "../../components/AchievementCard";
 import { supabase } from "@/lib/supabaseclient";
 import Icon from "@/app/components/icons";
+import * as Icons from "lucide-react";
 
 const rarityConfig = {
   common: {
@@ -45,14 +45,11 @@ export default function AchievementsEnhanced() {
   const [expandedAchievement, setExpandedAchievement] = useState<number | null>(null);
   
   // Animation states
-  const [isVisible, setIsVisible] = useState(false);
-  const [headerVisible, setHeaderVisible] = useState(false);
   const [statsVisible, setStatsVisible] = useState(false);
   const [filtersVisible, setFiltersVisible] = useState(false);
   const [achievementsVisible, setAchievementsVisible] = useState(false);
   
   // Refs for scroll-triggered animations
-  const headerRef = useRef<HTMLDivElement>(null);
   const statsRef = useRef<HTMLDivElement>(null);
   const filtersRef = useRef<HTMLDivElement>(null);
   const achievementsRef = useRef<HTMLDivElement>(null);
@@ -72,8 +69,8 @@ export default function AchievementsEnhanced() {
 
     fetchAchievements();
     
-    // Trigger initial animations
-    setTimeout(() => setIsVisible(true), 100);
+    // Trigger stats animation after a short delay
+    setTimeout(() => setStatsVisible(true), 300);
     
     // Setup scroll observers
     const setupScrollObserver = (ref: React.RefObject<HTMLDivElement | null>, setState: (visible: boolean) => void) => {
@@ -92,14 +89,10 @@ export default function AchievementsEnhanced() {
       return () => observer.disconnect();
     };
     
-    const cleanupHeader = setupScrollObserver(headerRef, setHeaderVisible);
-    const cleanupStats = setupScrollObserver(statsRef, setStatsVisible);
     const cleanupFilters = setupScrollObserver(filtersRef, setFiltersVisible);
     const cleanupAchievements = setupScrollObserver(achievementsRef, setAchievementsVisible);
     
     return () => {
-      cleanupHeader?.();
-      cleanupStats?.();
       cleanupFilters?.();
       cleanupAchievements?.();
     };
@@ -137,7 +130,6 @@ export default function AchievementsEnhanced() {
     2: achievements.filter((a) => a.tier === 2),
     3: achievements.filter((a) => a.tier === 3),
     4: achievements.filter((a) => a.tier === 4),
-    5: achievements.filter((a) => a.tier === 5),
   };
 
   const tierLabels = {
@@ -145,7 +137,6 @@ export default function AchievementsEnhanced() {
     2: "Journeyman",
     3: "Expert",
     4: "Master",
-    5: "Legend",
   };
 
   return (
@@ -160,26 +151,13 @@ export default function AchievementsEnhanced() {
 
       {/* Main Content */}
       <div className="relative z-10 w-full flex-1">
-        {/* Header */}
-        <div 
-          ref={headerRef}
-          className={`top-0 z-50 backdrop-blur-xl bg-black/60 border-b border-white/5 transform transition-all duration-1000 ease-out ${
-            headerVisible ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0'
-          }`}
-        >
+        {/* Header with Stats */}
+        <div className="sticky top-0 z-50 backdrop-blur-xl bg-black/60 border-b border-white/5">
           <div className="max-w-7xl mx-auto px-6 py-4">
             <div className="flex items-center justify-between">
-              <div>
-                <h1 className="text-3xl font-black mb-2 bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
-                  Achievements
-                </h1>
-                <p className="text-gray-400">
-                  Unlock rewards and showcase your game development journey
-                </p>
-              </div>
-              
+              {/* Search */}
               <div className="relative">
-                <Search className="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 transform transition-transform duration-300 hover:scale-110" />
+                <Icon name="Search" className="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 transform transition-transform duration-300 hover:scale-110" />
                 <input
                   type="text"
                   placeholder="Search achievements..."
@@ -188,95 +166,85 @@ export default function AchievementsEnhanced() {
                   className="bg-white/5 border border-white/10 rounded-xl pl-10 pr-4 py-3 w-64 focus:border-purple-500 focus:outline-none text-sm backdrop-blur-sm transition-all duration-300 hover:border-white/20 focus:shadow-lg focus:shadow-purple-500/20"
                 />
               </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Stats Bar */}
-        <div 
-          ref={statsRef}
-          className={`bg-linear-to-r from-purple-600/20 to-pink-600/20 backdrop-blur-sm border border-purple-500/30 rounded-2xl p-6 mx-8 transform transition-all duration-700 ease-out hover:shadow-lg hover:shadow-purple-500/20 ${
-            statsVisible ? 'translate-y-0 opacity-100 scale-100' : 'translate-y-8 opacity-0 scale-95'
-          }`}
-        >
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <Trophy className="w-6 h-6 text-yellow-400 animate-pulse" />
-              <div>
-                <div className="flex items-center gap-2">
-                  <span className="font-black text-lg">
-                    Collection {unlockedCount}/{totalCount}
-                  </span>
-                </div>
-                <div className="w-px h-6 bg-white/20"></div>
-                <div className="flex items-center gap-2">
-                  <Icon
-                    name="Sparkles"
-                    className="w-5 h-5 text-purple-400"
-                  />
-                  <span className="font-bold text-purple-400">
-                    {totalxp.toLocaleString()} xp
-                  </span>
+              
+              {/* Stats Bar */}
+              <div 
+                ref={statsRef}
+                className={`bg-linear-to-r from-purple-600/20 to-pink-600/20 backdrop-blur-sm border border-purple-500/30 rounded-xl p-3 ml-4 transform transition-all duration-700 ease-out hover:shadow-lg hover:shadow-purple-500/20 ${
+                  statsVisible ? 'translate-y-0 opacity-100 scale-100' : 'translate-y-8 opacity-0 scale-95'
+                }`}
+              >
+                <div className="flex items-center gap-4">
+                  <Icon name="Trophy" className="w-5 h-5 text-yellow-400 animate-pulse" />
+                  <div className="flex items-center gap-4">
+                    <span className="font-bold text-sm">
+                      {unlockedCount}/{totalCount}
+                    </span>
+                    <div className="w-px h-4 bg-white/20"></div>
+                    <div className="flex items-center gap-2">
+                      <Icon
+                        name="Sparkles"
+                        className="w-4 h-4 text-purple-400"
+                      />
+                      <span className="font-bold text-sm text-purple-400">
+                        {totalxp.toLocaleString()} xp
+                      </span>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
-            <button className="relative p-3 bg-white/5 hover:bg-white/10 rounded-xl transition-all duration-300 border border-white/10 transform hover:scale-110 hover:shadow-lg">
-              <Icon name="Bell" className="w-5 h-5" />
-              <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
-            </button>
           </div>
         </div>
 
         {/* Main Content */}
         <main className="p-8">
           {/* Featured Achievement */}
-          {achievements.find((a) => a.unlocked && a.tier >= 3) && (
-            <section className="mb-12">
-              <h2 className="text-2xl font-bold text-white mb-6">
-                Featured Achievement
-              </h2>
-              <div className="bg-linear-to-r from-purple-600/20 to-pink-600/20 border border-purple-500/50 rounded-xl p-6">
-                <div className="flex items-center gap-4">
-                  <div className="w-16 h-16 bg-linear-to-br from-purple-500 to-pink-500 rounded-xl flex items-center justify-center text-3xl">
-                    {achievements.find((a) => a.unlocked && a.tier >= 3)
-                      ?.icon || "🏆"}
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="text-xl font-bold text-white mb-1">
-                      {achievements.find((a) => a.unlocked && a.tier >= 3)
-                        ?.title || "Master Achievement"}
-                    </h3>
-                    <p className="text-gray-300 mb-2">
-                      {achievements.find((a) => a.unlocked && a.tier >= 3)
-                        ?.description || "You've mastered advanced skills"}
-                    </p>
-                    <div className="flex items-center gap-4 text-sm">
-                      <span className="text-yellow-400 font-medium">
-                        +
-                        {achievements.find((a) => a.unlocked && a.tier >= 3)
-                          ?.xp || 500}{" "}
-                        xp
-                      </span>
-                      <span className="text-gray-400">
-                        Tier{" "}
-                        {achievements.find((a) => a.unlocked && a.tier >= 3)
-                          ?.tier || 3}
-                      </span>
+          {(() => {
+            const featuredAchievement = achievements.find((a) => a.unlocked);
+            
+            if (!featuredAchievement) return null;
+            
+            return (
+              <section className="mb-12">
+                <h2 className="text-2xl font-bold text-white mb-6">
+                  Featured Achievement
+                </h2>
+                <div className="bg-linear-to-r from-purple-600/20 to-pink-600/20 border border-purple-500/50 rounded-xl p-6">
+                  <div className="flex items-center gap-4">
+                    <div className="w-16 h-16 bg-linear-to-br from-purple-500 to-pink-500 rounded-xl flex items-center justify-center text-3xl">
+                      <Icons.Trophy size={32} />
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-gray-300 mb-2">
+                        {featuredAchievement?.description || "You've mastered advanced skills"}
+                      </p>
+                      <div className="flex items-center gap-4 text-sm">
+                        <span className="text-yellow-400 font-medium">
+                          +
+                          {featuredAchievement?.xp || 500}{" "}
+                          xp
+                        </span>
+                        <span className="text-gray-400">
+                          Tier{" "}
+                          {featuredAchievement?.tier || 3}
+                        </span>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            </section>
-          )}
+              </section>
+            );
+          })()}
 
           {/* Tier Progress */}
           <section className="mb-12">
             <h3 className="text-xl flex flex-row gap-4 font-black text-white mb-6">
-              <Trophy className="size-6 text-purple-400" />
+              <Icon name="Trophy" className="size-6 text-purple-400" />
               Achievement Tiers
             </h3>
             <div className="space-y-4">
-              {[1, 2, 3, 4, 5].map((tier) => {
+              {[1, 2, 3, 4].map((tier) => {
                 const tierAchievements =
                   achievementsByTier[tier as keyof typeof achievementsByTier];
                 const unlocked = tierAchievements.filter(
@@ -326,9 +294,6 @@ export default function AchievementsEnhanced() {
                               name="Crown"
                               className="size-5 text-yellow-400"
                             />
-                          )}
-                          {tier === 5 && (
-                            <Icon name="Gem" className="size-5 text-red-400" />
                           )}
                         </div>
                         <div>

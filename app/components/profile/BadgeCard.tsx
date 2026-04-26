@@ -34,13 +34,13 @@ export function BadgeCard({ badge }: BadgeCardProps) {
       variant="bordered"
       className={`flex-col items-center justify-center mt-4 space-y-2 w-full p-6 rounded-2xl transition-all duration-500 hover:scale-105 hover:shadow-2xl relative overflow-hidden group ${
         badge.earned
-          ? "border-yellow-500 bg-gradient-to-br from-yellow-500/10 to-orange-500/10 hover:from-yellow-500/20 hover:to-orange-500/20"
+          ? "border-yellow-500 bg-linear-to-br from-yellow-500/10 to-orange-500/10 hover:from-yellow-500/20 hover:to-orange-500/20"
           : "border-gray-800 bg-gray-900 opacity-50 hover:opacity-70"
       }`}
     >
       {/* Animated background effect for earned badges */}
       {badge.earned && (
-        <div className="absolute inset-0 bg-gradient-to-br from-yellow-500/5 to-orange-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+        <div className="absolute inset-0 bg-linear-to-br from-yellow-500/5 to-orange-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
       )}
       
       {/* Badge Icon */}
