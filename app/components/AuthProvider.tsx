@@ -20,10 +20,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const getInitialSession = async () => {
       try {
-        const { data: { session } } = await supabase.auth.getSession();
-        setUser(session?.user ?? null);
+        const { data: { session }, error } = await supabase.auth.getSession();
+        if (error) {
+          console.error('Error getting session:', error);
+          setUser(null);
+        } else {
+          setUser(session?.user ?? null);
+        }
       } catch (error) {
-        console.error('Error getting session:', error);
+        console.error('Unexpected error getting session:', error);
         setUser(null);
       } finally {
         setLoading(false);
@@ -33,8 +38,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     getInitialSession();
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, session) => {
-        setUser(session?.user ?? null);
+      async (event, session) => {
+        console.log('Auth state changed:', event, session?.user?.id);
+        
+        if (event === 'TOKEN_REFRESHED') {
+          // Handle token refresh
+          console.log('Token refreshed successfully');
+        } else if (event === 'SIGNED_OUT') {
+          setUser(null);
+        } else if (event === 'SIGNED_IN') {
+          setUser(session?.user ?? null);
+        } else {
+          setUser(session?.user ?? null);
+        }
+        
         setLoading(false);
       }
     );

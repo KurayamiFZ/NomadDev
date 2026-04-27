@@ -52,6 +52,7 @@ export async function GET() {
 
     const formattedUsers = users.map(user => ({
       id: user.id, // User ID from users table (for sharing)
+      username: user.name?.toLowerCase().replace(/\s+/g, '') || (user.email ? user.email.split('@')[0] : 'unknown'), // Generate username from name or email
       displayName: user.name || (user.email ? user.email.split('@')[0] : 'Unknown User'), // Display name from users table (for sharing)
       rank: user.level || 'Beginner',
       email: user.email, // Include email for display

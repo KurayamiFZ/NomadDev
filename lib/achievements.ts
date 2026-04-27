@@ -1,10 +1,11 @@
 /**
  * Achievement System Utilities
- * 
+ *
  * Client-side utilities for managing achievements and badges
  */
 
 import { supabase } from "./supabaseclient";
+import Icon from "@/app/components/icons";
 
 export interface Achievement {
   id: number;
@@ -39,13 +40,13 @@ export interface UserBadge {
  */
 export async function getAllAchievements(): Promise<Achievement[]> {
   try {
-    const response = await fetch('/api/achievements');
+    const response = await fetch("/api/achievements");
     if (!response.ok) {
-      throw new Error('Failed to fetch achievements');
+      throw new Error("Failed to fetch achievements");
     }
     return await response.json();
   } catch (error) {
-    console.error('Error fetching achievements:', error);
+    console.error("Error fetching achievements:", error);
     return [];
   }
 }
@@ -59,10 +60,10 @@ export async function unlockAchievement(achievementId: number): Promise<{
   achievement?: Achievement;
 }> {
   try {
-    const response = await fetch('/api/achievements', {
-      method: 'POST',
+    const response = await fetch("/api/achievements", {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({ achievementId }),
     });
@@ -72,20 +73,20 @@ export async function unlockAchievement(achievementId: number): Promise<{
     if (!response.ok) {
       return {
         success: false,
-        message: data.error || 'Failed to unlock achievement'
+        message: data.error || "Failed to unlock achievement",
       };
     }
 
     return {
       success: true,
       message: data.message,
-      achievement: data.achievement
+      achievement: data.achievement,
     };
   } catch (error) {
-    console.error('Error unlocking achievement:', error);
+    console.error("Error unlocking achievement:", error);
     return {
       success: false,
-      message: 'Network error occurred'
+      message: "Network error occurred",
     };
   }
 }
@@ -106,18 +107,20 @@ export async function getUserBadges(userId: string): Promise<{
         return {
           badges: [],
           unlockedCount: 0,
-          totalCount: 0
+          totalCount: 0,
         };
       }
-      throw new Error(`Failed to fetch user badges: ${response.status} ${response.statusText}`);
+      throw new Error(
+        `Failed to fetch user badges: ${response.status} ${response.statusText}`,
+      );
     }
     return await response.json();
   } catch (error) {
-    console.error('Error fetching user badges:', error);
+    console.error("Error fetching user badges:", error);
     return {
       badges: [],
       unlockedCount: 0,
-      totalCount: 0
+      totalCount: 0,
     };
   }
 }
@@ -127,7 +130,9 @@ export async function getUserBadges(userId: string): Promise<{
  */
 export async function hasAchievement(achievementId: number): Promise<boolean> {
   try {
-    const { data: { user } } = await supabase.auth.getUser();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
     if (!user) return false;
 
     const { data: userAchievement } = await supabase
@@ -139,7 +144,7 @@ export async function hasAchievement(achievementId: number): Promise<boolean> {
 
     return !!userAchievement;
   } catch (error) {
-    console.error('Error checking achievement:', error);
+    console.error("Error checking achievement:", error);
     return false;
   }
 }
@@ -174,25 +179,27 @@ export class AchievementManager {
    * Check and unlock achievements based on user actions
    */
   async checkAchievements(action: string, metadata?: any) {
-    const { data: { user } } = await supabase.auth.getUser();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
     if (!user) return;
 
     // Achievement unlocking logic based on actions
     switch (action) {
-      case 'lesson_completed':
+      case "lesson_completed":
         await this.checkLessonAchievements(metadata);
         break;
-      case 'streak_7_days':
-        await this.unlockAchievementByTitle('Hot Streak');
+      case "streak_7_days":
+        await this.unlockAchievementByTitle("Hot Streak");
         break;
-      case 'first_game_published':
-        await this.unlockAchievementByTitle('First Game');
+      case "first_game_published":
+        await this.unlockAchievementByTitle("First Game");
         break;
-      case '100_hours_learning':
-        await this.unlockAchievementByTitle('Dedicated Learner');
+      case "100_hours_learning":
+        await this.unlockAchievementByTitle("Dedicated Learner");
         break;
-      case 'week_champion':
-        await this.unlockAchievementByTitle('Week Champion');
+      case "week_champion":
+        await this.unlockAchievementByTitle("Week Champion");
         break;
     }
   }
@@ -200,15 +207,15 @@ export class AchievementManager {
   private async checkLessonAchievements(metadata: { lessonCount: number }) {
     // First lesson achievement
     if (metadata.lessonCount === 1) {
-      await this.unlockAchievementByTitle('Quick Start');
+      await this.unlockAchievementByTitle("Quick Start");
     }
   }
 
   private async unlockAchievementByTitle(title: string) {
-    const achievement = this.achievements.find(a => a.title === title);
+    const achievement = this.achievements.find((a) => a.title === title);
     if (!achievement) return;
 
-    const alreadyUnlocked = this.userBadges.some(b => b.title === title);
+    const alreadyUnlocked = this.userBadges.some((b) => b.title === title);
     if (alreadyUnlocked) return;
 
     const result = await unlockAchievement(achievement.id);
@@ -216,7 +223,9 @@ export class AchievementManager {
       // Show achievement unlocked notification
       this.showAchievementUnlocked(result.achievement!);
       // Refresh user badges
-      const { data: { user } } = await supabase.auth.getUser();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
       if (user) {
         const badgeResult = await getUserBadges(user.id);
         this.userBadges = badgeResult.badges;
@@ -226,11 +235,12 @@ export class AchievementManager {
 
   private showAchievementUnlocked(achievement: Achievement) {
     // Create a simple notification (you can replace this with your preferred notification system)
-    const notification = document.createElement('div');
-    notification.className = 'fixed top-4 right-4 bg-yellow-500 text-black px-6 py-4 rounded-lg shadow-lg z-50 max-w-sm';
+    const notification = document.createElement("div");
+    notification.className =
+      "fixed top-4 right-4 bg-yellow-500 text-black px-6 py-4 rounded-lg shadow-lg z-50 max-w-sm";
     notification.innerHTML = `
       <div class="flex items-center gap-3">
-        <span class="text-2xl">${achievement.icon || '🏆'}</span>
+        <span class="text-2xl">${achievement.icon}</span>
         <div>
           <div class="font-bold">Achievement Unlocked!</div>
           <div class="text-sm">${achievement.title}</div>
@@ -238,9 +248,9 @@ export class AchievementManager {
         </div>
       </div>
     `;
-    
+
     document.body.appendChild(notification);
-    
+
     // Auto remove after 5 seconds
     setTimeout(() => {
       if (notification.parentNode) {
@@ -269,7 +279,7 @@ export class AchievementManager {
  */
 export function useAchievements(userId?: string) {
   const manager = AchievementManager.getInstance();
-  
+
   const unlockAchievement = async (action: string, metadata?: any) => {
     await manager.checkAchievements(action, metadata);
   };
@@ -281,6 +291,6 @@ export function useAchievements(userId?: string) {
     unlockAchievement,
     getUserBadges,
     getAllAchievements,
-    initialize: () => manager.initialize(userId)
+    initialize: () => manager.initialize(userId),
   };
 }

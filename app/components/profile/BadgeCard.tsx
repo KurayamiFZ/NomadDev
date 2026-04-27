@@ -18,6 +18,32 @@ import { BaseCard } from "../ui/BaseCard";
 import { StatusBadge } from "../ui/StatusBadge";
 import { IconWrapper } from "../ui/IconWrapper";
 
+// Format date to show clean, readable format
+const formatDate = (dateString: string): string => {
+  if (!dateString) return "Earned";
+  
+  try {
+    const date = new Date(dateString);
+    
+    // Check if date is valid
+    if (isNaN(date.getTime())) {
+      return "Earned";
+    }
+    
+    // Format options for clean date display
+    const options: Intl.DateTimeFormatOptions = {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric'
+    };
+    
+    return date.toLocaleDateString('en-US', options);
+  } catch (error) {
+    console.error("Error formatting date:", error);
+    return "Earned";
+  }
+};
+
 interface BadgeCardProps {
   badge: UserBadge;
 }
@@ -77,16 +103,16 @@ export function BadgeCard({ badge }: BadgeCardProps) {
           size="sm"
           className={badge.earned ? "hover:bg-green-500/20 hover:border-green-500/50 transition-colors duration-300" : ""}
         >
-          {badge.earned ? (badge.date || "Earned") : "Locked"}
+          {badge.earned ? (badge.date ? formatDate(badge.date) : "Earned") : "Locked"}
         </StatusBadge>
       </div>
       
       {/* Subtle sparkle effect for earned badges */}
       {badge.earned && (
         <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute top-2 right-2 w-1 h-1 bg-yellow-400 rounded-full opacity-0 group-hover:opacity-100 animate-pulse" />
-          <div className="absolute bottom-2 left-2 w-1 h-1 bg-yellow-400 rounded-full opacity-0 group-hover:opacity-100 animate-pulse" style={{ animationDelay: '0.5s' }} />
-          <div className="absolute top-1/2 right-1/4 w-1 h-1 bg-yellow-400 rounded-full opacity-0 group-hover:opacity-100 animate-pulse" style={{ animationDelay: '1s' }} />
+          <div className="absolute top-2 right-2 w-1 h-1 bg-yellow-400 rounded-full opacity-0 group-hover:opacity-100" />
+          <div className="absolute bottom-2 left-2 w-1 h-1 bg-yellow-400 rounded-full opacity-0 group-hover:opacity-100" />
+          <div className="absolute top-1/2 right-1/4 w-1 h-1 bg-yellow-400 rounded-full opacity-0 group-hover:opacity-100" />
         </div>
       )}
     </BaseCard>

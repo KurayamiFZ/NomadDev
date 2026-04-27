@@ -180,7 +180,7 @@ export function FeedbackWidget() {
   if (loading) {
     return (
       <div className="bg-gray-900 rounded-xl border border-gray-800 p-6">
-        <div className="animate-pulse">
+        <div>
           <div className="h-6 bg-gray-800 rounded mb-4"></div>
           <div className="space-y-3">
             {[1, 2, 3].map(i => (

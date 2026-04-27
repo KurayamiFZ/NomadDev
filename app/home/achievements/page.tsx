@@ -5,6 +5,7 @@ import { AchievementCard } from "../../components/AchievementCard";
 import { supabase } from "@/lib/supabaseclient";
 import Icon from "@/app/components/icons";
 import * as Icons from "lucide-react";
+import { calculateTotalXP, getLevelFromXP, getRankTitle, getRankGradient } from "@/lib/level-system";
 
 const rarityConfig = {
   common: {
@@ -63,7 +64,17 @@ export default function AchievementsEnhanced() {
         return;
       }
 
-      setAchievements(data || []);
+      // Sort achievements: unlocked ones first, then locked ones
+      const sortedAchievements = (data || []).sort((a, b) => {
+        // If a is unlocked and b is not, a comes first
+        if (a.unlocked && !b.unlocked) return -1;
+        // If b is unlocked and a is not, b comes first
+        if (!a.unlocked && b.unlocked) return 1;
+        // If both have same unlock status, maintain original order
+        return 0;
+      });
+      
+      setAchievements(sortedAchievements);
       setLoading(false);
     }
 
@@ -114,6 +125,11 @@ export default function AchievementsEnhanced() {
   const totalxp = achievements
     .filter((a) => a.unlocked)
     .reduce((sum, a) => sum + (a.xp || a.xpReward || 0), 0);
+  
+  // Calculate level and rank from total XP
+  const currentLevel = getLevelFromXP(totalxp);
+  const rankTitle = getRankTitle(currentLevel);
+  const rankGradient = getRankGradient(currentLevel);
 
   const filteredAchievements = achievements.filter((a) => {
     const matchesSearch = a.title
@@ -175,8 +191,13 @@ export default function AchievementsEnhanced() {
                 }`}
               >
                 <div className="flex items-center gap-4">
-                  <Icon name="Trophy" className="w-5 h-5 text-yellow-400 animate-pulse" />
+                  <Icon name="Trophy" className="w-5 h-5 text-yellow-400" />
                   <div className="flex items-center gap-4">
+                    <div className={`bg-gradient-to-r ${rankGradient} text-black px-2 py-1 rounded-full text-xs font-bold flex items-center gap-1`}>
+                      <Icon name="Star" className="w-3 h-3" />
+                      Lv. {currentLevel}
+                    </div>
+                    <div className="w-px h-4 bg-white/20"></div>
                     <span className="font-bold text-sm">
                       {unlockedCount}/{totalCount}
                     </span>
@@ -347,9 +368,9 @@ export default function AchievementsEnhanced() {
                       key={achievement.id}
                       achievement={{
                         ...achievement,
-                        icon: achievement.icon || "🏆",
+                        icon: achievement.icon || <Icon name="Trophy"/>,
                         rarity: achievement.tier,
-                        xpReward: achievement.xp || achievement.xpReward || 0,
+                        xp: achievement.xp || achievement.xpReward || 0,
                       }}
                       onClick={() =>
                         setExpandedAchievement(

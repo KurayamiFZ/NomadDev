@@ -362,18 +362,12 @@ export function DeviceDetector({ children }: DeviceDetectorProps) {
             inset: 0;
             border-radius: 50%;
             border: 1px solid rgba(139,92,246,0.3);
-            animation: pulse-ring 3s ease-in-out infinite;
           }
           .dd-icon-ring-2 {
             position: absolute;
             inset: -12px;
             border-radius: 50%;
             border: 1px solid rgba(139,92,246,0.12);
-            animation: pulse-ring 3s ease-in-out infinite 0.6s;
-          }
-          @keyframes pulse-ring {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.4; transform: scale(1.05); }
           }
           .dd-icon-bg {
             position: absolute;

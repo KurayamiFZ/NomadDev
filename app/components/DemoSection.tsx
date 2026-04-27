@@ -24,7 +24,7 @@ export function DemoSection() {
           </span>
         </div>
         <div className="flex items-center gap-2">
-          <span className="h-2 w-2 animate-pulse rounded-full bg-emerald-300" />
+          <span className="h-2 w-2 rounded-full bg-emerald-300" />
           <span className="text-xs font-medium text-emerald-300 sm:text-sm">
             live
           </span>

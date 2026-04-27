@@ -1,11 +1,10 @@
 import { BaseCard } from "./ui/BaseCard";
-import { StatusBadge } from "./ui/StatusBadge";
 import { IconWrapper } from "./ui/IconWrapper";
-import { ProgressBar } from "./ui/ProgressBar";
 import { GradientBackground } from "./ui/GradientBackground";
 import { FlexRow } from "./ui/FlexRow";
-import { Trophy, Lock, Star } from "lucide-react";
+import { Trophy, Lock } from "lucide-react";
 import { cn } from "@/lib/utils";
+import Icon from "./icons";
 
 interface AchievementCardProps {
   overachievement: {
@@ -63,12 +62,20 @@ export function AchievementOver({
     <BaseCard
       variant="bordered"
       className={cn(
-        "relative flex justify-center items-center overflow-hidden transition-all hover:scale-105 cursor-pointer",
-        overachievement.unlocked && config.iconColor === "blue" && "border-blue-500/50",
-        overachievement.unlocked && config.iconColor === "purple" && "border-purple-500/50",
-        overachievement.unlocked && config.iconColor === "yellow" && "border-yellow-500/50",
-        overachievement.unlocked && config.iconColor === "red" && "border-red-500/50",
-        !overachievement.unlocked && "border-gray-700 opacity-60"
+        "relative overflow-hidden transition-all hover:scale-105 cursor-pointer",
+        overachievement.unlocked &&
+          config.iconColor === "blue" &&
+          "border-blue-500/50",
+        overachievement.unlocked &&
+          config.iconColor === "purple" &&
+          "border-purple-500/50",
+        overachievement.unlocked &&
+          config.iconColor === "yellow" &&
+          "border-yellow-500/50",
+        overachievement.unlocked &&
+          config.iconColor === "red" &&
+          "border-red-500/50",
+        !overachievement.unlocked && "border-gray-700 opacity-60",
       )}
       onClick={onClick}
     >
@@ -81,7 +88,7 @@ export function AchievementOver({
               variant={config.gradientVariant}
               className="w-12 h-12 rounded-lg flex items-center justify-center text-2xl"
             >
-              {overachievement.icon}
+              <Icon name={(overachievement.icon as any) || "Trophy"} />
             </GradientBackground>
           ) : (
             <IconWrapper
@@ -103,7 +110,6 @@ export function AchievementOver({
 
         {/* xp Reward and Expand Button */}
         <FlexRow justify="between" align="center">
-
           {/* Expand Button */}
           {onExpand && (
             <button
@@ -113,9 +119,7 @@ export function AchievementOver({
               }}
               className="text-gray-400 hover:text-white transition-colors"
             >
-              <Trophy
-                className={`w-4 h-4 transition-transform ${expanded ? "rotate-180" : ""}`}
-              />
+              <Trophy className="w-4 h-4" />
             </button>
           )}
         </FlexRow>
@@ -123,13 +127,15 @@ export function AchievementOver({
 
       {/* Unlocked Date */}
       {overachievement.unlocked && overachievement.unlockedDate && (
-        <div className={cn(
-          "px-4 py-2 bg-black/20 border-t",
-          config.iconColor === "blue" && "border-blue-500/50",
-          config.iconColor === "purple" && "border-purple-500/50",
-          config.iconColor === "yellow" && "border-yellow-500/50",
-          config.iconColor === "red" && "border-red-500/50"
-        )}>
+        <div
+          className={cn(
+            "px-4 py-2 bg-black/20 border-t",
+            config.iconColor === "blue" && "border-blue-500/50",
+            config.iconColor === "purple" && "border-purple-500/50",
+            config.iconColor === "yellow" && "border-yellow-500/50",
+            config.iconColor === "red" && "border-red-500/50",
+          )}
+        >
           <div className="text-xs text-gray-400">
             Unlocked on{" "}
             {new Date(overachievement.unlockedDate).toLocaleDateString()}

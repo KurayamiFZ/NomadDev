@@ -362,7 +362,7 @@ export default function Lessons() {
                 }`}
               >
                 <div className="flex items-center gap-3 mb-4">
-                  <div className="w-4 h-4 bg-purple-600 rounded-full animate-pulse"></div>
+                  <div className="w-4 h-4 bg-purple-600 rounded-full"></div>
                   <span className="text-purple-800 font-black text-lg">
                     CONTINUE LEARNING
                   </span>
@@ -433,7 +433,7 @@ export default function Lessons() {
                             lesson.completed
                               ? "bg-green-800 hover:scale-110"
                               : lesson.current
-                                ? "bg-purple-700 hover:scale-110 animate-pulse"
+                                ? "bg-purple-700 hover:scale-110"
                                 : "bg-gray-700 hover:scale-110"
                           }`}
                         >
@@ -484,7 +484,7 @@ export default function Lessons() {
 
                       {/* Status Badge */}
                       {lesson.current && (
-                        <div className="bg-purple-600 text-white text-xs px-4 py-2 rounded-full font-bold animate-pulse">
+                        <div className="bg-purple-600 text-white text-xs px-4 py-2 rounded-full font-bold">
                           IN PROGRESS
                         </div>
                       )}
@@ -565,7 +565,7 @@ export default function Lessons() {
                 <h3 className="font-black text-lg mb-4 flex items-center gap-2 bg-linear-to-r from-purple-500 to-blue-500 bg-clip-text text-transparent">
                   <Icon
                     name="TrendingUp"
-                    className="w-5 h-5 text-purple-500 animate-pulse"
+                    className="w-5 h-5 text-purple-500"
                   />
                   Your Progress
                 </h3>
@@ -617,7 +617,7 @@ export default function Lessons() {
                 <h3 className="font-black text-lg mb-4 flex items-center gap-2 bg-linear-to-r from-blue-400 to-green-400 bg-clip-text text-transparent">
                   <Icon
                     name="Calendar"
-                    className="w-5 h-5 text-purple-500 animate-pulse"
+                    className="w-5 h-5 text-purple-500"
                   />
                   Course Roadmap
                 </h3>
@@ -677,7 +677,7 @@ export default function Lessons() {
                   <div className="flex items-center gap-3 mb-3">
                     <Icon
                       name="Award"
-                      className="w-8 h-8 text-yellow-300 animate-pulse"
+                      className="w-8 h-8 text-yellow-300"
                     />
                     <h3 className="font-black text-lg">🔥 Keep it going!</h3>
                   </div>

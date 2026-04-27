@@ -18,9 +18,9 @@
 
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Menu, X } from "lucide-react";
+import { Menu, X, Star } from "lucide-react";
 import { NavigationLink } from "./ui/NavigationLink";
 import { GradientBackground } from "./ui/GradientBackground";
 import { IconWrapper } from "./ui/IconWrapper";
@@ -28,6 +28,8 @@ import { FlexRow } from "./ui/FlexRow";
 import { Button } from "./button";
 import { Gamepad2 } from "lucide-react";
 import { useAuth } from "./AuthProvider";
+import { calculateTotalXP, getLevelFromXP, getRankTitle, getRankGradient } from "../../lib/level-system";
+import { supabase } from "../../lib/supabaseclient";
 
 interface NavigationProps {
   /** Optional callback function triggered on navigation */
@@ -47,6 +49,66 @@ export function Navigation({ onNavigate }: NavigationProps) {
   // State management for mobile menu toggle
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { user, signOut } = useAuth();
+  const [userLevel, setUserLevel] = useState(0);
+  const [userRank, setUserRank] = useState("");
+  const [userRankGradient, setUserRankGradient] = useState("");
+
+  // Fetch user's achievement data to calculate level
+  useEffect(() => {
+    async function fetchUserLevel() {
+      if (!user) return;
+
+      try {
+        // Try to get user achievements - simplified approach
+        const { data: userAchievements, error } = await supabase
+          .from("user_achievements")
+          .select("*")
+          .eq("user_id", user.id);
+
+        if (error) {
+          console.error("Error fetching user achievements:", error);
+          return;
+        }
+
+        // If we have user achievements, try to get achievement details
+        if (userAchievements && userAchievements.length > 0) {
+          const achievementIds = userAchievements
+            .filter(ua => ua.unlocked)
+            .map(ua => ua.achievement_id);
+
+          if (achievementIds.length > 0) {
+            const { data: achievements, error: achievementError } = await supabase
+              .from("achievement")
+              .select("id, xp")
+              .in("id", achievementIds);
+
+            if (achievementError) {
+              console.error("Error fetching achievement details:", achievementError);
+              return;
+            }
+
+            // Calculate total XP from unlocked achievements
+            const totalXP = achievements?.reduce((sum, achievement) => {
+              return sum + (achievement.xp || 0);
+            }, 0) || 0;
+
+            // Calculate level and rank
+            const level = getLevelFromXP(totalXP);
+            const rank = getRankTitle(level);
+            const gradient = getRankGradient(level);
+
+            setUserLevel(level);
+            setUserRank(rank);
+            setUserRankGradient(gradient);
+          }
+        }
+      } catch (error) {
+        console.error("Error calculating user level:", error);
+      }
+    }
+
+    fetchUserLevel();
+  }, [user]);
 
   return (
     <>
@@ -79,6 +141,13 @@ export function Navigation({ onNavigate }: NavigationProps) {
           {/* Conditional rendering based on auth status */}
           {user ? (
             <>
+              {/* User Level Display */}
+              {userLevel > 0 && (
+                <div className={`bg-gradient-to-r ${userRankGradient} text-black px-3 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5`}>
+                  <Star className="w-3 h-3" />
+                  Lv. {userLevel}
+                </div>
+              )}
               <NavigationLink
                 to="/home/overview"
                 variant="button"

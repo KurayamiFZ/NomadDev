@@ -1,18 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import {
-  BookOpen,
-  Code,
-  MessageCircle,
-  Award,
-  Rocket,
-  Clock,
-  Calendar,
-  Trophy,
-  Users,
-  ChevronRight,
-} from "lucide-react";
+import { BookOpen, Code, MessageCircle, Award } from "lucide-react";
 import Icon from "../../components/icons";
 import { WelcomeBanner } from "../../components/WelcomeBanner";
 import { StatsCard } from "../../components/StatsCard";
@@ -27,6 +16,7 @@ import {
   COMMUNITY_ACTIVITY,
 } from "../../../lib/home-data";
 import { useRouter } from "next/navigation";
+import { supabase } from "@/lib/supabaseclient";
 
 export default function Overview() {
   const router = useRouter();
@@ -40,12 +30,108 @@ export default function Overview() {
   const communityRef = useRef<HTMLDivElement>(null);
   const quickLinksRef = useRef<HTMLDivElement>(null);
 
+  const [achievements, setAchievements] = useState<any[]>([]);
+  const [expandedAchievement, setExpandedAchievement] = useState<string | null>(null);
   const [statsVisible, setStatsVisible] = useState(false);
   const [learningVisible, setLearningVisible] = useState(false);
   const [liveClassesVisible, setLiveClassesVisible] = useState(false);
   const [achievementsVisible, setAchievementsVisible] = useState(false);
   const [communityVisible, setCommunityVisible] = useState(false);
   const [quickLinksVisible, setQuickLinksVisible] = useState(false);
+
+  useEffect(() => {
+    async function fetchAchievements() {
+      const { data, error } = await supabase
+        .from("achievement")
+        .select("*");
+
+      if (error) {
+        console.error("Supabase error:", error);
+        return;
+      }
+
+      console.log("All achievements:", data);
+      console.log("Achievement sample:", data?.[0]);
+      
+      // Try different ways to filter unlocked achievements
+      let unlockedAchievements = [];
+      
+      // Method 1: Check if unlocked is boolean true
+      unlockedAchievements = data?.filter(a => a.unlocked === true) || [];
+      console.log("Method 1 (unlocked === true):", unlockedAchievements.length);
+      
+      if (unlockedAchievements.length === 0) {
+        // Method 2: Check if unlocked is truthy
+        unlockedAchievements = data?.filter(a => a.unlocked) || [];
+        console.log("Method 2 (truthy unlocked):", unlockedAchievements.length);
+      }
+      
+      if (unlockedAchievements.length === 0) {
+        // Method 3: Check if unlocked is number 1
+        unlockedAchievements = data?.filter(a => a.unlocked === 1) || [];
+        console.log("Method 3 (unlocked === 1):", unlockedAchievements.length);
+      }
+      
+      if (unlockedAchievements.length === 0) {
+        // Method 4: Check if unlocked is string "true"
+        unlockedAchievements = data?.filter(a => a.unlocked === "true") || [];
+        console.log("Method 4 (unlocked === 'true'):", unlockedAchievements.length);
+      }
+      
+      // Sort by most recent (try different date fields)
+      const sortedAchievements = unlockedAchievements.sort((a, b) => {
+        // Try created_at first
+        if (a.created_at && b.created_at) {
+          return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+        }
+        // Try updated_at
+        if (a.updated_at && b.updated_at) {
+          return new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime();
+        }
+        // Fallback to ID (assuming higher IDs are more recent)
+        return (b.id || 0) - (a.id || 0);
+      });
+      
+      const recentAchievements = sortedAchievements.slice(0, 5);
+      console.log("Final recent unlocked achievements:", recentAchievements);
+      
+      setAchievements(recentAchievements);
+    }
+
+    fetchAchievements();
+
+    // Trigger stats animation after a short delay
+    setTimeout(() => setStatsVisible(true), 300);
+
+    // Setup scroll observers
+    const setupScrollObserver = (
+      ref: React.RefObject<HTMLDivElement | null>,
+      setState: (visible: boolean) => void,
+    ) => {
+      if (!ref.current) return;
+
+      const observer = new IntersectionObserver(
+        ([entry]) => {
+          if (entry.isIntersecting) {
+            setState(true);
+          }
+        },
+        { threshold: 0.1 },
+      );
+
+      observer.observe(ref.current);
+      return () => observer.disconnect();
+    };
+
+    const cleanupAchievements = setupScrollObserver(
+      achievementsRef,
+      setAchievementsVisible,
+    );
+
+    return () => {
+      cleanupAchievements?.();
+    };
+  }, []);
 
   useEffect(() => {
     // Trigger initial animations after component mounts
@@ -103,6 +189,12 @@ export default function Overview() {
     };
   }, []);
 
+  const unlockedCount = achievements.filter((a) => a.unlocked).length;
+  const totalCount = achievements.length;
+  const totalxp = achievements
+    .filter((a) => a.unlocked)
+    .reduce((sum, a) => sum + (a.xp || a.xpReward || 0), 0);
+
   return (
     <div className="flex w-full bg-black">
       {/* Content Area */}
@@ -122,28 +214,28 @@ export default function Overview() {
               icon: BookOpen,
               value: "12/150",
               label: "Lessons Completed",
-              color: "text-blue-400",
+              color: "text-pink-400",
               progress: { current: 12, total: 150 },
             },
             {
               icon: Code,
               value: "7 Days",
               label: "Current Streak",
-              color: "text-orange-400",
+              color: "text-pink-400",
               progress: { current: 7, total: 30 },
             },
             {
               icon: Award,
               value: "3/5",
               label: "Games Built",
-              color: "text-green-400",
+              color: "text-pink-400",
               progress: { current: 3, total: 5 },
             },
             {
               icon: MessageCircle,
               value: "69%",
               label: "Completion Rate",
-              color: "text-purple-500",
+              color: "text-pink-400",
               progress: { current: 69, total: 100 },
             },
           ].map((stat, index) => (
@@ -181,10 +273,7 @@ export default function Overview() {
             >
               <div className="p-6 border-b border-gray-800">
                 <h2 className="text-2xl font-bold flex items-center gap-2 bg-linear-to-r from-purple-500 to-pink-500 bg-clip-text text-transparent">
-                  <Icon
-                    name="Rocket"
-                    className="size-6 text-purple-500 animate-pulse"
-                  />
+                  <Icon name="Rocket" className="size-6 text-purple-500" />
                   Continue Learning
                 </h2>
               </div>
@@ -272,10 +361,7 @@ export default function Overview() {
             >
               <div className="p-6 border-b border-gray-800">
                 <h2 className="text-2xl font-bold flex items-center gap-2 bg-linear-to-r from-pink-500 to-orange-500 bg-clip-text text-transparent">
-                  <Icon
-                    name="Calendar"
-                    className="size-6 text-pink-500 animate-pulse"
-                  />
+                  <Icon name="Calendar" className="size-6 text-pink-500" />
                   Upcoming Live Classes
                 </h2>
               </div>
@@ -310,27 +396,37 @@ export default function Overview() {
             >
               <div className="p-6 border-b border-gray-800">
                 <h2 className="text-xl font-bold flex items-center gap-2 bg-linear-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent">
-                  <Icon
-                    name="Trophy"
-                    className="size-5 text-yellow-400 animate-pulse"
-                  />
+                  <Icon name="Trophy" className="size-5 text-yellow-400" />
                   Achievements
                 </h2>
               </div>
               <div className="p-6">
                 <div className="grid grid-cols-3 gap-3">
-                  {ACHIEVEMENTS.slice(0, 5).map((achievement, index) => (
-                    <div
-                      key={index}
-                      className={`transform transition-all duration-700 ease-out ${
-                        achievementsVisible
-                          ? "translate-y-0 opacity-100 scale-100"
-                          : "translate-y-8 opacity-0 scale-95"
-                      }`}
-                      style={{ transitionDelay: `${index * 100}ms` }}
-                    >
-                      <AchievementOver overachievement={achievement} />
-                    </div>
+                  {achievements.filter((achievement) => achievement.unlocked).slice(0, 5).map((achievement) => (
+                    <AchievementOver
+                      key={achievement.id}
+                      overachievement={{
+                        ...achievement,
+                        icon: achievement.icon || <Icon name="Trophy" />,
+                        rarity: achievement.tier,
+                        xpReward: achievement.xp || achievement.xpReward || 0,
+                      }}
+                      onClick={() =>
+                        setExpandedAchievement(
+                          expandedAchievement === achievement.id
+                            ? null
+                            : achievement.id,
+                        )
+                      }
+                      expanded={expandedAchievement === achievement.id}
+                      onExpand={() =>
+                        setExpandedAchievement(
+                          expandedAchievement === achievement.id
+                            ? null
+                            : achievement.id,
+                        )
+                      }
+                    />
                   ))}
                 </div>
                 <button className="w-full bg-gray-800 hover:bg-gray-700 text-white py-3 rounded-lg font-medium mt-4 transition-all duration-300 hover:scale-105 hover:shadow-lg">
@@ -349,11 +445,8 @@ export default function Overview() {
               }`}
             >
               <div className="p-6 border-b border-gray-800">
-                <h2 className="text-xl font-bold flex items-center gap-2 bg-linear-to-r from-green-400 to-blue-400 bg-clip-text text-transparent">
-                  <Icon
-                    name="Users"
-                    className="size-5 text-green-400 animate-pulse"
-                  />
+                <h2 className="text-xl font-bold flex items-center gap-2 bg-linear-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+                  <Icon name="Users" className="size-5 text-purple-400" />
                   Community Activity
                 </h2>
               </div>

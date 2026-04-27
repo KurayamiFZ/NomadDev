@@ -58,7 +58,7 @@ export function StatusBadge({
     error:   "bg-red-500/20 text-red-400 border border-red-500/30",
     info:    "bg-blue-500/20 text-blue-400 border border-blue-500/30",
     default: "bg-gray-700 text-gray-300 border border-gray-600",
-    live:    "bg-red-500 text-white animate-pulse",
+    live:    "bg-red-500 text-white",
     // Color-name variants — mirrors IconWrapper's color prop
     purple:  "bg-purple-500/20 text-purple-400 border border-purple-500/30",
     green:   "bg-green-500/20 text-green-400 border border-green-500/30",
@@ -76,7 +76,7 @@ export function StatusBadge({
     lg: "text-base px-4 py-2",
   };
 
-  const animationClasses = animated && variant === "live" ? "animate-pulse" : "";
+  const animationClasses = "";
 
   return (
     <span

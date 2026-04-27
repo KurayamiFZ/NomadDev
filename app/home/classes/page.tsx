@@ -374,7 +374,7 @@ export default function LiveClassesPage() {
                       {/* Live indicator with pulsing dot and student count */}
                       <div className="flex items-center gap-3 mb-4">
                         {/* Animated pulse dot to indicate live status */}
-                        <div className="w-4 h-4 bg-red-500 rounded-full animate-pulse"></div>
+                        <div className="w-4 h-4 bg-red-500 rounded-full"></div>
                         <span className="text-white font-black text-lg bg-linear-to-r from-white to-red-100 bg-clip-text">
                           LIVE NOW
                         </span>
@@ -643,7 +643,7 @@ export default function LiveClassesPage() {
                   <h3 className="font-black text-lg mb-4 flex items-center gap-2 bg-linear-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
                     <Icon
                       name="Calendar"
-                      className="w-5 h-5 text-purple-400 animate-pulse"
+                      className="w-5 h-5 text-purple-400"
                     />
                     This Week&apos;s Schedule
                   </h3>

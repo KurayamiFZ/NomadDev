@@ -43,26 +43,47 @@ import {
   Timer,
   Gift,
 } from "lucide-react";
+import { calculateTotalXP, getLevelFromXP, getRankTitle, getRankGradient, getLevelProgress } from "../../../lib/level-system";
+import { supabase } from "../../../lib/supabaseclient";
+import { useAuth } from "../../components/AuthProvider";
 
 // Main component for the lessons page
 export default function LessonsEnhanced() {
   const router = useRouter();
+  const { user } = useAuth();
   const [selectedFilter, setSelectedFilter] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedPath, setSelectedPath] = useState("main");
+  
+  // User level state
+  const [userStats, setUserStats] = useState({
+    totalLessons: 24,
+    completedLessons: 3,
+    totalxp: 0,
+    currentLevel: 1,
+    nextLevelxp: 100,
+    totalDuration: "8h 45m",
+    weekProgress: 2,
+    totalWeeks: 8,
+    currentStreak: 7,
+    longestStreak: 14,
+    skillPoints: 18,
+    rank: "Beginner",
+    percentile: 87,
+  });
   
   // Animation states
   const [isVisible, setIsVisible] = useState(false);
   const [headerVisible, setHeaderVisible] = useState(false);
   const [pathsVisible, setPathsVisible] = useState(false);
   const [projectsVisible, setProjectsVisible] = useState(false);
-  const [statsVisible, setStatsVisible] = useState(false);
+  const [userStatsVisible, setStatsVisible] = useState(false);
   
   // Refs for scroll-triggered animations
   const headerRef = useRef<HTMLDivElement>(null);
   const pathsRef = useRef<HTMLDivElement>(null);
   const projectsRef = useRef<HTMLDivElement>(null);
-  const statsRef = useRef<HTMLDivElement>(null);
+  const userStatsRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     // Trigger initial animations
@@ -88,7 +109,7 @@ export default function LessonsEnhanced() {
     const cleanupHeader = setupScrollObserver(headerRef, setHeaderVisible);
     const cleanupPaths = setupScrollObserver(pathsRef, setPathsVisible);
     const cleanupProjects = setupScrollObserver(projectsRef, setProjectsVisible);
-    const cleanupStats = setupScrollObserver(statsRef, setStatsVisible);
+    const cleanupStats = setupScrollObserver(userStatsRef, setStatsVisible);
     
     return () => {
       cleanupHeader?.();
@@ -97,6 +118,134 @@ export default function LessonsEnhanced() {
       cleanupStats?.();
     };
   }, []);
+
+  // Fetch user achievements and calculate level
+  useEffect(() => {
+    async function fetchUserStats() {
+      if (!user) return;
+
+      try {
+        console.log("Projects page - Testing database connection...");
+        
+        // First, let's see what's in the achievement table
+        const { data: allAchievements, error: allError } = await supabase
+          .from("achievement")
+          .select("*")
+          .limit(5);
+
+        console.log("Projects page - Sample achievements from DB:", allAchievements);
+        
+        if (allError) {
+          console.error("Projects page - Error fetching sample achievements:", allError);
+        }
+
+        // Now try user achievements
+        const { data: userAchievements, error } = await supabase
+          .from("user_achievements")
+          .select("*")
+          .eq("user_id", user.id);
+
+        if (error) {
+          console.error("Projects page - Error fetching user achievements:", error);
+          return;
+        }
+
+        console.log("Projects page - User achievements:", userAchievements);
+
+        // If no user achievements, test with sample data
+        if (!userAchievements || userAchievements.length === 0) {
+          console.log("Projects page - No user achievements found - testing with sample data");
+          
+          const sampleXP = 750;
+          const testLevel = getLevelFromXP(sampleXP);
+          const testRank = getRankTitle(sampleXP);
+          const testLevelProgress = getLevelProgress(sampleXP);
+          
+          console.log("Projects page - Test with sample XP:", sampleXP);
+          console.log("Projects page - Test level:", testLevel);
+          
+          setUserStats(prev => ({
+            ...prev,
+            totalxp: sampleXP,
+            currentLevel: testLevel,
+            nextLevelxp: testLevelProgress.nextLevelXP,
+            rank: testRank,
+          }));
+          return;
+        }
+
+        // Try different field names for unlocked status
+        const unlockedAchievements = userAchievements.filter(ua => {
+          console.log("Projects page - Checking achievement:", ua);
+          return ua.unlocked === true || ua.unlocked === 1 || 
+                 ua.completed === true || ua.completed === 1 ||
+                 ua.earned === true || ua.earned === 1 ||
+                 ua.status === 'completed' || ua.status === 'unlocked';
+        });
+        
+        console.log("Projects page - Unlocked achievements:", unlockedAchievements);
+        
+        if (unlockedAchievements.length === 0) {
+          console.log("Projects page - No unlocked achievements found - using sample data");
+          const sampleXP = 750;
+          const testLevel = getLevelFromXP(sampleXP);
+          const testRank = getRankTitle(sampleXP);
+          const testLevelProgress = getLevelProgress(sampleXP);
+          
+          setUserStats(prev => ({
+            ...prev,
+            totalxp: sampleXP,
+            currentLevel: testLevel,
+            nextLevelxp: testLevelProgress.nextLevelXP,
+            rank: testRank,
+          }));
+          return;
+        }
+        
+        const achievementIds = unlockedAchievements.map(ua => ua.achievement_id);
+        console.log("Projects page - Achievement IDs:", achievementIds);
+
+        if (achievementIds.length > 0) {
+          const { data: achievements, error: achievementError } = await supabase
+            .from("achievement")
+            .select("id, xp")
+            .in("id", achievementIds);
+
+          if (achievementError) {
+            console.error("Projects page - Error fetching achievement details:", achievementError);
+            return;
+          }
+
+          console.log("Projects page - Achievements with XP:", achievements);
+
+          const totalXP = achievements?.reduce((sum, achievement) => {
+            return sum + (achievement.xp || 0);
+          }, 0) || 0;
+
+          console.log("Projects page - Calculated total XP:", totalXP);
+
+          const level = getLevelFromXP(totalXP);
+          const rank = getRankTitle(level);
+          const levelProgress = getLevelProgress(totalXP);
+
+          console.log("Projects page - Calculated level:", level);
+          console.log("Projects page - Rank title:", rank);
+
+          setUserStats(prev => ({
+            ...prev,
+            totalxp: totalXP,
+            currentLevel: level,
+            nextLevelxp: levelProgress.nextLevelXP,
+            rank,
+          }));
+        }
+      } catch (error) {
+        console.error("Projects page - Error calculating user stats:", error);
+      }
+    }
+
+    fetchUserStats();
+  }, [user]);
 
   // Learning paths - New feature
   const learningPaths = [
@@ -235,34 +384,18 @@ export default function LessonsEnhanced() {
     },
   ];
 
-  // Course statistics
-  const stats = {
-    totalLessons: 24,
-    completedLessons: 3,
-    totalxp: 12750,
-    currentLevel: 8,
-    nextLevelxp: 15000,
-    totalDuration: "8h 45m",
-    weekProgress: 2,
-    totalWeeks: 8,
-    currentStreak: 7,
-    longestStreak: 14,
-    skillPoints: 18,
-    rank: "Advanced Learner",
-    percentile: 87,
-  };
-
+  
   const filters = ["all", "in-progress", "completed", "locked"];
-  const progressPercentage = Math.round((stats.completedLessons / stats.totalLessons) * 100);
-  console.log(`You&apos;re ${progressPercentage}% through the course. Complete ${stats.completedLessons} / ${stats.totalLessons} Lessons`);
-  const levelProgress = Math.round((stats.totalxp / stats.nextLevelxp) * 100);
+  const progressPercentage = Math.round((userStats.completedLessons / userStats.totalLessons) * 100);
+  console.log(`You&apos;re ${progressPercentage}% through the course. Complete ${userStats.completedLessons} / ${userStats.totalLessons} Lessons`);
+  const levelProgress = Math.round((userStats.totalxp / userStats.nextLevelxp) * 100);
 
   return (
     <div className="flex flex-col min-h-screen w-full bg-black text-white">
       {/* Animated Background */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-20 left-10 w-72 h-72 bg-purple-500/10 rounded-full blur-[100px] animate-pulse"></div>
-        <div className="absolute bottom-20 right-10 w-96 h-96 bg-pink-500/10 rounded-full blur-[120px] animate-pulse delay-700"></div>
+        <div className="absolute top-20 left-10 w-72 h-72 bg-purple-500/10 rounded-full blur-[100px]"></div>
+        <div className="absolute bottom-20 right-10 w-96 h-96 bg-pink-500/10 rounded-full blur-[120px]"></div>
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-150 h-150 bg-blue-500/5 rounded-full blur-[150px]"></div>
       </div>
 
@@ -292,16 +425,16 @@ export default function LessonsEnhanced() {
               <div className="bg-linear-to-r from-purple-500/20 to-pink-500/20 border border-purple-500/30 rounded-xl px-4 py-2 backdrop-blur-sm transform transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-purple-500/30">
                 <div className="flex items-center gap-3">
                   <div className="flex items-center gap-2">
-                    <Crown className="w-5 h-5 text-yellow-400 animate-pulse" />
+                    <Crown className="w-5 h-5 text-yellow-400" />
                     <span className="font-black text-lg bg-linear-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent">
-                      Level {stats.currentLevel}
+                      Level {userStats.currentLevel}
                     </span>
                   </div>
                   <div className="w-px h-6 bg-white/20"></div>
                   <div className="flex items-center gap-2">
-                    <Sparkles className="w-5 h-5 text-purple-400 animate-pulse" />
+                    <Sparkles className="w-5 h-5 text-purple-400" />
                     <span className="font-bold text-purple-400">
-                      {stats.totalxp.toLocaleString()} xp
+                      {userStats.totalxp.toLocaleString()} xp
                     </span>
                   </div>
                 </div>
@@ -328,7 +461,7 @@ export default function LessonsEnhanced() {
                         Unity Mastery Journey
                       </h1>
                       <p className="text-purple-300 text-lg">
-                        Week {stats.weekProgress} - Physics & Movement
+                        Week {userStats.weekProgress} - Physics & Movement
                       </p>
                     </div>
                   </div>
@@ -340,7 +473,7 @@ export default function LessonsEnhanced() {
                       <div className="flex justify-between text-sm mb-2">
                         <span className="text-gray-300">Course Progress</span>
                         <span className="font-bold text-purple-300">
-                          {stats.completedLessons}/{stats.totalLessons} Lessons
+                          {userStats.completedLessons}/{userStats.totalLessons} Lessons
                         </span>
                       </div>
                       <div className="h-3 bg-white/10 rounded-full overflow-hidden backdrop-blur-sm">
@@ -348,7 +481,7 @@ export default function LessonsEnhanced() {
                           className="h-full bg-linear-to-r from-purple-500 to-pink-500 rounded-full transition-all duration-1000 relative"
                           style={{ width: `${progressPercentage}%` }}
                         >
-                          <div className="absolute inset-0 bg-white/20 animate-pulse"></div>
+                          <div className="absolute inset-0 bg-white/20"></div>
                         </div>
                       </div>
                     </div>
@@ -357,11 +490,11 @@ export default function LessonsEnhanced() {
                     <div>
                       <div className="flex justify-between text-sm mb-2">
                         <span className="text-gray-300">
-                          Level {stats.currentLevel} → {stats.currentLevel + 1}
+                          Level {userStats.currentLevel} → {userStats.currentLevel + 1}
                         </span>
                         <span className="font-bold text-yellow-300">
-                          {stats.totalxp.toLocaleString()}/
-                          {stats.nextLevelxp.toLocaleString()} xp
+                          {userStats.totalxp.toLocaleString()}/
+                          {userStats.nextLevelxp.toLocaleString()} xp
                         </span>
                       </div>
                       <div className="h-3 bg-white/10 rounded-full overflow-hidden backdrop-blur-sm">
@@ -369,7 +502,7 @@ export default function LessonsEnhanced() {
                           className="h-full bg-linear-to-r from-yellow-500 to-orange-500 rounded-full transition-all duration-1000 relative"
                           style={{ width: `${levelProgress}%` }}
                         >
-                          <div className="absolute inset-0 bg-white/20 animate-pulse"></div>
+                          <div className="absolute inset-0 bg-white/20"></div>
                         </div>
                       </div>
                     </div>
@@ -423,7 +556,7 @@ export default function LessonsEnhanced() {
                   <div className="flex items-center gap-2 px-4 py-2 bg-white/5 rounded-full backdrop-blur-sm border border-white/10">
                     <Trophy className="w-4 h-4 text-yellow-400" />
                     <span className="text-sm font-bold">
-                      Top {stats.percentile}%
+                      Top {userStats.percentile}%
                     </span>
                   </div>
                 </div>
@@ -466,7 +599,7 @@ export default function LessonsEnhanced() {
           }`}
         >
           <h2 className="text-xl font-black mb-4 flex items-center gap-2 bg-linear-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
-            <Layers className="w-6 h-6 text-purple-400 animate-pulse" />
+            <Layers className="w-6 h-6 text-purple-400" />
             Choose Your Path
           </h2>
           <div className="grid grid-cols-3 gap-4">
@@ -487,7 +620,7 @@ export default function LessonsEnhanced() {
                   <path.icon
                     className={`w-8 h-8 transform transition-all duration-300 group-hover:scale-110 group-hover:rotate-12 ${
                       selectedPath === path.id
-                        ? "text-purple-400 animate-pulse"
+                        ? "text-purple-400"
                         : "text-gray-400 group-hover:text-white"
                     }`}
                   />
@@ -501,7 +634,7 @@ export default function LessonsEnhanced() {
                   </div>
                 </div>
                 {selectedPath === path.id && (
-                  <div className="absolute top-2 right-2 animate-pulse">
+                  <div className="absolute top-2 right-2">
                     <CheckCircle className="w-5 h-5 text-purple-400" />
                   </div>
                 )}
@@ -542,7 +675,7 @@ export default function LessonsEnhanced() {
                   <div className="flex items-start justify-between mb-6">
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-3">
-                        <div className="w-3 h-3 bg-purple-500 rounded-full animate-pulse"></div>
+                        <div className="w-3 h-3 bg-purple-500 rounded-full"></div>
                         <span className="text-purple-400 font-black text-sm uppercase tracking-wider">
                           Continue Your Quest
                         </span>
@@ -818,7 +951,7 @@ export default function LessonsEnhanced() {
                   ))}
                 </div>
                 <button className="w-full mt-4 bg-cyan-500/20 hover:bg-cyan-500/30 border border-cyan-500/30 text-cyan-400 py-3 rounded-xl font-bold transition">
-                  Unlock Skills ({stats.skillPoints} SP)
+                  Unlock Skills ({userStats.skillPoints} SP)
                 </button>
               </div>
 
@@ -835,7 +968,7 @@ export default function LessonsEnhanced() {
                     {
                       rank: 3,
                       name: "You",
-                      xp: stats.totalxp,
+                      xp: userStats.totalxp,
                       avatar: "ME",
                       highlight: true,
                     },
@@ -877,7 +1010,7 @@ export default function LessonsEnhanced() {
                   <Flame className="w-8 h-8 text-orange-400" />
                   <div>
                     <div className="text-3xl font-black">
-                      {stats.currentStreak}
+                      {userStats.currentStreak}
                     </div>
                     <div className="text-sm text-gray-400">Day Streak</div>
                   </div>
@@ -887,7 +1020,7 @@ export default function LessonsEnhanced() {
                     <div
                       key={i}
                       className={`flex-1 h-12 rounded-lg ${
-                        i < stats.currentStreak % 7
+                        i < userStats.currentStreak % 7
                           ? "bg-linear-to-t from-orange-500 to-yellow-500"
                           : "bg-white/10"
                       }`}
@@ -895,7 +1028,7 @@ export default function LessonsEnhanced() {
                   ))}
                 </div>
                 <div className="text-xs text-gray-400">
-                  🏆 Longest: {stats.longestStreak} days
+                  🏆 Longest: {userStats.longestStreak} days
                 </div>
               </div>
 

@@ -2,11 +2,13 @@
 import { useRouter, usePathname } from "next/navigation";
 import { ReactNode, useState, useEffect } from "react";
 import Footer from "../components/footer";
-import Icon, { type IconName } from "../components/icons";
+import IconComponent from "../components/icons";
+import type { Icon } from "../components/icons";
 import { supabase } from "@/lib/supabaseclient";
 import { useAuth } from "../components/AuthProvider";
+import { calculateTotalXP, getLevelFromXP, getRankTitle, getRankGradient, getLevelProgress } from "../../lib/level-system";
 
-const TAB_ICONS: Record<string, IconName> = {
+const TAB_ICONS: Record<string, Icon> = {
   overview: "LayoutDashboard",
   lessons: "BookOpen",
   projects: "FolderKanban",
@@ -19,7 +21,7 @@ export default function HomeLayout({ children }: { children: ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
   const activeTab = pathname.split("/")[2] ?? "overview";
-  const { signOut } = useAuth();
+  const { user, signOut } = useAuth();
   const tabs = [
     "overview",
     "lessons",
@@ -28,7 +30,10 @@ export default function HomeLayout({ children }: { children: ReactNode }) {
     "achievements",
     "community",
   ];
-  const [achievements, setAchievements] = useState<any[]>([]);
+  const [userLevel, setUserLevel] = useState(1);
+  const [totalXP, setTotalXP] = useState(0);
+  const [nextLevelXP, setNextLevelXP] = useState(100);
+  const [rankTitle, setRankTitle] = useState("Beginner");
   const [loading, setLoading] = useState(true);
 
   const handleLogout = async () => {
@@ -41,24 +46,133 @@ export default function HomeLayout({ children }: { children: ReactNode }) {
   };
 
   useEffect(() => {
-    async function fetchAchievements() {
-      const { data, error } = await supabase.from("achievement").select("*");
-
-      if (error) {
-        console.error("Supabase error:", error);
+    async function fetchUserAchievements() {
+      if (!user) {
+        setLoading(false);
         return;
       }
 
-      setAchievements(data || []);
-      setLoading(false);
+      try {
+        console.log("Testing database connection...");
+        
+        // First, let's see what's in the achievement table
+        const { data: allAchievements, error: allError } = await supabase
+          .from("achievement")
+          .select("*")
+          .limit(5);
+
+        console.log("Sample achievements from DB:", allAchievements);
+        
+        if (allError) {
+          console.error("Error fetching sample achievements:", allError);
+        }
+
+        // Now try user achievements
+        const { data: userAchievements, error } = await supabase
+          .from("user_achievements")
+          .select("*")
+          .eq("user_id", user.id);
+
+        if (error) {
+          console.error("Error fetching user achievements:", error);
+          setLoading(false);
+          return;
+        }
+
+        console.log("User achievements:", userAchievements);
+
+        // If no user achievements, let's test with sample data
+        if (!userAchievements || userAchievements.length === 0) {
+          console.log("No user achievements found - testing with sample data");
+          
+          // Test the level system with sample XP
+          const sampleXP = 750; // Sample XP for testing
+          const testLevel = getLevelFromXP(sampleXP);
+          const testRank = getRankTitle(testLevel);
+          const testLevelProgress = getLevelProgress(sampleXP);
+          
+          console.log("Test with sample XP:", sampleXP);
+          console.log("Test level:", testLevel);
+          console.log("Test rank:", testRank);
+          
+          setTotalXP(sampleXP);
+          setUserLevel(testLevel);
+          setRankTitle(testRank);
+          setNextLevelXP(testLevelProgress.nextLevelXP);
+          setLoading(false);
+          return;
+        }
+
+        // Try different field names for unlocked status
+        const unlockedAchievements = userAchievements.filter(ua => {
+          console.log("Checking achievement:", ua);
+          return ua.unlocked === true || ua.unlocked === 1 || 
+                 ua.completed === true || ua.completed === 1 ||
+                 ua.earned === true || ua.earned === 1 ||
+                 ua.status === 'completed' || ua.status === 'unlocked';
+        });
+        
+        console.log("Unlocked achievements:", unlockedAchievements);
+        
+        if (unlockedAchievements.length === 0) {
+          console.log("No unlocked achievements found - using sample data");
+          const sampleXP = 750;
+          const testLevel = getLevelFromXP(sampleXP);
+          const testRank = getRankTitle(testLevel);
+          const testLevelProgress = getLevelProgress(sampleXP);
+          
+          setTotalXP(sampleXP);
+          setUserLevel(testLevel);
+          setRankTitle(testRank);
+          setNextLevelXP(testLevelProgress.nextLevelXP);
+          setLoading(false);
+          return;
+        }
+        
+        const achievementIds = unlockedAchievements.map(ua => ua.achievement_id);
+        console.log("Achievement IDs:", achievementIds);
+
+        if (achievementIds.length > 0) {
+          const { data: achievements, error: achievementError } = await supabase
+            .from("achievement")
+            .select("id, xp")
+            .in("id", achievementIds);
+
+          if (achievementError) {
+            console.error("Error fetching achievement details:", achievementError);
+            setLoading(false);
+            return;
+          }
+
+          console.log("Achievements with XP:", achievements);
+
+          const xp = achievements?.reduce((sum, achievement) => {
+            return sum + (achievement.xp || 0);
+          }, 0) || 0;
+
+          console.log("Calculated total XP:", xp);
+
+          const level = getLevelFromXP(xp);
+          const rank = getRankTitle(level);
+          const levelProgress = getLevelProgress(xp);
+
+          console.log("Calculated level:", level);
+          console.log("Rank title:", rank);
+
+          setTotalXP(xp);
+          setUserLevel(level);
+          setRankTitle(rank);
+          setNextLevelXP(levelProgress.nextLevelXP);
+        }
+      } catch (error) {
+        console.error("Error calculating user level:", error);
+      } finally {
+        setLoading(false);
+      }
     }
 
-    fetchAchievements();
-  }, []);
-
-  const totalxp = achievements
-    .filter((a) => a.unlocked)
-    .reduce((sum, a) => sum + (a.xp || a.xpReward || 0), 0);
+    fetchUserAchievements();
+  }, [user]);
 
   return (
     <div className="flex h-screen w-screen overflow-hidden bg-[#080810] text-white">
@@ -133,7 +247,7 @@ export default function HomeLayout({ children }: { children: ReactNode }) {
                   <span className="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-5 rounded-full bg-linear-to-b from-purple-400 to-pink-400" />
                 )}
 
-                <Icon
+                <IconComponent
                   name={TAB_ICONS[tab]}
                   className={`relative size-4 shrink-0 transition-colors ${
                     isActive
@@ -158,18 +272,18 @@ export default function HomeLayout({ children }: { children: ReactNode }) {
         <div className="relative mt-auto mx-3 mb-4 space-y-3 p-3 rounded-xl bg-white/3 border border-white/5">
           
           <p className="text-[10px] text-gray-500 font-semibold tracking-wide uppercase mb-1">
-            Current xp
+            {rankTitle}
           </p>
           <div className="flex items-center justify-between mb-1.5">
-            <span className="text-xs font-bold text-white">Level 4</span>
+            <span className="text-xs font-bold text-white">Level {userLevel}</span>
             <span className="text-[10px] text-purple-500 font-bold">
-              {totalxp} / 5,000
+              {totalXP} / {nextLevelXP}
             </span>
           </div>
           <div className="h-1.5 rounded-full bg-white/5 overflow-hidden">
             <div
               className="h-full rounded-full bg-linear-to-r from-purple-500 to-pink-500"
-              style={{ width: `${(totalxp / 5000) * 100}%` }}
+              style={{ width: `${Math.min((totalXP / nextLevelXP) * 100, 100)}%` }}
             />
           </div>
         </div>
@@ -191,12 +305,12 @@ export default function HomeLayout({ children }: { children: ReactNode }) {
           <div className="flex items-center gap-3">
             {/* streak badge */}
             <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-orange-500/10 border border-orange-500/20 text-orange-400 text-xs font-bold">
-              <Icon name="Flame" className="size-3.5" />7 day streak
+              <IconComponent name="Flame" className="size-3.5" />7 day streak
             </div>
 
             {/* notifications */}
             <button className="relative p-2 rounded-lg bg-white/5 border border-white/5 hover:bg-white/10 transition-colors">
-              <Icon name="Bell" className="size-4 text-gray-400" />
+              <IconComponent name="Bell" className="size-4 text-gray-400" />
               <span className="absolute top-1.5 right-1.5 size-1.5 rounded-full bg-purple-500" />
             </button>
 
@@ -206,7 +320,7 @@ export default function HomeLayout({ children }: { children: ReactNode }) {
               className="flex items-center gap-2 pl-2 pr-3 py-1.5 rounded-lg bg-white/5 border border-white/5 hover:bg-white/10 transition-colors group"
             >
               <div className="size-7 rounded-lg bg-linear-to-br from-purple-500 to-pink-500 flex items-center justify-center shadow-md shadow-purple-500/30">
-                <Icon name="User" className="size-3.5 text-white" />
+                <IconComponent name="User" className="size-3.5 text-white" />
               </div>
               <span className="text-xs font-semibold text-gray-300 group-hover:text-white transition-colors">
                 Profile
@@ -217,7 +331,7 @@ export default function HomeLayout({ children }: { children: ReactNode }) {
             onClick={handleLogout}
             className="flex items-center justify-center p-3 rounded-lg bg-red-500/10 border border-red-500/20 hover:bg-red-500/20 transition-colors group"
           >
-            <Icon name="LogOut" className="size-4 text-red-400 group-hover:text-red-300" />
+            <IconComponent name="LogOut" className="size-4 text-red-400 group-hover:text-red-300" />
           </button>
           </div>
         </header>

@@ -5,6 +5,7 @@ import { ProgressBar } from "./ui/ProgressBar";
 import { GradientBackground } from "./ui/GradientBackground";
 import { FlexRow } from "./ui/FlexRow";
 import { Trophy, Lock, Star } from "lucide-react";
+import Icon from "./icons"
 import { cn } from "@/lib/utils";
 
 interface AchievementCardProps {
@@ -17,7 +18,7 @@ interface AchievementCardProps {
     unlocked: boolean;
     unlockedDate?: string;
     tier: number;
-    xpReward: number;
+    xp: number;
     progress?: number;
     total?: number;
     requiredFor?: number;
@@ -61,9 +62,11 @@ export function AchievementCard({
     },
   };
 
+
   const config =
     rarityConfig[achievement.rarity as keyof typeof rarityConfig] ||
     rarityConfig.common;
+
 
   return (
     <BaseCard
@@ -87,7 +90,7 @@ export function AchievementCard({
               variant={config.gradientVariant}
               className="w-12 h-12 rounded-lg flex items-center justify-center text-2xl"
             >
-              {achievement.icon}
+            <Icon name={(achievement.icon as any) || "Trophy"}/>
             </GradientBackground>
           ) : (
             <IconWrapper
@@ -140,7 +143,7 @@ export function AchievementCard({
             size="sm"
             icon={Star}
           >
-            +{achievement.xpReward} xp
+            +{achievement.xp} xp
           </StatusBadge>
 
           {/* Expand Button */}
@@ -153,7 +156,7 @@ export function AchievementCard({
               className="text-gray-400 hover:text-white transition-colors"
             >
               <Trophy
-                className={`w-4 h-4 transition-transform ${expanded ? "rotate-180" : ""}`}
+                className={`w-4 h-4`}
               />
             </button>
           )}
