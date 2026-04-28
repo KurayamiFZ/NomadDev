@@ -80,7 +80,7 @@ export function AchievementOver({
       onClick={onClick}
     >
       {/* Achievement Header */}
-      <div className="p-4">
+      <div className="p-4 flex flex-col items-center justify-center">
         <FlexRow justify="between" align="start" className="mb-3">
           {/* Icon */}
           {overachievement.unlocked ? (

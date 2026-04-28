@@ -22,11 +22,12 @@ interface StatsCardProps {
 }
 
 // Shared color token type — must stay in sync with IconWrapper and StatusBadge
-type ColorToken = "purple" | "pink";
+type ColorToken = "purple" | "pink" | "gray";
 
 const COLOR_MAP: Record<string, { iconColor: ColorToken; barColor: string }> = {
   "text-purple-400": { iconColor: "purple", barColor: "bg-purple-500" },
-  "text-pink-400":   { iconColor: "pink",   barColor: "bg-pink-500"   },
+  "text-pink-400": { iconColor: "pink", barColor: "bg-pink-500" },
+  "text-gray-400": { iconColor: "gray", barColor: "bg-gray-500" },
 };
 
 const FALLBACK: { iconColor: ColorToken; barColor: string } = {

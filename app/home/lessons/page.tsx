@@ -277,7 +277,7 @@ export default function Lessons() {
         {/* Course Progress Banner */}
         <div
           ref={bannerRef}
-          className={`bg-linear-to-r from-purple-900 to-blue-900 rounded-2xl p-8 mb-8 relative overflow-hidden transform transition-all duration-1000 ease-out ${
+          className={`border border-purple-600 bg-black/60   rounded-2xl p-8 mb-8 relative overflow-hidden transform transition-all duration-1000 ease-out ${
             bannerVisible
               ? "translate-y-0 opacity-100 scale-100"
               : "translate-y-8 opacity-0 scale-95"
@@ -350,43 +350,46 @@ export default function Lessons() {
         {/* Main Grid Layout */}
         <div className="grid lg:grid-cols-3 gap-8">
           {/* Left Column - Lessons Content */}
-          <div className="lg:col-span-2 space-y-10">
+          <div className="lg:col-span-2 space-y-6">
             {/* Current Lesson Highlight */}
             {currentWeekLessons.find((l) => l.current) && (
               <div
                 ref={currentLessonRef}
-                className={`bg-purple-950/40 border-2 border-purple-600 rounded-2xl p-8 mb-8 transform transition-all duration-700 ease-out ${
+                className={`bg-linear-to-r from-purple-950/60 to-pink-950/60 rounded-xl p-6 border border-purple-600/40 mb-6 transform transition-all duration-500 hover:scale-105 hover:shadow-2xl hover:shadow-purple-600/15 group ${
                   currentLessonVisible
-                    ? "translate-y-0 opacity-100 scale-100"
-                    : "translate-y-8 opacity-0 scale-95"
+                    ? "translate-y-0 opacity-100"
+                    : "translate-y-8 opacity-0"
                 }`}
               >
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="w-4 h-4 bg-purple-600 rounded-full"></div>
-                  <span className="text-purple-800 font-black text-lg">
-                    CONTINUE LEARNING
-                  </span>
-                </div>
-                <div className="flex items-end justify-between">
-                  <div>
-                    <h2 className="text-3xl font-black mb-3 bg-linear-to-r from-purple-600 to-pink-800 bg-clip-text text-transparent">
-                      {currentWeekLessons.find((l) => l.current)?.title}
-                    </h2>
-                    <p className="text-gray-400 mb-4 max-w-xl">
-                      {currentWeekLessons.find((l) => l.current)?.description}
-                    </p>
-                    <div className="flex items-center gap-4 text-gray-400">
-                      <div className="flex items-center gap-2 transform transition-transform duration-300 hover:scale-110">
-                        <Icon name="Clock" className="w-4 h-4" />
-                        {currentWeekLessons.find((l) => l.current)?.duration}
+                <div className="p=2">
+                  <div className="flex items-end justify-between mb-4">
+                    <div>
+                      <div className="text-purple-500 text-sm font-medium mb-1">
+                        LESSON 4 • WEEK 2
                       </div>
-                      <div className="px-3 py-1 bg-purple-700 rounded-full text-white text-xs font-bold transform transition-transform duration-300 hover:scale-110">
-                        {currentWeekLessons.find((l) => l.current)?.category}
+                      <h3 className="text-2xl font-bold mb-2 group-hover:text-purple-400 transition-colors">
+                        {currentWeekLessons.find((l) => l.current)?.title}
+                      </h3>
+                      <p className="text-gray-400 group-hover:text-gray-300 transition-colors">
+                        {currentWeekLessons.find((l) => l.current)?.description}
+                      </p>
+                    </div>
+                    <div className="shrink-0 ml-4">
+                      <div className="w-16 h-16 bg-linear-to-br from-purple-500/60 to-pink-500/60 rounded-full flex items-center justify-center transform transition-all duration-300 group-hover:scale-110 group-hover:rotate-12">
+                        <Icon name="Play" className="size-8 text-white" />
                       </div>
                     </div>
                   </div>
-                  <button className="bg-purple-700/40 hover:bg-purple-600 text-white px-10 py-5 rounded-xl font-black text-xl transition-all duration-300 shadow-2xl flex items-center gap-3 transform hover:scale-105 hover:shadow-purple-600/40">
-                    <Icon name="Play" className="w-6 h-6" />
+                  <div className="flex items-center gap-4 text-sm text-gray-300">
+                    <div className="flex items-center gap-2 transform transition-transform duration-300 hover:scale-110">
+                      <Icon name="Clock" className="size-4" />
+                      {currentWeekLessons.find((l) => l.current)?.duration}
+                    </div>
+                    <div className="flex items-center gap-2 px-3 py-1 bg-purple-700 rounded-full text-white text-xs font-bold transform transition-transform duration-300 hover:scale-110">
+                      {currentWeekLessons.find((l) => l.current)?.category}
+                    </div>
+                  </div>
+                  <button className="flex items-center justify-center p-4 w-full bg-linear-to-r from-purple-600/40 to-pink-600/40 text-white rounded-lg font-bold mt-6 hover:scale-105 transition-all duration-300 hover:shadow-lg hover:shadow-purple-500/50">
                     CONTINUE
                   </button>
                 </div>
@@ -563,10 +566,7 @@ export default function Lessons() {
                 }`}
               >
                 <h3 className="font-black text-lg mb-4 flex items-center gap-2 bg-linear-to-r from-purple-500 to-blue-500 bg-clip-text text-transparent">
-                  <Icon
-                    name="TrendingUp"
-                    className="w-5 h-5 text-purple-500"
-                  />
+                  <Icon name="TrendingUp" className="w-5 h-5 text-purple-500" />
                   Your Progress
                 </h3>
                 <div className="space-y-4">
@@ -615,10 +615,7 @@ export default function Lessons() {
                 }`}
               >
                 <h3 className="font-black text-lg mb-4 flex items-center gap-2 bg-linear-to-r from-blue-400 to-green-400 bg-clip-text text-transparent">
-                  <Icon
-                    name="Calendar"
-                    className="w-5 h-5 text-purple-500"
-                  />
+                  <Icon name="Calendar" className="w-5 h-5 text-purple-500" />
                   Course Roadmap
                 </h3>
                 <div className="space-y-4">
@@ -675,10 +672,7 @@ export default function Lessons() {
                 <div className="absolute inset-0 bg-black opacity-20"></div>
                 <div className="relative z-10">
                   <div className="flex items-center gap-3 mb-3">
-                    <Icon
-                      name="Award"
-                      className="w-8 h-8 text-yellow-300"
-                    />
+                    <Icon name="Award" className="w-8 h-8 text-yellow-300" />
                     <h3 className="font-black text-lg">🔥 Keep it going!</h3>
                   </div>
                   <p className="text-sm text-white opacity-90 mb-4">

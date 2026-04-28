@@ -31,7 +31,9 @@ export default function Overview() {
   const quickLinksRef = useRef<HTMLDivElement>(null);
 
   const [achievements, setAchievements] = useState<any[]>([]);
-  const [expandedAchievement, setExpandedAchievement] = useState<string | null>(null);
+  const [expandedAchievement, setExpandedAchievement] = useState<string | null>(
+    null,
+  );
   const [statsVisible, setStatsVisible] = useState(false);
   const [learningVisible, setLearningVisible] = useState(false);
   const [liveClassesVisible, setLiveClassesVisible] = useState(false);
@@ -41,9 +43,7 @@ export default function Overview() {
 
   useEffect(() => {
     async function fetchAchievements() {
-      const { data, error } = await supabase
-        .from("achievement")
-        .select("*");
+      const { data, error } = await supabase.from("achievement").select("*");
 
       if (error) {
         console.error("Supabase error:", error);
@@ -52,49 +52,56 @@ export default function Overview() {
 
       console.log("All achievements:", data);
       console.log("Achievement sample:", data?.[0]);
-      
+
       // Try different ways to filter unlocked achievements
       let unlockedAchievements = [];
-      
+
       // Method 1: Check if unlocked is boolean true
-      unlockedAchievements = data?.filter(a => a.unlocked === true) || [];
+      unlockedAchievements = data?.filter((a) => a.unlocked === true) || [];
       console.log("Method 1 (unlocked === true):", unlockedAchievements.length);
-      
+
       if (unlockedAchievements.length === 0) {
         // Method 2: Check if unlocked is truthy
-        unlockedAchievements = data?.filter(a => a.unlocked) || [];
+        unlockedAchievements = data?.filter((a) => a.unlocked) || [];
         console.log("Method 2 (truthy unlocked):", unlockedAchievements.length);
       }
-      
+
       if (unlockedAchievements.length === 0) {
         // Method 3: Check if unlocked is number 1
-        unlockedAchievements = data?.filter(a => a.unlocked === 1) || [];
+        unlockedAchievements = data?.filter((a) => a.unlocked === 1) || [];
         console.log("Method 3 (unlocked === 1):", unlockedAchievements.length);
       }
-      
+
       if (unlockedAchievements.length === 0) {
         // Method 4: Check if unlocked is string "true"
-        unlockedAchievements = data?.filter(a => a.unlocked === "true") || [];
-        console.log("Method 4 (unlocked === 'true'):", unlockedAchievements.length);
+        unlockedAchievements = data?.filter((a) => a.unlocked === "true") || [];
+        console.log(
+          "Method 4 (unlocked === 'true'):",
+          unlockedAchievements.length,
+        );
       }
-      
+
       // Sort by most recent (try different date fields)
       const sortedAchievements = unlockedAchievements.sort((a, b) => {
         // Try created_at first
         if (a.created_at && b.created_at) {
-          return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+          return (
+            new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+          );
         }
         // Try updated_at
         if (a.updated_at && b.updated_at) {
-          return new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime();
+          return (
+            new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime()
+          );
         }
         // Fallback to ID (assuming higher IDs are more recent)
         return (b.id || 0) - (a.id || 0);
       });
-      
+
       const recentAchievements = sortedAchievements.slice(0, 5);
       console.log("Final recent unlocked achievements:", recentAchievements);
-      
+
       setAchievements(recentAchievements);
     }
 
@@ -214,28 +221,28 @@ export default function Overview() {
               icon: BookOpen,
               value: "12/150",
               label: "Lessons Completed",
-              color: "text-pink-400",
+              color: "text-purple-400",
               progress: { current: 12, total: 150 },
             },
             {
               icon: Code,
               value: "7 Days",
               label: "Current Streak",
-              color: "text-pink-400",
+              color: "text-purple-400",
               progress: { current: 7, total: 30 },
             },
             {
               icon: Award,
               value: "3/5",
               label: "Games Built",
-              color: "text-pink-400",
+              color: "text-purple-400",
               progress: { current: 3, total: 5 },
             },
             {
               icon: MessageCircle,
               value: "69%",
               label: "Completion Rate",
-              color: "text-pink-400",
+              color: "text-purple-400",
               progress: { current: 69, total: 100 },
             },
           ].map((stat, index) => (
@@ -402,32 +409,35 @@ export default function Overview() {
               </div>
               <div className="p-6">
                 <div className="grid grid-cols-3 gap-3">
-                  {achievements.filter((achievement) => achievement.unlocked).slice(0, 5).map((achievement) => (
-                    <AchievementOver
-                      key={achievement.id}
-                      overachievement={{
-                        ...achievement,
-                        icon: achievement.icon || <Icon name="Trophy" />,
-                        rarity: achievement.tier,
-                        xpReward: achievement.xp || achievement.xpReward || 0,
-                      }}
-                      onClick={() =>
-                        setExpandedAchievement(
-                          expandedAchievement === achievement.id
-                            ? null
-                            : achievement.id,
-                        )
-                      }
-                      expanded={expandedAchievement === achievement.id}
-                      onExpand={() =>
-                        setExpandedAchievement(
-                          expandedAchievement === achievement.id
-                            ? null
-                            : achievement.id,
-                        )
-                      }
-                    />
-                  ))}
+                  {achievements
+                    .filter((achievement) => achievement.unlocked)
+                    .slice(0, 5)
+                    .map((achievement) => (
+                      <AchievementOver
+                        key={achievement.id}
+                        overachievement={{
+                          ...achievement,
+                          icon: achievement.icon || <Icon name="Trophy" />,
+                          rarity: achievement.tier,
+                          xpReward: achievement.xp || achievement.xpReward || 0,
+                        }}
+                        onClick={() =>
+                          setExpandedAchievement(
+                            expandedAchievement === achievement.id
+                              ? null
+                              : achievement.id,
+                          )
+                        }
+                        expanded={expandedAchievement === achievement.id}
+                        onExpand={() =>
+                          setExpandedAchievement(
+                            expandedAchievement === achievement.id
+                              ? null
+                              : achievement.id,
+                          )
+                        }
+                      />
+                    ))}
                 </div>
                 <button className="w-full bg-gray-800 hover:bg-gray-700 text-white py-3 rounded-lg font-medium mt-4 transition-all duration-300 hover:scale-105 hover:shadow-lg">
                   View All Achievements

@@ -20,11 +20,15 @@ export function DeviceDetector({ children }: DeviceDetectorProps) {
 
     const checkDevice = () => {
       const userAgent = navigator.userAgent.toLowerCase();
-      const isMobileDevice = /android|webos|iphone|ipod|blackberry|iemobile|opera mini/i.test(userAgent);
-      const isTabletDevice = /ipad|tablet|(android(?!.*mobile))|kindle|silk/i.test(userAgent);
+      const isMobileDevice =
+        /android|webos|iphone|ipod|blackberry|iemobile|opera mini/i.test(
+          userAgent,
+        );
+      const isTabletDevice =
+        /ipad|tablet|(android(?!.*mobile))|kindle|silk/i.test(userAgent);
       const isSmallScreen = window.innerWidth < 768;
       const isPortraitMode = window.innerHeight > window.innerWidth;
-      
+
       setIsMobile(isMobileDevice || (isSmallScreen && !isTabletDevice));
       setIsTablet(isTabletDevice);
       setIsPortrait(isPortraitMode && isTabletDevice);
@@ -38,7 +42,7 @@ export function DeviceDetector({ children }: DeviceDetectorProps) {
 
   if (!isLoaded) {
     return (
-      <div className="flex min-h-screen w-full bg-[#050507] items-center justify-center">
+      <div className="flex min-h-screen w-full bg-black items-center justify-center">
         <style>{`
           @keyframes spin-slow { to { transform: rotate(360deg); } }
           .loader-ring {
@@ -251,12 +255,15 @@ export function DeviceDetector({ children }: DeviceDetectorProps) {
 
             {/* Headline */}
             <h1 className="rotate-headline">
-              For the best<br /><span>experience</span>
+              For the best
+              <br />
+              <span>experience</span>
             </h1>
 
             {/* Body */}
             <p className="rotate-body">
-              This site is optimized for landscape viewing. Please rotate your iPad to continue.
+              This site is optimized for landscape viewing. Please rotate your
+              iPad to continue.
             </p>
 
             {/* Rotate instruction */}
@@ -268,7 +275,17 @@ export function DeviceDetector({ children }: DeviceDetectorProps) {
         </div>
 
         {/* Blurred background */}
-        <div style={{ position: "fixed", inset: 0, filter: "blur(40px)", opacity: 0.15, transform: "scale(1.05)", zIndex: 0, pointerEvents: "none" }}>
+        <div
+          style={{
+            position: "fixed",
+            inset: 0,
+            filter: "blur(40px)",
+            opacity: 0.15,
+            transform: "scale(1.05)",
+            zIndex: 0,
+            pointerEvents: "none",
+          }}
+        >
           {children}
         </div>
       </>
@@ -557,8 +574,11 @@ export function DeviceDetector({ children }: DeviceDetectorProps) {
               <div className="dd-icon-ring-2" />
               <div className="dd-icon-bg">
                 <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round"
-                    d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                  />
                 </svg>
               </div>
             </div>
@@ -568,12 +588,15 @@ export function DeviceDetector({ children }: DeviceDetectorProps) {
 
             {/* Headline */}
             <h1 className="dd-headline">
-              Built for<br /><span>bigger screens</span>
+              Built for
+              <br />
+              <span>bigger screens</span>
             </h1>
 
             {/* Body */}
             <p className="dd-body">
-              This experience is crafted for desktop and tablet. Grab your laptop for full access.
+              This experience is crafted for desktop and tablet. Grab your
+              laptop for full access.
             </p>
 
             <div className="dd-divider" />
@@ -581,9 +604,21 @@ export function DeviceDetector({ children }: DeviceDetectorProps) {
             {/* Features */}
             <div className="dd-features">
               {[
-                { icon: "⚡", title: "Full feature access", desc: "Every tool, every workflow" },
-                { icon: "🎮", title: "Precision controls", desc: "Optimized for mouse & keyboard" },
-                { icon: "🖥️", title: "Expansive canvas", desc: "Designed for wide viewports" },
+                {
+                  icon: "⚡",
+                  title: "Full feature access",
+                  desc: "Every tool, every workflow",
+                },
+                {
+                  icon: "🎮",
+                  title: "Precision controls",
+                  desc: "Optimized for mouse & keyboard",
+                },
+                {
+                  icon: "🖥️",
+                  title: "Expansive canvas",
+                  desc: "Designed for wide viewports",
+                },
               ].map(({ icon, title, desc }) => (
                 <div className="dd-feature" key={title}>
                   <div className="dd-feature-icon">{icon}</div>
@@ -598,7 +633,17 @@ export function DeviceDetector({ children }: DeviceDetectorProps) {
         </div>
 
         {/* Blurred background */}
-        <div style={{ position: "fixed", inset: 0, filter: "blur(40px)", opacity: 0.15, transform: "scale(1.05)", zIndex: 0, pointerEvents: "none" }}>
+        <div
+          style={{
+            position: "fixed",
+            inset: 0,
+            filter: "blur(40px)",
+            opacity: 0.15,
+            transform: "scale(1.05)",
+            zIndex: 0,
+            pointerEvents: "none",
+          }}
+        >
           {children}
         </div>
       </>

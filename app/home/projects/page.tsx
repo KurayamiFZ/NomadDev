@@ -3,47 +3,15 @@
 
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
+import Icon from "@/app/components/icons";
+import "lucide-react";
 import {
-  CheckCircle,
-  Lock,
-  Play,
-  Clock,
-  Calendar,
-  TrendingUp,
-  ChevronRight,
-  Search,
-  BookOpen,
-  Award,
-  Target,
-  Zap,
-  Trophy,
-  Users,
-  MessageCircle,
-  Code,
-  Rocket,
-  Gamepad2,
-  Sparkles,
-  Bell,
-  Star,
-  Flame,
-  Brain,
-  Shield,
-  Sword,
-  Crown,
-  Gem,
-  Download,
-  Share2,
-  BookMarked,
-  Layers,
-  Fingerprint,
-  Cpu,
-  Heart,
-  Eye,
-  BarChart3,
-  Timer,
-  Gift,
-} from "lucide-react";
-import { calculateTotalXP, getLevelFromXP, getRankTitle, getRankGradient, getLevelProgress } from "../../../lib/level-system";
+  calculateTotalXP,
+  getLevelFromXP,
+  getRankTitle,
+  getRankGradient,
+  getLevelProgress,
+} from "../../../lib/level-system";
 import { supabase } from "../../../lib/supabaseclient";
 import { useAuth } from "../../components/AuthProvider";
 
@@ -54,7 +22,7 @@ export default function LessonsEnhanced() {
   const [selectedFilter, setSelectedFilter] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedPath, setSelectedPath] = useState("main");
-  
+
   // User level state
   const [userStats, setUserStats] = useState({
     totalLessons: 24,
@@ -71,14 +39,14 @@ export default function LessonsEnhanced() {
     rank: "Beginner",
     percentile: 87,
   });
-  
+
   // Animation states
   const [isVisible, setIsVisible] = useState(false);
   const [headerVisible, setHeaderVisible] = useState(false);
   const [pathsVisible, setPathsVisible] = useState(false);
   const [projectsVisible, setProjectsVisible] = useState(false);
   const [userStatsVisible, setStatsVisible] = useState(false);
-  
+
   // Refs for scroll-triggered animations
   const headerRef = useRef<HTMLDivElement>(null);
   const pathsRef = useRef<HTMLDivElement>(null);
@@ -88,29 +56,35 @@ export default function LessonsEnhanced() {
   useEffect(() => {
     // Trigger initial animations
     setTimeout(() => setIsVisible(true), 100);
-    
+
     // Setup scroll observers
-    const setupScrollObserver = (ref: React.RefObject<HTMLDivElement | null>, setState: (visible: boolean) => void) => {
+    const setupScrollObserver = (
+      ref: React.RefObject<HTMLDivElement | null>,
+      setState: (visible: boolean) => void,
+    ) => {
       if (!ref.current) return;
-      
+
       const observer = new IntersectionObserver(
         ([entry]) => {
           if (entry.isIntersecting) {
             setState(true);
           }
         },
-        { threshold: 0.1 }
+        { threshold: 0.1 },
       );
-      
+
       observer.observe(ref.current);
       return () => observer.disconnect();
     };
-    
+
     const cleanupHeader = setupScrollObserver(headerRef, setHeaderVisible);
     const cleanupPaths = setupScrollObserver(pathsRef, setPathsVisible);
-    const cleanupProjects = setupScrollObserver(projectsRef, setProjectsVisible);
+    const cleanupProjects = setupScrollObserver(
+      projectsRef,
+      setProjectsVisible,
+    );
     const cleanupStats = setupScrollObserver(userStatsRef, setStatsVisible);
-    
+
     return () => {
       cleanupHeader?.();
       cleanupPaths?.();
@@ -126,17 +100,23 @@ export default function LessonsEnhanced() {
 
       try {
         console.log("Projects page - Testing database connection...");
-        
+
         // First, let's see what's in the achievement table
         const { data: allAchievements, error: allError } = await supabase
           .from("achievement")
           .select("*")
           .limit(5);
 
-        console.log("Projects page - Sample achievements from DB:", allAchievements);
-        
+        console.log(
+          "Projects page - Sample achievements from DB:",
+          allAchievements,
+        );
+
         if (allError) {
-          console.error("Projects page - Error fetching sample achievements:", allError);
+          console.error(
+            "Projects page - Error fetching sample achievements:",
+            allError,
+          );
         }
 
         // Now try user achievements
@@ -146,7 +126,10 @@ export default function LessonsEnhanced() {
           .eq("user_id", user.id);
 
         if (error) {
-          console.error("Projects page - Error fetching user achievements:", error);
+          console.error(
+            "Projects page - Error fetching user achievements:",
+            error,
+          );
           return;
         }
 
@@ -154,17 +137,19 @@ export default function LessonsEnhanced() {
 
         // If no user achievements, test with sample data
         if (!userAchievements || userAchievements.length === 0) {
-          console.log("Projects page - No user achievements found - testing with sample data");
-          
+          console.log(
+            "Projects page - No user achievements found - testing with sample data",
+          );
+
           const sampleXP = 750;
           const testLevel = getLevelFromXP(sampleXP);
           const testRank = getRankTitle(sampleXP);
           const testLevelProgress = getLevelProgress(sampleXP);
-          
+
           console.log("Projects page - Test with sample XP:", sampleXP);
           console.log("Projects page - Test level:", testLevel);
-          
-          setUserStats(prev => ({
+
+          setUserStats((prev) => ({
             ...prev,
             totalxp: sampleXP,
             currentLevel: testLevel,
@@ -175,24 +160,35 @@ export default function LessonsEnhanced() {
         }
 
         // Try different field names for unlocked status
-        const unlockedAchievements = userAchievements.filter(ua => {
+        const unlockedAchievements = userAchievements.filter((ua) => {
           console.log("Projects page - Checking achievement:", ua);
-          return ua.unlocked === true || ua.unlocked === 1 || 
-                 ua.completed === true || ua.completed === 1 ||
-                 ua.earned === true || ua.earned === 1 ||
-                 ua.status === 'completed' || ua.status === 'unlocked';
+          return (
+            ua.unlocked === true ||
+            ua.unlocked === 1 ||
+            ua.completed === true ||
+            ua.completed === 1 ||
+            ua.earned === true ||
+            ua.earned === 1 ||
+            ua.status === "completed" ||
+            ua.status === "unlocked"
+          );
         });
-        
-        console.log("Projects page - Unlocked achievements:", unlockedAchievements);
-        
+
+        console.log(
+          "Projects page - Unlocked achievements:",
+          unlockedAchievements,
+        );
+
         if (unlockedAchievements.length === 0) {
-          console.log("Projects page - No unlocked achievements found - using sample data");
+          console.log(
+            "Projects page - No unlocked achievements found - using sample data",
+          );
           const sampleXP = 750;
           const testLevel = getLevelFromXP(sampleXP);
           const testRank = getRankTitle(sampleXP);
           const testLevelProgress = getLevelProgress(sampleXP);
-          
-          setUserStats(prev => ({
+
+          setUserStats((prev) => ({
             ...prev,
             totalxp: sampleXP,
             currentLevel: testLevel,
@@ -201,8 +197,10 @@ export default function LessonsEnhanced() {
           }));
           return;
         }
-        
-        const achievementIds = unlockedAchievements.map(ua => ua.achievement_id);
+
+        const achievementIds = unlockedAchievements.map(
+          (ua) => ua.achievement_id,
+        );
         console.log("Projects page - Achievement IDs:", achievementIds);
 
         if (achievementIds.length > 0) {
@@ -212,15 +210,19 @@ export default function LessonsEnhanced() {
             .in("id", achievementIds);
 
           if (achievementError) {
-            console.error("Projects page - Error fetching achievement details:", achievementError);
+            console.error(
+              "Projects page - Error fetching achievement details:",
+              achievementError,
+            );
             return;
           }
 
           console.log("Projects page - Achievements with XP:", achievements);
 
-          const totalXP = achievements?.reduce((sum, achievement) => {
-            return sum + (achievement.xp || 0);
-          }, 0) || 0;
+          const totalXP =
+            achievements?.reduce((sum, achievement) => {
+              return sum + (achievement.xp || 0);
+            }, 0) || 0;
 
           console.log("Projects page - Calculated total XP:", totalXP);
 
@@ -231,7 +233,7 @@ export default function LessonsEnhanced() {
           console.log("Projects page - Calculated level:", level);
           console.log("Projects page - Rank title:", rank);
 
-          setUserStats(prev => ({
+          setUserStats((prev) => ({
             ...prev,
             totalxp: totalXP,
             currentLevel: level,
@@ -249,9 +251,24 @@ export default function LessonsEnhanced() {
 
   // Learning paths - New feature
   const learningPaths = [
-    { id: "main", name: "Main Quest", icon: Sword, color: "purple" },
-    { id: "advanced", name: "Expert Path", icon: Crown, color: "yellow" },
-    { id: "projects", name: "Build Track", icon: Gamepad2, color: "green" },
+    {
+      id: "main",
+      name: "Main Quest",
+      icon: <Icon name="Sword" />,
+      color: "purple",
+    },
+    {
+      id: "advanced",
+      name: "Expert Path",
+      icon: <Icon name="Crown" />,
+      color: "yellow",
+    },
+    {
+      id: "projects",
+      name: "Build Track",
+      icon: <Icon name="Gamepad2" />,
+      color: "green",
+    },
   ];
 
   // Enhanced lessons with xp and skill points
@@ -346,9 +363,24 @@ export default function LessonsEnhanced() {
 
   // Power-ups and boosts
   const activePowerUps = [
-    { name: "2x xp Boost", icon: Zap, color: "yellow", timeLeft: "2h 15m" },
-    { name: "Focus Mode", icon: Brain, color: "blue", timeLeft: "45m" },
-    { name: "Streak Shield", icon: Shield, color: "green", timeLeft: "1 day" },
+    {
+      name: "2x xp Boost",
+      icon: <Icon name="Zap" />,
+      color: "yellow",
+      timeLeft: "2h 15m",
+    },
+    {
+      name: "Focus Mode",
+      icon: <Icon name="Brain" />,
+      color: "blue",
+      timeLeft: "45m",
+    },
+    {
+      name: "Streak Shield",
+      icon: <Icon name="Shield" />,
+      color: "green",
+      timeLeft: "1 day",
+    },
   ];
 
   // Skill tree nodes
@@ -366,29 +398,34 @@ export default function LessonsEnhanced() {
       progress: 2,
       total: 3,
       reward: "250 xp",
-      icon: BookOpen,
+      icon: <Icon name="BookOpen" />,
     },
     {
       title: "Perfect Score",
       progress: 1,
       total: 1,
       reward: "500 xp",
-      icon: Star,
+      icon: <Icon name="Star" />,
     },
     {
       title: "Help 2 Students",
       progress: 0,
       total: 2,
       reward: "150 xp",
-      icon: Users,
+      icon: <Icon name="Users" />,
     },
   ];
 
-  
   const filters = ["all", "in-progress", "completed", "locked"];
-  const progressPercentage = Math.round((userStats.completedLessons / userStats.totalLessons) * 100);
-  console.log(`You&apos;re ${progressPercentage}% through the course. Complete ${userStats.completedLessons} / ${userStats.totalLessons} Lessons`);
-  const levelProgress = Math.round((userStats.totalxp / userStats.nextLevelxp) * 100);
+  const progressPercentage = Math.round(
+    (userStats.completedLessons / userStats.totalLessons) * 100,
+  );
+  console.log(
+    `You&apos;re ${progressPercentage}% through the course. Complete ${userStats.completedLessons} / ${userStats.totalLessons} Lessons`,
+  );
+  const levelProgress = Math.round(
+    (userStats.totalxp / userStats.nextLevelxp) * 100,
+  );
 
   return (
     <div className="flex flex-col min-h-screen w-full bg-black text-white">
@@ -400,17 +437,22 @@ export default function LessonsEnhanced() {
       </div>
 
       {/* Header */}
-      <div 
+      <div
         ref={headerRef}
         className={`top-0 z-50 backdrop-blur-xl bg-black/80 border-b border-white/10 transform transition-all duration-1000 ease-out ${
-          headerVisible ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0'
+          headerVisible
+            ? "translate-y-0 opacity-100"
+            : "-translate-y-full opacity-0"
         }`}
       >
         <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between gap-4">
             {/* Search */}
             <div className="relative flex-1 max-w-md">
-              <Search className="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 transform transition-transform duration-300 hover:scale-110" />
+              <Icon
+                name="Search"
+                className="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 transform transition-transform duration-300 hover:scale-110"
+              />
               <input
                 type="text"
                 placeholder="Search lessons, skills, achievements..."
@@ -425,14 +467,14 @@ export default function LessonsEnhanced() {
               <div className="bg-linear-to-r from-purple-500/20 to-pink-500/20 border border-purple-500/30 rounded-xl px-4 py-2 backdrop-blur-sm transform transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-purple-500/30">
                 <div className="flex items-center gap-3">
                   <div className="flex items-center gap-2">
-                    <Crown className="w-5 h-5 text-yellow-400" />
+                    <Icon name="Crown" className="w-5 h-5 text-yellow-400" />
                     <span className="font-black text-lg bg-linear-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent">
                       Level {userStats.currentLevel}
                     </span>
                   </div>
                   <div className="w-px h-6 bg-white/20"></div>
                   <div className="flex items-center gap-2">
-                    <Sparkles className="w-5 h-5 text-purple-400" />
+                    <Icon name="Sparkles" className="w-5 h-5 text-purple-400" />
                     <span className="font-bold text-purple-400">
                       {userStats.totalxp.toLocaleString()} xp
                     </span>
@@ -448,13 +490,13 @@ export default function LessonsEnhanced() {
         {/* Hero Section - Completely Redesigned */}
         <div className="relative mb-8">
           {/* Main Progress Card */}
-          <div className="bg-linear-to-r from-purple-600 via-pink-600 to-purple-600 rounded-3xl p-1 shadow-2xl shadow-purple-500/20">
+          <div className="bg-stone-800/60 border border-purple-600 rounded-3xl p-1 shadow-2xl shadow-purple-500/20">
             <div className="bg-black/50 backdrop-blur-xl rounded-[22px] p-8">
               <div className="flex items-start justify-between mb-6">
                 <div>
                   <div className="flex items-center gap-3 mb-3">
                     <div className="p-3 bg-linear-to-br from-purple-500 to-pink-500 rounded-2xl">
-                      <Rocket className="w-8 h-8" />
+                      <Icon name="Rocket" className="w-8 h-8" />
                     </div>
                     <div>
                       <h1 className="text-4xl font-black bg-linear-to-r from-white via-purple-200 to-pink-200 bg-clip-text text-transparent">
@@ -473,7 +515,8 @@ export default function LessonsEnhanced() {
                       <div className="flex justify-between text-sm mb-2">
                         <span className="text-gray-300">Course Progress</span>
                         <span className="font-bold text-purple-300">
-                          {userStats.completedLessons}/{userStats.totalLessons} Lessons
+                          {userStats.completedLessons}/{userStats.totalLessons}{" "}
+                          Lessons
                         </span>
                       </div>
                       <div className="h-3 bg-white/10 rounded-full overflow-hidden backdrop-blur-sm">
@@ -490,7 +533,8 @@ export default function LessonsEnhanced() {
                     <div>
                       <div className="flex justify-between text-sm mb-2">
                         <span className="text-gray-300">
-                          Level {userStats.currentLevel} → {userStats.currentLevel + 1}
+                          Level {userStats.currentLevel} →{" "}
+                          {userStats.currentLevel + 1}
                         </span>
                         <span className="font-bold text-yellow-300">
                           {userStats.totalxp.toLocaleString()}/
@@ -554,7 +598,7 @@ export default function LessonsEnhanced() {
                     </div>
                   </div>
                   <div className="flex items-center gap-2 px-4 py-2 bg-white/5 rounded-full backdrop-blur-sm border border-white/10">
-                    <Trophy className="w-4 h-4 text-yellow-400" />
+                    <Icon name="Trophy" className="w-4 h-4 text-yellow-400" />
                     <span className="text-sm font-bold">
                       Top {userStats.percentile}%
                     </span>
@@ -575,9 +619,7 @@ export default function LessonsEnhanced() {
                   <div
                     className={`p-2 bg-${powerUp.color}-500/20 rounded-xl border border-${powerUp.color}-500/30`}
                   >
-                    <powerUp.icon
-                      className={`w-5 h-5 text-${powerUp.color}-400`}
-                    />
+                    {powerUp.icon}
                   </div>
                   <div>
                     <div className="font-bold text-sm">{powerUp.name}</div>
@@ -592,14 +634,16 @@ export default function LessonsEnhanced() {
         </div>
 
         {/* Learning Path Selector - New Feature */}
-        <div 
+        <div
           ref={pathsRef}
           className={`mb-8 transform transition-all duration-700 ease-out ${
-            pathsVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
+            pathsVisible
+              ? "translate-y-0 opacity-100"
+              : "translate-y-8 opacity-0"
           }`}
         >
           <h2 className="text-xl font-black mb-4 flex items-center gap-2 bg-linear-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
-            <Layers className="w-6 h-6 text-purple-400" />
+            <Icon name="Layers" className="w-6 h-6 text-purple-400" />
             Choose Your Path
           </h2>
           <div className="grid grid-cols-3 gap-4">
@@ -612,20 +656,18 @@ export default function LessonsEnhanced() {
                     ? "bg-linear-to-br from-purple-500/20 to-pink-500/20 border-purple-500 shadow-lg shadow-purple-500/30"
                     : "bg-white/5 border-white/10 hover:border-white/20 hover:shadow-lg hover:shadow-white/10"
                 } ${
-                  pathsVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
+                  pathsVisible
+                    ? "translate-y-0 opacity-100"
+                    : "translate-y-8 opacity-0"
                 }`}
                 style={{ transitionDelay: `${index * 150}ms` }}
               >
                 <div className="flex items-center gap-3 mb-2">
-                  <path.icon
-                    className={`w-8 h-8 transform transition-all duration-300 group-hover:scale-110 group-hover:rotate-12 ${
-                      selectedPath === path.id
-                        ? "text-purple-400"
-                        : "text-gray-400 group-hover:text-white"
-                    }`}
-                  />
+                  {path.icon}
                   <div className="text-left">
-                    <div className="font-black text-lg group-hover:text-white transition-colors duration-300">{path.name}</div>
+                    <div className="font-black text-lg group-hover:text-white transition-colors duration-300">
+                      {path.name}
+                    </div>
                     <div className="text-xs text-gray-400 group-hover:text-gray-300 transition-colors duration-300">
                       {path.id === "main" && "Core curriculum"}
                       {path.id === "advanced" && "Challenge yourself"}
@@ -635,7 +677,10 @@ export default function LessonsEnhanced() {
                 </div>
                 {selectedPath === path.id && (
                   <div className="absolute top-2 right-2">
-                    <CheckCircle className="w-5 h-5 text-purple-400" />
+                    <Icon
+                      name="CheckCircle"
+                      className="w-5 h-5 text-purple-400"
+                    />
                   </div>
                 )}
               </button>
@@ -688,7 +733,10 @@ export default function LessonsEnhanced() {
                       </p>
                       <div className="flex flex-wrap items-center gap-4 mb-6">
                         <div className="flex items-center gap-2 px-3 py-2 bg-white/5 rounded-lg border border-white/10">
-                          <Clock className="w-4 h-4 text-blue-400" />
+                          <Icon
+                            name="Clock"
+                            className="w-4 h-4 text-blue-400"
+                          />
                           <span className="text-sm">
                             {
                               currentWeekLessons.find((l) => l.current)
@@ -697,13 +745,19 @@ export default function LessonsEnhanced() {
                           </span>
                         </div>
                         <div className="flex items-center gap-2 px-3 py-2 bg-white/5 rounded-lg border border-white/10">
-                          <Sparkles className="w-4 h-4 text-yellow-400" />
+                          <Icon
+                            name="Sparkles"
+                            className="w-4 h-4 text-yellow-400"
+                          />
                           <span className="text-sm">
                             +{currentWeekLessons.find((l) => l.current)?.xp} xp
                           </span>
                         </div>
                         <div className="flex items-center gap-2 px-3 py-2 bg-white/5 rounded-lg border border-white/10">
-                          <Gem className="w-4 h-4 text-purple-400" />
+                          <Icon
+                            name="Gem"
+                            className="w-4 h-4 text-purple-400"
+                          />
                           <span className="text-sm">
                             +
                             {
@@ -714,7 +768,10 @@ export default function LessonsEnhanced() {
                           </span>
                         </div>
                         <div className="flex items-center gap-2 px-3 py-2 bg-purple-500/20 rounded-lg border border-purple-500/30">
-                          <Target className="w-4 h-4 text-purple-400" />
+                          <Icon
+                            name="Target"
+                            className="w-4 h-4 text-purple-400"
+                          />
                           <span className="text-sm font-bold">
                             {
                               currentWeekLessons.find((l) => l.current)
@@ -727,9 +784,15 @@ export default function LessonsEnhanced() {
                   </div>
                   <button className="w-full group bg-linear-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white py-4 rounded-2xl font-black text-lg transition-all shadow-lg shadow-purple-500/50 hover:shadow-purple-500/70 hover:scale-[1.02]">
                     <span className="flex items-center justify-center gap-3">
-                      <Play className="w-6 h-6 group-hover:scale-110 transition" />
+                      <Icon
+                        name="Play"
+                        className="w-6 h-6 group-hover:scale-110 transition"
+                      />
                       START LESSON
-                      <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition" />
+                      <Icon
+                        name="ChevronRight"
+                        className="w-5 h-5 group-hover:translate-x-1 transition"
+                      />
                     </span>
                   </button>
                 </div>
@@ -741,7 +804,7 @@ export default function LessonsEnhanced() {
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-2xl font-black">This Week's Lessons</h2>
                 <div className="flex items-center gap-2 text-sm text-gray-400">
-                  <BarChart3 className="w-4 h-4" />
+                  <Icon name="BarChart3" className="w-4 h-4" />
                   <span>
                     {currentWeekLessons.filter((l) => l.completed).length}/
                     {currentWeekLessons.length} Complete
@@ -771,24 +834,24 @@ export default function LessonsEnhanced() {
                       <div className="absolute top-3 left-3">
                         {lesson.completed ? (
                           <div className="flex items-center gap-2 bg-green-500/90 px-3 py-1.5 rounded-full backdrop-blur-sm">
-                            <CheckCircle className="w-4 h-4" />
+                            <Icon name="CheckCircle" className="w-4 h-4" />
                             <span className="text-xs font-bold">Completed</span>
                           </div>
                         ) : lesson.current ? (
                           <div className="flex items-center gap-2 bg-purple-500/90 px-3 py-1.5 rounded-full backdrop-blur-sm">
-                            <Play className="w-4 h-4" />
+                            <Icon name="Play" className="w-4 h-4" />
                             <span className="text-xs font-bold">
                               In Progress
                             </span>
                           </div>
                         ) : lesson.locked ? (
                           <div className="flex items-center gap-2 bg-gray-500/90 px-3 py-1.5 rounded-full backdrop-blur-sm">
-                            <Lock className="w-4 h-4" />
+                            <Icon name="Lock" className="w-4 h-4" />
                             <span className="text-xs font-bold">Locked</span>
                           </div>
                         ) : (
                           <div className="flex items-center gap-2 bg-blue-500/90 px-3 py-1.5 rounded-full backdrop-blur-sm">
-                            <Target className="w-4 h-4" />
+                            <Icon name="Target" className="w-4 h-4" />
                             <span className="text-xs font-bold">Available</span>
                           </div>
                         )}
@@ -798,7 +861,7 @@ export default function LessonsEnhanced() {
                       {lesson.isBoss && (
                         <div className="absolute top-3 right-3">
                           <div className="flex items-center gap-1 bg-red-500/90 px-3 py-1.5 rounded-full backdrop-blur-sm">
-                            <Flame className="w-4 h-4" />
+                            <Icon name="Flame" className="w-4 h-4" />
                             <span className="text-xs font-bold">BOSS</span>
                           </div>
                         </div>
@@ -806,7 +869,7 @@ export default function LessonsEnhanced() {
 
                       {/* Completion Rate */}
                       <div className="absolute bottom-3 right-3 flex items-center gap-1 bg-black/60 px-2 py-1 rounded-full backdrop-blur-sm text-xs">
-                        <Users className="w-3 h-3" />
+                        <Icon name="Users" className="w-3 h-3" />
                         {lesson.completionRate}%
                       </div>
                     </div>
@@ -832,7 +895,7 @@ export default function LessonsEnhanced() {
                       <div className="flex items-center justify-between text-xs">
                         <div className="flex items-center gap-3">
                           <div className="flex items-center gap-1 text-gray-400">
-                            <Clock className="w-3 h-3" />
+                            <Icon name="Clock" className="w-3 h-3" />
                             {lesson.duration}
                           </div>
                           <span className="text-gray-600">•</span>
@@ -842,10 +905,12 @@ export default function LessonsEnhanced() {
                         </div>
                         <div className="flex items-center gap-3">
                           <div className="flex items-center gap-1 text-yellow-400 font-bold">
-                            <Sparkles className="w-3 h-3" />+{lesson.xp}
+                            <Icon name="Sparkles" className="w-3 h-3" />+
+                            {lesson.xp}
                           </div>
                           <div className="flex items-center gap-1 text-purple-400 font-bold">
-                            <Gem className="w-3 h-3" />+{lesson.skillPoints}
+                            <Icon name="Gem" className="w-3 h-3" />+
+                            {lesson.skillPoints}
                           </div>
                         </div>
                       </div>
@@ -862,7 +927,7 @@ export default function LessonsEnhanced() {
             <div className="bg-linear-to-br from-orange-500/10 to-red-500/10 border border-orange-500/30 rounded-2xl p-6">
               <div className="flex items-center gap-3 mb-6">
                 <div className="p-3 bg-orange-500/20 rounded-xl">
-                  <Flame className="w-6 h-6 text-orange-400" />
+                  <Icon name="Flame" className="w-6 h-6 text-orange-400" />
                 </div>
                 <div>
                   <h3 className="text-xl font-black">Daily Challenges</h3>
@@ -884,7 +949,7 @@ export default function LessonsEnhanced() {
                     className="flex items-center gap-4 p-4 bg-black/30 rounded-xl border border-white/10"
                   >
                     <div className="p-2 bg-orange-500/20 rounded-lg">
-                      <challenge.icon className="w-5 h-5 text-orange-400" />
+                      {challenge.icon}
                     </div>
                     <div className="flex-1">
                       <div className="font-bold mb-2">{challenge.title}</div>
@@ -917,7 +982,7 @@ export default function LessonsEnhanced() {
               {/* Skill Tree */}
               <div className="bg-linear-to-br from-white/10 to-white/5 backdrop-blur-sm border border-white/20 rounded-2xl p-6">
                 <h3 className="font-black text-lg mb-4 flex items-center gap-2">
-                  <Cpu className="w-5 h-5 text-cyan-400" />
+                  <Icon name="Cpu" className="w-5 h-5 text-cyan-400" />
                   Skill Tree
                 </h3>
                 <div className="space-y-4">
@@ -958,7 +1023,7 @@ export default function LessonsEnhanced() {
               {/* Leaderboard Preview */}
               <div className="bg-linear-to-br from-white/10 to-white/5 backdrop-blur-sm border border-white/20 rounded-2xl p-6">
                 <h3 className="font-black text-lg mb-4 flex items-center gap-2">
-                  <Trophy className="w-5 h-5 text-yellow-400" />
+                  <Icon name="Trophy" className="w-5 h-5 text-yellow-400" />
                   Leaderboard
                 </h3>
                 <div className="space-y-3">
@@ -994,7 +1059,10 @@ export default function LessonsEnhanced() {
                         </div>
                       </div>
                       {user.rank === 1 && (
-                        <Crown className="w-5 h-5 text-yellow-400" />
+                        <Icon
+                          name="Crown"
+                          className="w-5 h-5 text-yellow-400"
+                        />
                       )}
                     </div>
                   ))}
@@ -1007,7 +1075,7 @@ export default function LessonsEnhanced() {
               {/* Study Streak */}
               <div className="bg-linear-to-br from-orange-500/20 to-red-500/20 border border-orange-500/30 rounded-2xl p-6">
                 <div className="flex items-center gap-3 mb-4">
-                  <Flame className="w-8 h-8 text-orange-400" />
+                  <Icon name="Flame" className="w-8 h-8 text-orange-400" />
                   <div>
                     <div className="text-3xl font-black">
                       {userStats.currentStreak}
@@ -1038,29 +1106,38 @@ export default function LessonsEnhanced() {
                 <div className="space-y-2">
                   {[
                     {
-                      icon: Download,
+                      icon: <Icon name="Download" />,
                       label: "Download Resources",
                       color: "blue",
                     },
-                    { icon: Share2, label: "Share Progress", color: "green" },
                     {
-                      icon: MessageCircle,
+                      icon: <Icon name="Share2" />,
+                      label: "Share Progress",
+                      color: "green",
+                    },
+                    {
+                      icon: <Icon name="MessageCircle" />,
                       label: "Ask Question",
                       color: "purple",
                     },
-                    { icon: BookMarked, label: "Study Notes", color: "pink" },
+                    {
+                      icon: <Icon name="BookMarked" />,
+                      label: "Study Notes",
+                      color: "pink",
+                    },
                   ].map((action, i) => (
                     <button
                       key={i}
                       className="w-full flex items-center gap-3 p-3 bg-white/5 hover:bg-white/10 rounded-xl transition text-left group"
                     >
-                      <action.icon
-                        className={`w-5 h-5 text-${action.color}-400`}
-                      />
+                      {action.icon}
                       <span className="font-medium group-hover:text-white transition">
                         {action.label}
                       </span>
-                      <ChevronRight className="w-4 h-4 ml-auto text-gray-400 group-hover:translate-x-1 transition" />
+                      <Icon
+                        name="ChevronRight"
+                        className="w-4 h-4 ml-auto text-gray-400 group-hover:translate-x-1 transition"
+                      />
                     </button>
                   ))}
                 </div>

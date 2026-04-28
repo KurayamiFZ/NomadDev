@@ -7,14 +7,16 @@ export default function Username() {
 
   useEffect(() => {
     const fetchProfile = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
 
-      if(!user) return;
+      if (!user) return;
 
       const { data, error } = await supabase
-        .from('users')
-        .select('name')
-        .eq('id', user.id)
+        .from("users")
+        .select("name")
+        .eq("id", user.id)
         .single();
 
       if (error) {
@@ -29,6 +31,6 @@ export default function Username() {
   }, []);
 
   return (
-    <h1 className="text-3xl font-black mb-2">Welcome back, {profile?.name}! 🎮</h1>
+    <h1 className="text-3xl font-black mb-2">Welcome back, {profile?.name}!</h1>
   );
 }

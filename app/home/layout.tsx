@@ -6,7 +6,13 @@ import IconComponent from "../components/icons";
 import type { Icon } from "../components/icons";
 import { supabase } from "@/lib/supabaseclient";
 import { useAuth } from "../components/AuthProvider";
-import { calculateTotalXP, getLevelFromXP, getRankTitle, getRankGradient, getLevelProgress } from "../../lib/level-system";
+import {
+  calculateTotalXP,
+  getLevelFromXP,
+  getRankTitle,
+  getRankGradient,
+  getLevelProgress,
+} from "../../lib/level-system";
 
 const TAB_ICONS: Record<string, Icon> = {
   overview: "LayoutDashboard",
@@ -39,9 +45,9 @@ export default function HomeLayout({ children }: { children: ReactNode }) {
   const handleLogout = async () => {
     try {
       await signOut();
-      router.push('/');
+      router.push("/");
     } catch (error) {
-      console.error('Error during logout:', error);
+      console.error("Error during logout:", error);
     }
   };
 
@@ -54,7 +60,7 @@ export default function HomeLayout({ children }: { children: ReactNode }) {
 
       try {
         console.log("Testing database connection...");
-        
+
         // First, let's see what's in the achievement table
         const { data: allAchievements, error: allError } = await supabase
           .from("achievement")
@@ -62,7 +68,7 @@ export default function HomeLayout({ children }: { children: ReactNode }) {
           .limit(5);
 
         console.log("Sample achievements from DB:", allAchievements);
-        
+
         if (allError) {
           console.error("Error fetching sample achievements:", allError);
         }
@@ -84,17 +90,17 @@ export default function HomeLayout({ children }: { children: ReactNode }) {
         // If no user achievements, let's test with sample data
         if (!userAchievements || userAchievements.length === 0) {
           console.log("No user achievements found - testing with sample data");
-          
+
           // Test the level system with sample XP
           const sampleXP = 750; // Sample XP for testing
           const testLevel = getLevelFromXP(sampleXP);
           const testRank = getRankTitle(testLevel);
           const testLevelProgress = getLevelProgress(sampleXP);
-          
+
           console.log("Test with sample XP:", sampleXP);
           console.log("Test level:", testLevel);
           console.log("Test rank:", testRank);
-          
+
           setTotalXP(sampleXP);
           setUserLevel(testLevel);
           setRankTitle(testRank);
@@ -104,23 +110,29 @@ export default function HomeLayout({ children }: { children: ReactNode }) {
         }
 
         // Try different field names for unlocked status
-        const unlockedAchievements = userAchievements.filter(ua => {
+        const unlockedAchievements = userAchievements.filter((ua) => {
           console.log("Checking achievement:", ua);
-          return ua.unlocked === true || ua.unlocked === 1 || 
-                 ua.completed === true || ua.completed === 1 ||
-                 ua.earned === true || ua.earned === 1 ||
-                 ua.status === 'completed' || ua.status === 'unlocked';
+          return (
+            ua.unlocked === true ||
+            ua.unlocked === 1 ||
+            ua.completed === true ||
+            ua.completed === 1 ||
+            ua.earned === true ||
+            ua.earned === 1 ||
+            ua.status === "completed" ||
+            ua.status === "unlocked"
+          );
         });
-        
+
         console.log("Unlocked achievements:", unlockedAchievements);
-        
+
         if (unlockedAchievements.length === 0) {
           console.log("No unlocked achievements found - using sample data");
           const sampleXP = 750;
           const testLevel = getLevelFromXP(sampleXP);
           const testRank = getRankTitle(testLevel);
           const testLevelProgress = getLevelProgress(sampleXP);
-          
+
           setTotalXP(sampleXP);
           setUserLevel(testLevel);
           setRankTitle(testRank);
@@ -128,8 +140,10 @@ export default function HomeLayout({ children }: { children: ReactNode }) {
           setLoading(false);
           return;
         }
-        
-        const achievementIds = unlockedAchievements.map(ua => ua.achievement_id);
+
+        const achievementIds = unlockedAchievements.map(
+          (ua) => ua.achievement_id,
+        );
         console.log("Achievement IDs:", achievementIds);
 
         if (achievementIds.length > 0) {
@@ -139,16 +153,20 @@ export default function HomeLayout({ children }: { children: ReactNode }) {
             .in("id", achievementIds);
 
           if (achievementError) {
-            console.error("Error fetching achievement details:", achievementError);
+            console.error(
+              "Error fetching achievement details:",
+              achievementError,
+            );
             setLoading(false);
             return;
           }
 
           console.log("Achievements with XP:", achievements);
 
-          const xp = achievements?.reduce((sum, achievement) => {
-            return sum + (achievement.xp || 0);
-          }, 0) || 0;
+          const xp =
+            achievements?.reduce((sum, achievement) => {
+              return sum + (achievement.xp || 0);
+            }, 0) || 0;
 
           console.log("Calculated total XP:", xp);
 
@@ -175,7 +193,7 @@ export default function HomeLayout({ children }: { children: ReactNode }) {
   }, [user]);
 
   return (
-    <div className="flex h-screen w-screen overflow-hidden bg-[#080810] text-white">
+    <div className="flex h-screen w-screen overflow-hidden bg-black text-white">
       {/* ── SIDEBAR ───────────────────────────────────────────────── */}
       <aside className="relative flex flex-col w-64 h-full shrink-0 border-r border-white/5 overflow-hidden">
         {/* ambient glow behind sidebar */}
@@ -270,12 +288,13 @@ export default function HomeLayout({ children }: { children: ReactNode }) {
 
         {/* Bottom user hint */}
         <div className="relative mt-auto mx-3 mb-4 space-y-3 p-3 rounded-xl bg-white/3 border border-white/5">
-          
           <p className="text-[10px] text-gray-500 font-semibold tracking-wide uppercase mb-1">
             {rankTitle}
           </p>
           <div className="flex items-center justify-between mb-1.5">
-            <span className="text-xs font-bold text-white">Level {userLevel}</span>
+            <span className="text-xs font-bold text-white">
+              Level {userLevel}
+            </span>
             <span className="text-[10px] text-purple-500 font-bold">
               {totalXP} / {nextLevelXP}
             </span>
@@ -283,7 +302,9 @@ export default function HomeLayout({ children }: { children: ReactNode }) {
           <div className="h-1.5 rounded-full bg-white/5 overflow-hidden">
             <div
               className="h-full rounded-full bg-linear-to-r from-purple-500 to-pink-500"
-              style={{ width: `${Math.min((totalXP / nextLevelXP) * 100, 100)}%` }}
+              style={{
+                width: `${Math.min((totalXP / nextLevelXP) * 100, 100)}%`,
+              }}
             />
           </div>
         </div>
@@ -292,7 +313,7 @@ export default function HomeLayout({ children }: { children: ReactNode }) {
       {/* ── RIGHT PANEL ───────────────────────────────────────────── */}
       <div className="flex flex-col flex-1 h-full overflow-hidden">
         {/* HEADER */}
-        <header className="relative h-16 shrink-0 flex items-center justify-between px-8 border-b border-white/5 bg-[#080810]/80 backdrop-blur-sm">
+        <header className="relative h-16 shrink-0 flex items-center justify-between px-8 border-b border-white/5 bg-black backdrop-blur-sm">
           {/* breadcrumb */}
           <div className="flex items-center gap-2 text-sm">
             <span className="text-gray-600 font-medium">Home</span>
@@ -328,11 +349,14 @@ export default function HomeLayout({ children }: { children: ReactNode }) {
             </button>
 
             <button
-            onClick={handleLogout}
-            className="flex items-center justify-center p-3 rounded-lg bg-red-500/10 border border-red-500/20 hover:bg-red-500/20 transition-colors group"
-          >
-            <IconComponent name="LogOut" className="size-4 text-red-400 group-hover:text-red-300" />
-          </button>
+              onClick={handleLogout}
+              className="flex items-center justify-center p-3 rounded-lg bg-red-500/10 border border-red-500/20 hover:bg-red-500/20 transition-colors group"
+            >
+              <IconComponent
+                name="LogOut"
+                className="size-4 text-red-400 group-hover:text-red-300"
+              />
+            </button>
           </div>
         </header>
 
