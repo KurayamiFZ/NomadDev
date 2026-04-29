@@ -7,12 +7,6 @@ interface StatsCardProps {
   icon: React.ComponentType<LucideProps>;
   value: string;
   label: string;
-  /**
-   * Tailwind text color class.
-   * Supported: "text-purple-400" | "text-green-400" | "text-blue-400" |
-   *            "text-yellow-400" | "text-red-400"  | "text-pink-400"  |
-   *            "text-orange-400" | "text-gray-400"
-   */
   color: string;
   subtitle?: string;
   progress?: {
@@ -52,7 +46,7 @@ export function StatsCard({
   return (
     <BaseCard
       variant="default"
-      className="bg-linear-to-br from-gray-900 to-black border-gray-800"
+      className="flex bg-linear-to-br from-gray-900 to-black border-gray-800"
     >
       <div className="flex items-center justify-between mb-4">
         <IconWrapper
@@ -67,7 +61,7 @@ export function StatsCard({
       <div className="text-gray-400 text-sm mb-2">{label}</div>
 
       {progress && (
-        <div className="bg-gray-800 rounded-full h-2 overflow-hidden">
+        <div className="flex bg-gray-800 rounded-full h-2 overflow-hidden">
           <div
             className={`h-full rounded-full transition-all duration-500 ${barColor}`}
             style={{ width: `${progressPercent}%` }}

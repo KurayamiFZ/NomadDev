@@ -1,22 +1,3 @@
-/**
- * Dynamic Profile Page - GameDev Academy Platform
- * 
- * Handles dynamic routing for user profiles.
- * Supports URLs like /profile/[username] where username can be any user.
- * 
- * Features:
- * - Dynamic username parameter extraction
- * - Profile data fetching from database/API
- * - Fallback to current user's profile if username matches
- * - 404 handling for non-existent users
- * - SEO optimization with proper meta tags
- * 
- * @page
- * @param {Object} params - Route parameters
- * @param {string} params.username - The username from the URL
- * @returns {JSX.Element} Dynamic profile page
- */
-
 "use client";
 
 import { useEffect, useState, use, memo } from "react";
@@ -34,14 +15,16 @@ interface DynamicProfilePageProps {
 
 /**
  * Dynamic Profile Page Component
- * 
+ *
  * Extracts username from URL parameters and fetches the corresponding
  * user profile data. Handles loading states and 404 errors.
- * 
+ *
  * @param {DynamicProfilePageProps} props - Component props
  * @returns {JSX.Element} Profile page or error state
  */
-const DynamicProfilePage = memo(function DynamicProfilePage({ params }: DynamicProfilePageProps) {
+const DynamicProfilePage = memo(function DynamicProfilePage({
+  params,
+}: DynamicProfilePageProps) {
   const router = useRouter();
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
@@ -57,7 +40,7 @@ const DynamicProfilePage = memo(function DynamicProfilePage({ params }: DynamicP
      */
     const fetchProfile = async () => {
       if (!username) return;
-      
+
       try {
         setLoading(true);
         setError(null);
@@ -65,7 +48,7 @@ const DynamicProfilePage = memo(function DynamicProfilePage({ params }: DynamicP
 
         // Get profile data from database (with caching)
         const userProfile = await getUserProfile(username);
-        console.log('Profile data received:', userProfile);
+        console.log("Profile data received:", userProfile);
 
         if (!userProfile) {
           console.log(`User "${username}" not found`);
@@ -114,9 +97,11 @@ const DynamicProfilePage = memo(function DynamicProfilePage({ params }: DynamicP
       <div className="flex min-h-screen w-full bg-black items-center justify-center">
         <div className="text-center max-w-md mx-auto p-8">
           <div className="w-24 h-24 bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-6">
-            <span className="text-4xl">😕</span>
+            <span className="text-4xl"></span>
           </div>
-          <h1 className="text-3xl font-bold text-white mb-4">Profile Not Found</h1>
+          <h1 className="text-3xl font-bold text-white mb-4">
+            Profile Not Found
+          </h1>
           <p className="text-gray-400 mb-8">
             {error || "We couldn't find the profile you're looking for."}
           </p>

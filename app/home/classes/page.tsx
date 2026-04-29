@@ -367,6 +367,14 @@ export default function LiveClassesPage() {
                     ref={liveBannerRef}
                     className="bg-gray-700/10  border-2 border-gray-700 rounded-2xl p-8 mb-8 relative overflow-hidden transform transition-all duration-700 ease-out hover:scale-[1.02] hover:shadow-2xl hover:shadow-red-500/30"
                   >
+                    <div
+                      className="pointer-events-none absolute inset-0 opacity-[0.13]"
+                      style={{
+                        backgroundImage:
+                          "linear-gradient(rgba(255,255,255,.6) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.6) 1px, transparent 1px)",
+                        backgroundSize: "32px 32px",
+                      }}
+                    />
                     {/* Overlay for depth effect */}
                     <div className="absolute inset-0 bg-black opacity-20"></div>
                     {/* Content wrapper with z-index to appear above overlay */}
@@ -641,10 +649,7 @@ export default function LiveClassesPage() {
                   }`}
                 >
                   <h3 className="font-black text-lg mb-4 flex items-center gap-2 bg-linear-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
-                    <Icon
-                      name="Calendar"
-                      className="w-5 h-5 text-purple-400"
-                    />
+                    <Icon name="Calendar" className="w-5 h-5 text-purple-400" />
                     This Week&apos;s Schedule
                   </h3>
                   <div className="space-y-4">

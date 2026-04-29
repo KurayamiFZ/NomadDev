@@ -508,11 +508,6 @@ export default function Overview() {
                     color: "text-blue-400",
                   },
                   {
-                    icon: Code,
-                    label: "Code Challenges",
-                    color: "text-green-400",
-                  },
-                  {
                     icon: MessageCircle,
                     label: "Ask a Question",
                     color: "text-purple-500",

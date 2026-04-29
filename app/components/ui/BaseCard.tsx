@@ -70,7 +70,15 @@ export function BaseCard({
       {header && <div className="border-b border-gray-700 p-4">{header}</div>}
 
       {/* Main Content */}
-      <div className={header || footer ? "p-4" : "p-4"}>{children}</div>
+      <div
+        className={
+          header || footer
+            ? "p-4"
+            : "p-4 flex-1 flex-col justify-center items-center"
+        }
+      >
+        {children}
+      </div>
 
       {/* Footer Section */}
       {footer && <div className="border-t border-gray-700 p-4">{footer}</div>}

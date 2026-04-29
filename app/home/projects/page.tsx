@@ -490,7 +490,7 @@ export default function LessonsEnhanced() {
         {/* Hero Section - Completely Redesigned */}
         <div className="relative mb-8">
           {/* Main Progress Card */}
-          <div className="bg-stone-800/60 border border-purple-600 rounded-3xl p-1 shadow-2xl shadow-purple-500/20">
+          <div className="bg-stone-800/60 border border-stone-700 rounded-3xl p-1 shadow-2xl shadow-purple-500/20">
             <div className="bg-black/50 backdrop-blur-xl rounded-[22px] p-8">
               <div className="flex items-start justify-between mb-6">
                 <div>

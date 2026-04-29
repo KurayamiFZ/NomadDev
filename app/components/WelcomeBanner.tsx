@@ -4,7 +4,7 @@ import Username from "./Username";
 
 export function WelcomeBanner() {
   return (
-    <div className="bg-black/60 border border-purple-600 rounded-3xl p-8 mb-6 relative overflow-hidden">
+    <div className="bg-black/60 border border-stone-700 rounded-3xl p-8 mb-6 relative overflow-hidden">
       {/* subtle grid texture */}
       <div
         className="pointer-events-none absolute inset-0 opacity-[0.13]"

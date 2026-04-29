@@ -1,16 +1,3 @@
-/**
- * Profile Component - GameDev Academy Platform
- * 
- * Clean, modular profile display component that uses smaller,
- * focused components for better maintainability and readability.
- * 
- * @component
- * @param {Object} props - Component props
- * @param {UserProfile} props.profile - User profile data to display
- * @param {Function} [props.onNavigate] - Optional navigation callback
- * @returns {JSX.Element} Complete profile page component
- */
-
 "use client";
 
 import { memo } from "react";
@@ -27,24 +14,12 @@ interface ProfileComponentProps {
   onNavigate?: (destination: string) => void;
 }
 
-/**
- * Profile Component
- * 
- * Clean implementation that delegates to specialized components:
- * - ProfileHeader: Navigation and user info
- * - ProfileStatusCards: Statistics display
- * - ProfileTabs: Tabbed content management
- * 
- * This approach follows the Single Responsibility Principle and makes
- * the codebase more maintainable and testable.
- */
-export const ProfileComponent = memo(function ProfileComponent({ profile, onNavigate }: ProfileComponentProps) {
+export const ProfileComponent = memo(function ProfileComponent({
+  profile,
+  onNavigate,
+}: ProfileComponentProps) {
   const router = useRouter();
 
-  /**
-   * Handle navigation with optional callback
-   * Provides consistent navigation behavior across the component
-   */
   const handleNavigate = (destination: string) => {
     if (onNavigate) {
       onNavigate(destination);

@@ -277,14 +277,21 @@ export default function Lessons() {
         {/* Course Progress Banner */}
         <div
           ref={bannerRef}
-          className={`border border-purple-600 bg-black/60   rounded-2xl p-8 mb-8 relative overflow-hidden transform transition-all duration-1000 ease-out ${
+          className={`border border-stone-700 bg-black/60   rounded-2xl p-8 mb-8 relative overflow-hidden transform transition-all duration-1000 ease-out ${
             bannerVisible
               ? "translate-y-0 opacity-100 scale-100"
               : "translate-y-8 opacity-0 scale-95"
           }`}
         >
           {/* Overlay for depth effect */}
-          <div className="absolute inset-0 bg-black opacity-20"></div>
+          <div
+            className="pointer-events-none absolute inset-0 bg-black opacity-20"
+            style={{
+              backgroundImage:
+                "linear-gradient(rgba(255,255,255,.6) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.6) 1px, transparent 1px)",
+              backgroundSize: "32px 32px",
+            }}
+          ></div>
           {/* Content wrapper with z-index to appear above overlay */}
           <div className="relative z-10">
             <div className="flex items-center justify-between">
@@ -542,7 +549,7 @@ export default function Lessons() {
                             <span>{lesson.category}</span>
                           </div>
                           <div className="text-xs text-purple-500 font-medium transform transition-transform duration-300 hover:scale-110">
-                            🔒 {lesson.unlockDate}
+                            {lesson.unlockDate}
                           </div>
                         </div>
                       </div>
@@ -673,7 +680,7 @@ export default function Lessons() {
                 <div className="relative z-10">
                   <div className="flex items-center gap-3 mb-3">
                     <Icon name="Award" className="w-8 h-8 text-yellow-300" />
-                    <h3 className="font-black text-lg">🔥 Keep it going!</h3>
+                    <h3 className="font-black text-lg">Keep it going!</h3>
                   </div>
                   <p className="text-sm text-white opacity-90 mb-4">
                     You&apos;re {progressPercentage}% through the course.
