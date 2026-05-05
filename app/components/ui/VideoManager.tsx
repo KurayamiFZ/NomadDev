@@ -1,27 +1,6 @@
-/**
- * VideoManager Component - GameDev Academy Platform
- * 
- * A specialized video management component for handling
- * course video content with separated concerns.
- * 
- * Features:
- * - Video upload and management
- * - Drag and drop functionality
- * - Video metadata editing
- * - Thumbnail generation
- * - Difficulty classification
- * 
- * @component
- * @param {Object} props - Component props
- * @param {Array} props.videos - Array of videos
- * @param {Function} props.onVideosChange - Videos change handler
- * @param {string} [props.className] - Additional CSS classes
- * @returns {JSX.Element} Video manager component
- */
-
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef } from "react";
 import { Upload, Plus, X, Video, Edit3, Trash2 } from "lucide-react";
 import { BaseCard } from "./BaseCard";
 import { Button } from "../button";
@@ -53,15 +32,6 @@ interface VideoManagerProps {
   className?: string;
 }
 
-/**
- * Video Manager Component
- * 
- * Separated video management with clear concerns:
- * - Video upload handling
- * - Video editing
- * - Video deletion
- * - Drag and drop
- */
 export function VideoManager({ 
   videos, 
   onVideosChange, 
@@ -69,6 +39,7 @@ export function VideoManager({
 }: VideoManagerProps) {
   const [dragActive, setDragActive] = useState(false);
   const [editingVideo, setEditingVideo] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   
   const difficultyLevels = [
     { 
@@ -137,8 +108,54 @@ export function VideoManager({
     setDragActive(false);
     
     const files = Array.from(e.dataTransfer.files);
-    // Handle file upload logic here
-    console.log('Dropped files:', files);
+    handleFileSelection(files);
+  }, []);
+
+  // Handle file selection from both drag-drop and file input
+  const handleFileSelection = useCallback((files: File[]) => {
+    // Filter for video files only
+    const videoFiles = files.filter(file => 
+      file.type.startsWith('video/') || 
+      file.name.toLowerCase().endsWith('.mp4') ||
+      file.name.toLowerCase().endsWith('.webm') ||
+      file.name.toLowerCase().endsWith('.mov') ||
+      file.name.toLowerCase().endsWith('.avi')
+    );
+
+    if (videoFiles.length === 0) {
+      alert('Please select valid video files (MP4, WebM, MOV, AVI)');
+      return;
+    }
+
+    // Create new video objects for each file
+    const newVideos = videoFiles.map(file => ({
+      id: Date.now().toString() + Math.random().toString(36).substr(2, 9),
+      title: file.name.replace(/\.[^/.]+$/, ""), // Remove file extension
+      description: '',
+      difficulty: 'beginner' as const,
+      videoFile: file,
+      videoUrl: '',
+      duration: '',
+      thumbnail: ''
+    }));
+
+    onVideosChange([...videos, ...newVideos]);
+  }, [videos, onVideosChange]);
+
+  // Handle file input change
+  const handleFileInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+    handleFileSelection(files);
+    
+    // Reset the file input
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  }, [handleFileSelection]);
+
+  // Trigger file input click
+  const triggerFileInput = useCallback(() => {
+    fileInputRef.current?.click();
   }, []);
   
   return (
@@ -228,21 +245,32 @@ export function VideoManager({
         ))}
       </div>
       
+      {/* Hidden File Input */}
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="video/*,.mp4,.webm,.mov,.avi"
+        multiple
+        onChange={handleFileInputChange}
+        className="hidden"
+      />
+
       {/* Drag and Drop Area */}
       <div
         className={cn(
-          "transition-all",
+          "transition-all cursor-pointer",
           dragActive ? "ring-2 ring-purple-500" : ""
         )}
         onDragEnter={handleDrag}
         onDragLeave={handleDrag}
         onDragOver={handleDrag}
         onDrop={handleDrop}
+        onClick={triggerFileInput}
       >
         <BaseCard 
           variant="bordered" 
           className={cn(
-            "p-8 border-2 border-dashed",
+            "p-8 border-2 border-dashed hover:border-purple-500 transition-colors",
             dragActive ? "border-purple-500 bg-purple-500/5" : "border-gray-700"
           )}
         >
@@ -257,6 +285,7 @@ export function VideoManager({
             <div className="text-gray-400">
               <p className="font-medium">Drag and drop videos here</p>
               <p className="text-sm mt-1">or click to browse files</p>
+              <p className="text-xs mt-2 text-gray-500">Supported: MP4, WebM, MOV, AVI (max 3GB)</p>
             </div>
           </div>
         </BaseCard>

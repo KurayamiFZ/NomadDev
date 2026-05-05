@@ -51,6 +51,9 @@ interface CourseFormProps {
   
   /** Initial data */
   initialData?: Partial<CourseFormData>;
+  
+  /** External submitting state */
+  isSubmitting?: boolean;
 }
 
 /**
@@ -66,7 +69,8 @@ export function CourseForm({
   onSubmit, 
   onPreview, 
   isActive = false,
-  initialData 
+  initialData,
+  isSubmitting: externalIsSubmitting = false
 }: CourseFormProps) {
   // Form state
   const [formData, setFormData] = useState<CourseFormData>({
@@ -117,12 +121,12 @@ export function CourseForm({
   
   const actions = [
     {
-      text: isSubmitting ? 'Creating Course...' : 'Create Course',
+      text: (isSubmitting || externalIsSubmitting) ? 'Creating Course...' : 'Create Course',
       type: "primary" as const,
       icon: <Save className="w-5 h-5" />,
       onClick: handleSubmit,
-      disabled: !isValid || isSubmitting,
-      loading: isSubmitting
+      disabled: !isValid || isSubmitting || externalIsSubmitting,
+      loading: isSubmitting || externalIsSubmitting
     },
     {
       text: 'Preview',
