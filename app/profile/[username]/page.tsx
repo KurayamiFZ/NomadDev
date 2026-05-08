@@ -83,7 +83,7 @@ const DynamicProfilePage = memo(function DynamicProfilePage({
       <div className="flex min-h-screen w-full bg-black items-center justify-center">
         <div className="text-center">
           <div className="w-16 h-16 border-4 border-purple-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-white text-lg">Loading profile...</p>
+          <p className="text-white text-lg">Профайл уншиж байна...</p>
         </div>
       </div>
     );
@@ -100,23 +100,23 @@ const DynamicProfilePage = memo(function DynamicProfilePage({
             <span className="text-4xl"></span>
           </div>
           <h1 className="text-3xl font-bold text-white mb-4">
-            Profile Not Found
+            Профайл олдсонгүй
           </h1>
           <p className="text-gray-400 mb-8">
-            {error || "We couldn't find the profile you're looking for."}
+            {error || "Хайсан профайлыг олж чадсангүй."}
           </p>
           <div className="space-y-4">
             <button
               onClick={() => router.push("/home")}
               className="w-full px-6 py-3 bg-purple-600 hover:bg-purple-500 text-white rounded-lg font-medium transition-colors"
             >
-              Go to Home
+              Нүүр хуудас руу
             </button>
             <button
               onClick={() => router.push("/profile")}
               className="w-full px-6 py-3 bg-gray-800 hover:bg-gray-700 text-white rounded-lg font-medium transition-colors"
             >
-              View My Profile
+              Миний профайл харах
             </button>
           </div>
         </div>

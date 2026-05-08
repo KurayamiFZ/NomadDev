@@ -60,7 +60,7 @@ export function LessonCard({ lesson, onClick }: LessonCardProps) {
         </div>
         {lesson.current && (
           <StatusBadge variant="purple" size="sm">
-            IN PROGRESS
+            ЯВАГДАЖ БАЙНА
           </StatusBadge>
         )}
       </div>

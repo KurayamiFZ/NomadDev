@@ -8,7 +8,7 @@ export function RoadmapSection() {
       className="flex w-full max-w-5xl flex-col items-center px-4 py-12 sm:px-6 sm:py-16 lg:py-24"
     >
       <h2 className="text-center text-2xl font-extrabold text-foreground sm:text-3xl lg:text-4xl">
-        Your Clear Path to Success
+        Амжилтад хүрэх тодорхой зам
       </h2>
 
       <div className="mt-8 flex w-full flex-col gap-6 sm:mt-12 sm:gap-8 lg:mt-16 lg:gap-12">

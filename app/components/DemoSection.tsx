@@ -20,13 +20,13 @@ export function DemoSection() {
             className="h-4 w-4 text-purple-300 sm:h-5 sm:w-5"
           />
           <span className="text-sm font-bold text-foreground sm:text-base">
-            Try a Lesson - Interactive Demo
+            Хичээл туршиж үзэх — Интерактив демо
           </span>
         </div>
         <div className="flex items-center gap-2">
           <span className="h-2 w-2 rounded-full bg-emerald-300" />
           <span className="text-xs font-medium text-emerald-300 sm:text-sm">
-            live
+            шууд
           </span>
         </div>
       </div>
@@ -38,7 +38,7 @@ export function DemoSection() {
             className="h-4 w-4 text-purple-300 sm:h-5 sm:w-5"
           />
           <span className="text-xs font-bold text-foreground sm:text-sm">
-            Choose Your Lesson
+            Хичээлээ сонго
           </span>
         </div>
 
@@ -87,7 +87,7 @@ export function DemoSection() {
           </button>
           <div className="absolute inset-x-0 bottom-0 flex items-center justify-between bg-linear-to-t from-black to-transparent p-2 sm:p-4">
             <span className="text-xs text-foreground sm:text-sm">
-              Lesson 1: {LANDING_LESSONS[activeLesson].title}
+              Хичээл 1: {LANDING_LESSONS[activeLesson].title}
             </span>
             <span className="text-xs text-foreground/60 sm:text-sm">12:34</span>
           </div>
@@ -95,10 +95,10 @@ export function DemoSection() {
 
         <div className="flex flex-col gap-1.5 rounded-lg border border-purple-600/30 bg-purple-600/8 p-4 sm:gap-2 sm:rounded-xl sm:p-6">
           <span className="text-base font-extrabold text-purple-300 sm:text-xl">
-            This is just 1 of many interactive lessons
+            Энэ бол олон интерактив хичээлүүдийн зөвхөн нэг
           </span>
           <span className="text-xs text-muted-foreground sm:text-sm">
-            Start your learning journey with hands-on game development projects.
+            Гараар хийгэд туршигдаг тоглоом хөгжүүлэлтийн төслүүдээр суралцах аяллаа эхлүүл.
           </span>
         </div>
       </div>

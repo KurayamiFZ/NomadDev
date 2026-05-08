@@ -78,18 +78,18 @@ export function getLevelProgress(totalXP: number): {
  * @returns Rank title string
  */
 export function getRankTitle(level: number): string {
-  if (level <= 0) return "Beginner";
-  if (level <= 5) return "Rising Star";
-  if (level <= 10) return "Apprentice Developer";
-  if (level <= 15) return "Junior Developer";
-  if (level <= 20) return "Developer";
-  if (level <= 25) return "Skilled Developer";
-  if (level <= 30) return "Senior Developer";
-  if (level <= 35) return "Expert Developer";
-  if (level <= 40) return "Master Developer";
-  if (level <= 45) return "Elite Developer";
-  if (level <= 50) return "Legendary Developer";
-  return "Mythic Developer";
+  if (level <= 0) return "Эхлэгч";
+  if (level <= 5) return "Мандаж буй од";
+  if (level <= 10) return "Шавь хөгжүүлэгч";
+  if (level <= 15) return "Дотоод хөгжүүлэгч";
+  if (level <= 20) return "Хөгжүүлэгч";
+  if (level <= 25) return "Чадварлаг хөгжүүлэгч";
+  if (level <= 30) return "Ахлах хөгжүүлэгч";
+  if (level <= 35) return "Мэргшил хөгжүүлэгч";
+  if (level <= 40) return "Мастер хөгжүүлэгч";
+  if (level <= 45) return "Элит хөгжүүлэгч";
+  if (level <= 50) return "Домогт хөгжүүлэгч";
+  return "Домог хөгжүүлэгч";
 }
 
 /**

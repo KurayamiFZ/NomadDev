@@ -4,14 +4,12 @@
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Icon from "@/app/components/icons";
-import "lucide-react";
 import {
-  calculateTotalXP,
   getLevelFromXP,
   getRankTitle,
-  getRankGradient,
   getLevelProgress,
 } from "../../../lib/level-system";
+import { getUserStats } from "../../../lib/xp";
 import { supabase } from "../../../lib/supabaseclient";
 import { useAuth } from "../../components/AuthProvider";
 import { QuickActions } from "../../components/QuickActions";
@@ -24,22 +22,17 @@ export default function LessonsEnhanced() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedPath, setSelectedPath] = useState("main");
 
-  // User level state - will be populated from database
   const [userStats, setUserStats] = useState({
     totalLessons: 0,
     completedLessons: 0,
     totalxp: 0,
     currentLevel: 1,
     nextLevelxp: 100,
-    totalDuration: "0h 0m",
-    weekProgress: 0,
-    totalWeeks: 0,
     currentStreak: 0,
-    longestStreak: 0,
-    skillPoints: 0,
-    rank: "Beginner",
+    rank: "Эхлэгч",
     percentile: 0,
   });
+  const [leaderboard, setLeaderboard] = useState<{ xp: number; level: number; user_id: string }[]>([]);
 
   // Animation states
   const [isVisible, setIsVisible] = useState(false);
@@ -94,176 +87,87 @@ export default function LessonsEnhanced() {
     };
   }, []);
 
-  // Fetch user achievements and calculate level
   useEffect(() => {
-    async function fetchUserStats() {
-      if (!user) return;
+    if (!user) return;
 
+    async function load() {
       try {
-        console.log("Projects page - Testing database connection...");
+        // Fetch XP/level/streak from user_stats
+        const stats = await getUserStats(user!.id);
+        if (stats) {
+          const lp = getLevelProgress(stats.xp);
+          setUserStats((prev) => ({
+            ...prev,
+            totalxp: stats.xp,
+            currentLevel: stats.level,
+            nextLevelxp: lp.nextLevelXP,
+            currentStreak: stats.streak_count,
+            rank: getRankTitle(stats.level),
+          }));
+        }
 
-        // First, let's see what's in the achievement table
-        const { data: allAchievements, error: allError } = await supabase
-          .from("achievement")
-          .select("*")
+        // Fetch courses + merge progress for this user
+        const [lessonsRes, { data: progressRows }] = await Promise.all([
+          fetch("/api/lessons").then((r) => r.json()),
+          supabase
+            .from("user_course_progress")
+            .select("course_id, status")
+            .eq("user_id", user!.id),
+        ]);
+
+        if (lessonsRes.success) {
+          const raw: any[] = lessonsRes.data;
+          const progressMap: Record<string, string> = {};
+          for (const row of progressRows ?? []) progressMap[row.course_id] = row.status;
+          const completed = raw.filter((l) => progressMap[l.id] === "completed").length;
+          setUserStats((prev) => ({
+            ...prev,
+            totalLessons: raw.length,
+            completedLessons: completed,
+          }));
+          setCurrentWeekLessons(
+            raw.map((l) => ({
+              ...l,
+              completed: progressMap[l.id] === "completed",
+              current: progressMap[l.id] === "in-progress",
+              locked: !progressMap[l.id] && false,
+              thumbnail: "bg-linear-to-br from-purple-900/60 to-pink-900/60",
+              xp: 50,
+              skillPoints: 10,
+              difficulty: "Дунд",
+              completionRate: 0,
+              isBoss: false,
+            }))
+          );
+        }
+
+        // Leaderboard — top 5 users by XP (requires SELECT policy on user_stats for all)
+        const { data: top } = await supabase
+          .from("user_stats")
+          .select("user_id, xp, level")
+          .order("xp", { ascending: false })
           .limit(5);
-
-        console.log(
-          "Projects page - Sample achievements from DB:",
-          allAchievements,
-        );
-
-        if (allError) {
-          console.error(
-            "Projects page - Error fetching sample achievements:",
-            allError,
-          );
-        }
-
-        // Now try user achievements
-        const { data: userAchievements, error } = await supabase
-          .from("user_achievements")
-          .select("*")
-          .eq("user_id", user.id);
-
-        if (error) {
-          console.error(
-            "Projects page - Error fetching user achievements:",
-            error,
-          );
-          return;
-        }
-
-        console.log("Projects page - User achievements:", userAchievements);
-
-        // If no user achievements, test with sample data
-        if (!userAchievements || userAchievements.length === 0) {
-          console.log(
-            "Projects page - No user achievements found - testing with sample data",
-          );
-
-          const sampleXP = 750;
-          const testLevel = getLevelFromXP(sampleXP);
-          const testRank = getRankTitle(sampleXP);
-          const testLevelProgress = getLevelProgress(sampleXP);
-
-          console.log("Projects page - Test with sample XP:", sampleXP);
-          console.log("Projects page - Test level:", testLevel);
-
-          setUserStats((prev) => ({
-            ...prev,
-            totalxp: sampleXP,
-            currentLevel: testLevel,
-            nextLevelxp: testLevelProgress.nextLevelXP,
-            rank: testRank,
-          }));
-          return;
-        }
-
-        // Try different field names for unlocked status
-        const unlockedAchievements = userAchievements.filter((ua) => {
-          console.log("Projects page - Checking achievement:", ua);
-          return (
-            ua.unlocked === true ||
-            ua.unlocked === 1 ||
-            ua.completed === true ||
-            ua.completed === 1 ||
-            ua.earned === true ||
-            ua.earned === 1 ||
-            ua.status === "completed" ||
-            ua.status === "unlocked"
-          );
-        });
-
-        console.log(
-          "Projects page - Unlocked achievements:",
-          unlockedAchievements,
-        );
-
-        if (unlockedAchievements.length === 0) {
-          console.log(
-            "Projects page - No unlocked achievements found - using sample data",
-          );
-          const sampleXP = 750;
-          const testLevel = getLevelFromXP(sampleXP);
-          const testRank = getRankTitle(sampleXP);
-          const testLevelProgress = getLevelProgress(sampleXP);
-
-          setUserStats((prev) => ({
-            ...prev,
-            totalxp: sampleXP,
-            currentLevel: testLevel,
-            nextLevelxp: testLevelProgress.nextLevelXP,
-            rank: testRank,
-          }));
-          return;
-        }
-
-        const achievementIds = unlockedAchievements.map(
-          (ua) => ua.achievement_id,
-        );
-        console.log("Projects page - Achievement IDs:", achievementIds);
-
-        if (achievementIds.length > 0) {
-          const { data: achievements, error: achievementError } = await supabase
-            .from("achievement")
-            .select("id, xp")
-            .in("id", achievementIds);
-
-          if (achievementError) {
-            console.error(
-              "Projects page - Error fetching achievement details:",
-              achievementError,
-            );
-            return;
-          }
-
-          console.log("Projects page - Achievements with XP:", achievements);
-
-          const totalXP =
-            achievements?.reduce((sum, achievement) => {
-              return sum + (achievement.xp || 0);
-            }, 0) || 0;
-
-          console.log("Projects page - Calculated total XP:", totalXP);
-
-          const level = getLevelFromXP(totalXP);
-          const rank = getRankTitle(level);
-          const levelProgress = getLevelProgress(totalXP);
-
-          console.log("Projects page - Calculated level:", level);
-          console.log("Projects page - Rank title:", rank);
-
-          setUserStats((prev) => ({
-            ...prev,
-            totalxp: totalXP,
-            currentLevel: level,
-            nextLevelxp: levelProgress.nextLevelXP,
-            rank,
-          }));
-        }
-      } catch (error) {
-        console.error("Projects page - Error calculating user stats:", error);
+        if (top) setLeaderboard(top);
+      } catch (err) {
+        console.error("[projects]", err);
       }
     }
 
-    fetchUserStats();
+    load();
   }, [user]);
 
+  const [currentWeekLessons, setCurrentWeekLessons] = useState<any[]>([]);
   const learningPaths: any[] = [];
-  const currentWeekLessons: any[] = [];
   const activePowerUps: any[] = [];
   const skillTree: any[] = [];
 
   const filters = ["all", "in-progress", "completed", "locked"];
-  const progressPercentage = Math.round(
-    (userStats.completedLessons / userStats.totalLessons) * 100,
-  );
-  console.log(
-    `You&apos;re ${progressPercentage}% through the course. Complete ${userStats.completedLessons} / ${userStats.totalLessons} Lessons`,
-  );
+  const progressPercentage =
+    userStats.totalLessons > 0
+      ? Math.round((userStats.completedLessons / userStats.totalLessons) * 100)
+      : 0;
   const levelProgress = Math.round(
-    (userStats.totalxp / userStats.nextLevelxp) * 100,
+    getLevelProgress(userStats.totalxp).progressPercentage,
   );
 
   return (
@@ -294,7 +198,7 @@ export default function LessonsEnhanced() {
               />
               <input
                 type="text"
-                placeholder="Search lessons, skills, achievements..."
+                placeholder="Хичээл, ур чадвар, амжилт хайх..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="bg-white/5 border border-white/10 rounded-xl pl-10 pr-4 py-3 w-full focus:border-purple-500 focus:outline-none text-sm backdrop-blur-sm transition-all duration-300 hover:border-white/20 focus:shadow-lg focus:shadow-purple-500/20"
@@ -308,7 +212,7 @@ export default function LessonsEnhanced() {
                   <div className="flex items-center gap-2">
                     <Icon name="Crown" className="w-5 h-5 text-yellow-400" />
                     <span className="font-black text-lg bg-linear-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent">
-                      Level {userStats.currentLevel}
+                      Түвшин {userStats.currentLevel}
                     </span>
                   </div>
                   <div className="w-px h-6 bg-white/20"></div>
@@ -339,10 +243,10 @@ export default function LessonsEnhanced() {
                     </div>
                     <div>
                       <h1 className="text-4xl font-black bg-linear-to-r from-white via-purple-200 to-pink-200 bg-clip-text text-transparent">
-                        Unity Mastery Journey
+                        Unity Эзэмшилтийн Аялал
                       </h1>
                       <p className="text-purple-300 text-lg">
-                        Week {userStats.weekProgress} - Physics & Movement
+                        {userStats.rank} — Түвшин {userStats.currentLevel}
                       </p>
                     </div>
                   </div>
@@ -352,10 +256,10 @@ export default function LessonsEnhanced() {
                     {/* Course Progress */}
                     <div>
                       <div className="flex justify-between text-sm mb-2">
-                        <span className="text-gray-300">Course Progress</span>
+                        <span className="text-gray-300">Курсын явц</span>
                         <span className="font-bold text-purple-300">
                           {userStats.completedLessons}/{userStats.totalLessons}{" "}
-                          Lessons
+                          Хичээл
                         </span>
                       </div>
                       <div className="h-3 bg-white/10 rounded-full overflow-hidden backdrop-blur-sm">
@@ -372,7 +276,7 @@ export default function LessonsEnhanced() {
                     <div>
                       <div className="flex justify-between text-sm mb-2">
                         <span className="text-gray-300">
-                          Level {userStats.currentLevel} →{" "}
+                          Түвшин {userStats.currentLevel} →{" "}
                           {userStats.currentLevel + 1}
                         </span>
                         <span className="font-bold text-yellow-300">
@@ -433,13 +337,13 @@ export default function LessonsEnhanced() {
                       <div className="text-5xl font-black bg-linear-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
                         {progressPercentage}%
                       </div>
-                      <div className="text-sm text-gray-400">Complete</div>
+                      <div className="text-sm text-gray-400">Дуусгасан</div>
                     </div>
                   </div>
                   <div className="flex items-center gap-2 px-4 py-2 bg-white/5 rounded-full backdrop-blur-sm border border-white/10">
                     <Icon name="Trophy" className="w-4 h-4 text-yellow-400" />
                     <span className="text-sm font-bold">
-                      Top {userStats.percentile}%
+                      Шилдэг {userStats.percentile}%
                     </span>
                   </div>
                 </div>
@@ -451,7 +355,7 @@ export default function LessonsEnhanced() {
           <div className="flex gap-3 mt-4">
             {activePowerUps.length === 0 ? (
               <div className="flex-1 bg-white/5 border border-white/10 rounded-2xl p-4 text-center">
-                <div className="text-gray-400 text-sm">No active power-ups</div>
+                <div className="text-gray-400 text-sm">Идэвхтэй хүчлэгдэгч алга</div>
               </div>
             ) : (
               activePowerUps.map((powerUp, i) => (
@@ -489,12 +393,12 @@ export default function LessonsEnhanced() {
         >
           <h2 className="text-xl font-black mb-4 flex items-center gap-2 bg-linear-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
             <Icon name="Layers" className="w-6 h-6 text-purple-400" />
-            Choose Your Path
+            Замаа сонго
           </h2>
           <div className="grid grid-cols-3 gap-4">
             {learningPaths.length === 0 ? (
               <div className="col-span-3 bg-white/5 border border-white/10 rounded-2xl p-8 text-center">
-                <div className="text-gray-400">No learning paths available yet</div>
+                <div className="text-gray-400">Суралцах зам одоохондоо байхгүй</div>
               </div>
             ) : (
               learningPaths.map((path, index) => (
@@ -519,9 +423,9 @@ export default function LessonsEnhanced() {
                         {path.name}
                       </div>
                       <div className="text-xs text-gray-400 group-hover:text-gray-300 transition-colors duration-300">
-                        {path.id === "main" && "Core curriculum"}
-                        {path.id === "advanced" && "Challenge yourself"}
-                        {path.id === "projects" && "Hands-on practice"}
+                        {path.id === "main" && "Үндсэн хөтөлбөр"}
+                        {path.id === "advanced" && "Өөрийгээ сорь"}
+                        {path.id === "projects" && "Практик дадлага"}
                       </div>
                     </div>
                   </div>
@@ -551,10 +455,10 @@ export default function LessonsEnhanced() {
                   : "bg-white/5 text-gray-400 hover:bg-white/10 hover:text-white border border-white/10"
               }`}
             >
-              {filter === "all" && "All Lessons"}
-              {filter === "in-progress" && "In Progress"}
-              {filter === "completed" && "Completed"}
-              {filter === "locked" && "Upcoming"}
+              {filter === "all" && "Бүх хичээлүүд"}
+              {filter === "in-progress" && "Явагдаж байна"}
+              {filter === "completed" && "Дууссан"}
+              {filter === "locked" && "Дараачийн"}
             </button>
           ))}
         </div>
@@ -573,7 +477,7 @@ export default function LessonsEnhanced() {
                       <div className="flex items-center gap-2 mb-3">
                         <div className="w-3 h-3 bg-purple-500 rounded-full"></div>
                         <span className="text-purple-400 font-black text-sm uppercase tracking-wider">
-                          Continue Your Quest
+                          Даалгавраа үргэлжүүл
                         </span>
                       </div>
                       <h2 className="text-3xl font-black mb-3 bg-linear-to-r from-white to-purple-200 bg-clip-text text-transparent">
@@ -639,7 +543,7 @@ export default function LessonsEnhanced() {
                         name="Play"
                         className="w-6 h-6 group-hover:scale-110 transition"
                       />
-                      START LESSON
+                      ХИЧЭЭЛ ЭХЛЭХ
                       <Icon
                         name="ChevronRight"
                         className="w-5 h-5 group-hover:translate-x-1 transition"
@@ -653,12 +557,12 @@ export default function LessonsEnhanced() {
             {/* Lessons Grid - Card Style */}
             <div>
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-black">This Week's Lessons</h2>
+                <h2 className="text-2xl font-black">Энэ долоо хоногийн хичээлүүд</h2>
                 <div className="flex items-center gap-2 text-sm text-gray-400">
                   <Icon name="BarChart3" className="w-4 h-4" />
                   <span>
                     {currentWeekLessons.filter((l) => l.completed).length}/
-                    {currentWeekLessons.length} Complete
+                    {currentWeekLessons.length} Дууссан
                   </span>
                 </div>
               </div>
@@ -667,8 +571,8 @@ export default function LessonsEnhanced() {
                 {currentWeekLessons.length === 0 ? (
                   <div className="col-span-2 bg-white/5 border border-white/10 rounded-2xl p-8 text-center">
                     <Icon name="BookOpen" className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                    <div className="text-gray-400 text-lg mb-2">No lessons available yet</div>
-                    <div className="text-gray-500 text-sm">Check back later for new content</div>
+                    <div className="text-gray-400 text-lg mb-2">Хичээл одоохондоо байхгүй</div>
+                    <div className="text-gray-500 text-sm">Шинэ агуулгыг дараа шалгаарай</div>
                   </div>
                 ) : (
                   currentWeekLessons.map((lesson) => (
@@ -693,24 +597,24 @@ export default function LessonsEnhanced() {
                           {lesson.completed ? (
                             <div className="flex items-center gap-2 bg-green-500/90 px-3 py-1.5 rounded-full backdrop-blur-sm">
                               <Icon name="CheckCircle" className="w-4 h-4" />
-                              <span className="text-xs font-bold">Completed</span>
+                              <span className="text-xs font-bold">Дууссан</span>
                             </div>
                           ) : lesson.current ? (
                             <div className="flex items-center gap-2 bg-purple-500/90 px-3 py-1.5 rounded-full backdrop-blur-sm">
                               <Icon name="Play" className="w-4 h-4" />
                               <span className="text-xs font-bold">
-                                In Progress
+                                Явагдаж байна
                               </span>
                             </div>
                           ) : lesson.locked ? (
                             <div className="flex items-center gap-2 bg-gray-500/90 px-3 py-1.5 rounded-full backdrop-blur-sm">
                               <Icon name="Lock" className="w-4 h-4" />
-                              <span className="text-xs font-bold">Locked</span>
+                              <span className="text-xs font-bold">Түгжигдсэн</span>
                             </div>
                           ) : (
                             <div className="flex items-center gap-2 bg-blue-500/90 px-3 py-1.5 rounded-full backdrop-blur-sm">
                               <Icon name="Target" className="w-4 h-4" />
-                              <span className="text-xs font-bold">Available</span>
+                              <span className="text-xs font-bold">Боломжтой</span>
                             </div>
                           )}
                         </div>
@@ -850,14 +754,14 @@ export default function LessonsEnhanced() {
               <div className="bg-linear-to-br from-white/10 to-white/5 backdrop-blur-sm border border-white/20 rounded-2xl p-6">
                 <h3 className="font-black text-lg mb-4 flex items-center gap-2">
                   <Icon name="Cpu" className="w-5 h-5 text-cyan-400" />
-                  Skill Tree
+                  Ур чадварын модон
                 </h3>
                 <div className="space-y-4">
                   {skillTree.length === 0 ? (
                     <div className="bg-black/30 rounded-xl border border-white/10 p-6 text-center">
                       <Icon name="Cpu" className="w-8 h-8 text-gray-400 mx-auto mb-3" />
-                      <div className="text-gray-400">No skills available yet</div>
-                      <div className="text-gray-500 text-sm mt-1">Complete lessons to unlock skills</div>
+                      <div className="text-gray-400">Ур чадвар одоохондоо байхгүй</div>
+                      <div className="text-gray-500 text-sm mt-1">Ур чадвар нээхийн тулд хичээл дуусгаарай</div>
                     </div>
                   ) : (
                     skillTree.map((skill, i) => (
@@ -891,7 +795,7 @@ export default function LessonsEnhanced() {
                   )}
                 </div>
                 <button className="w-full mt-4 bg-cyan-500/20 hover:bg-cyan-500/30 border border-cyan-500/30 text-cyan-400 py-3 rounded-xl font-bold transition">
-                  Unlock Skills ({userStats.skillPoints} SP)
+                  Ур чадвар нээх
                 </button>
               </div>
 
@@ -899,27 +803,52 @@ export default function LessonsEnhanced() {
               <div className="bg-linear-to-br from-white/10 to-white/5 backdrop-blur-sm border border-white/20 rounded-2xl p-6">
                 <h3 className="font-black text-lg mb-4 flex items-center gap-2">
                   <Icon name="Trophy" className="w-5 h-5 text-yellow-400" />
-                  Leaderboard
+                  Тэргүүний жагсаалт
                 </h3>
-                <div className="space-y-3">
+                {leaderboard.length === 0 ? (
                   <div className="bg-black/30 rounded-xl border border-white/10 p-6 text-center">
                     <Icon name="Trophy" className="w-8 h-8 text-gray-400 mx-auto mb-3" />
-                    <div className="text-gray-400">Leaderboard data not available</div>
-                    <div className="text-gray-500 text-sm mt-1">Start completing lessons to appear on the leaderboard</div>
+                    <div className="text-gray-400">Мэдээлэл байхгүй</div>
                   </div>
-                </div>
-                <button className="w-full mt-4 bg-white/5 hover:bg-white/10 border border-white/10 py-3 rounded-xl font-bold transition">
-                  View Full Rankings
-                </button>
+                ) : (
+                  <div className="space-y-2">
+                    {leaderboard.map((entry, i) => (
+                      <div key={entry.user_id} className={`flex items-center gap-3 px-3 py-2 rounded-xl ${
+                        entry.user_id === user?.id ? "bg-purple-500/20 border border-purple-500/30" : "bg-black/20"
+                      }`}>
+                        <span className={`w-6 h-6 flex items-center justify-center rounded-full text-xs font-black ${
+                          i === 0 ? "bg-yellow-500 text-black" :
+                          i === 1 ? "bg-gray-400 text-black" :
+                          i === 2 ? "bg-orange-600 text-white" : "bg-white/10 text-gray-400"
+                        }`}>{i + 1}</span>
+                        <div className="flex-1 min-w-0">
+                          <div className="text-xs text-gray-400 truncate">
+                            {entry.user_id === user?.id ? "Та" : `Lv.${entry.level}`}
+                          </div>
+                        </div>
+                        <span className="text-xs font-bold text-purple-300">{entry.xp.toLocaleString()} xp</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
 
               {/* Study Streak */}
               <div className="bg-linear-to-br from-orange-500/20 to-red-500/20 border border-orange-500/30 rounded-2xl p-6">
-                <div className="text-center">
-                  <Icon name="Flame" className="w-12 h-12 text-gray-400 mx-auto mb-3" />
-                  <div className="text-gray-400">No study streak yet</div>
-                  <div className="text-gray-500 text-sm mt-1">Complete lessons daily to build your streak</div>
-                </div>
+                {userStats.currentStreak > 0 ? (
+                  <div className="text-center">
+                    <Icon name="Flame" className="w-12 h-12 text-orange-400 mx-auto mb-2" />
+                    <div className="text-4xl font-black text-orange-400 mb-1">{userStats.currentStreak}</div>
+                    <div className="text-white font-bold mb-1">Өдрийн цуваал</div>
+                    <div className="text-gray-400 text-sm">Маргааш хичээл хийгээрэй!</div>
+                  </div>
+                ) : (
+                  <div className="text-center">
+                    <Icon name="Flame" className="w-12 h-12 text-gray-600 mx-auto mb-3" />
+                    <div className="text-gray-400">Суралцах цуваал үүсгээгүй байна</div>
+                    <div className="text-gray-500 text-sm mt-1">Цуваал байгуулахын тулд өдөр бүр хичээл дуусгаарай</div>
+                  </div>
+                )}
               </div>
 
               {/* Quick Actions */}

@@ -95,10 +95,10 @@ export function HeroSection() {
   }, []);
 
   const getLiveStatusText = () => {
-    if (loading) return "Loading...";
-    if (totalUsers === 0) return "Join our learning community";
-    if (totalUsers === 1) return "1 student learning now";
-    return `${totalUsers.toLocaleString()} students learning now`;
+    if (loading) return "Уншиж байна...";
+    if (totalUsers === 0) return "Манай суралцагчдын нийгэмлэгт нэгдээрэй";
+    if (totalUsers === 1) return "1 сурагч одоо суралцаж байна";
+    return `${totalUsers.toLocaleString()} сурагч одоо суралцаж байна`;
   };
   return (
     <>
@@ -113,7 +113,7 @@ export function HeroSection() {
       {/* Main headline section - Core value proposition */}
       <section className="flex w-full max-w-5xl flex-col items-center px-4 py-10 text-center sm:px-6 sm:py-16 lg:py-20">
         <Heading size="3xl" className="sm:text-4xl md:text-5xl lg:text-6xl">
-          Start Your Learning Journey
+          Суралцах аяллаа эхлүүл
         </Heading>
         <Heading
           size="2xl"
@@ -121,11 +121,11 @@ export function HeroSection() {
           animationDelay={300}
           className="mt-2 sm:text-3xl md:text-4xl lg:text-5xl"
         >
-          Build Your Future
+          Ирээдүйгээ бүтээ
         </Heading>
         <p className="mt-4 max-w-2xl px-2 text-base text-muted-foreground sm:mt-6 sm:text-lg">
-          Begin your educational journey with interactive lessons. No registration
-          required.
+          Интерактив хичээлүүдээр суралцах аяллаа эхлүүл —
+          Бүртгүүлэх шаардлагагүй.
         </p>
       </section>
     </>

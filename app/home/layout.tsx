@@ -14,6 +14,15 @@ import {
   getLevelProgress,
 } from "../../lib/level-system";
 
+const TAB_LABELS: Record<string, string> = {
+  overview: "Тойм",
+  lessons: "Хичээлүүд",
+  projects: "Төслүүд",
+  classes: "Хичээл",
+  achievements: "Амжилтууд",
+  community: "Нийгэмлэг",
+};
+
 const TAB_ICONS: Record<string, Icon> = {
   overview: "LayoutDashboard",
   lessons: "BookOpen",
@@ -39,7 +48,7 @@ export default function HomeLayout({ children }: { children: ReactNode }) {
   const [userLevel, setUserLevel] = useState(1);
   const [totalXP, setTotalXP] = useState(0);
   const [nextLevelXP, setNextLevelXP] = useState(100);
-  const [rankTitle, setRankTitle] = useState("Beginner");
+  const [rankTitle, setRankTitle] = useState("Эхлэгч");
   const [loading, setLoading] = useState(true);
 
   const handleLogout = async () => {
@@ -235,7 +244,7 @@ export default function HomeLayout({ children }: { children: ReactNode }) {
 
         {/* Nav label */}
         <p className="px-5 pt-3 pb-1 text-[10px] font-bold tracking-widest text-gray-500 uppercase">
-          Navigate
+          Цэс
         </p>
 
         {/* Nav items */}
@@ -274,7 +283,7 @@ export default function HomeLayout({ children }: { children: ReactNode }) {
                   }`}
                 />
                 <span className="relative">
-                  {tab.charAt(0).toUpperCase() + tab.slice(1)}
+                  {TAB_LABELS[tab] || tab.charAt(0).toUpperCase() + tab.slice(1)}
                 </span>
 
                 {/* active dot */}
@@ -293,7 +302,7 @@ export default function HomeLayout({ children }: { children: ReactNode }) {
           </p>
           <div className="flex items-center justify-between mb-1.5">
             <span className="text-xs font-bold text-white">
-              Level {userLevel}
+              Түвшин {userLevel}
             </span>
             <span className="text-[10px] text-purple-500 font-bold">
               {totalXP} / {nextLevelXP}
@@ -316,10 +325,10 @@ export default function HomeLayout({ children }: { children: ReactNode }) {
         <header className="relative h-16 shrink-0 flex items-center justify-between px-8 border-b border-white/5 bg-black backdrop-blur-sm">
           {/* breadcrumb */}
           <div className="flex items-center gap-2 text-sm">
-            <span className="text-gray-600 font-medium">Home</span>
+            <span className="text-gray-600 font-medium">Нүүр</span>
             <span className="text-gray-700">/</span>
-            <span className="text-gray-200 font-semibold capitalize">
-              {activeTab}
+            <span className="text-gray-200 font-semibold">
+              {TAB_LABELS[activeTab] || activeTab}
             </span>
           </div>
 
@@ -344,7 +353,7 @@ export default function HomeLayout({ children }: { children: ReactNode }) {
                 <IconComponent name="User" className="size-3.5 text-white" />
               </div>
               <span className="text-xs font-semibold text-gray-300 group-hover:text-white transition-colors">
-                Profile
+                Профайл
               </span>
             </button>
 

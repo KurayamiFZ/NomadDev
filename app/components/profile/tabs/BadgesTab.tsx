@@ -70,11 +70,11 @@ export function BadgesTab({ badges, username }: BadgesTabProps) {
         <div className="flex items-center justify-center">
           <div>
             <h3 className="text-lg font-bold text-white">
-              Achievement Progress
+              Амжилтын явц
             </h3>
             <p className="text-sm text-gray-400">
-              {userBadges.filter((b) => b.earned).length} of {userBadges.length}{" "}
-              badges unlocked
+              {userBadges.filter((b) => b.earned).length} / {userBadges.length}{" "}
+              тэмдэг нээгдсэн
             </p>
           </div>
           <div className="text-right">
@@ -86,7 +86,7 @@ export function BadgesTab({ badges, username }: BadgesTabProps) {
               ) || 0}
               %
             </div>
-            <div className="text-xs text-gray-400">Complete</div>
+            <div className="text-xs text-gray-400">Дууссан</div>
           </div>
         </div>
         {/* Progress Bar */}
@@ -110,10 +110,10 @@ export function BadgesTab({ badges, username }: BadgesTabProps) {
       {userBadges.length === 0 && !loading && (
         <div className="text-center py-8">
           <div className="text-gray-400 mb-2">
-            No achievements available yet
+            Амжилт одоохондоо байхгүй
           </div>
           <div className="text-sm text-gray-500">
-            Start learning to unlock your first badge!
+            Эхний тэмдэгтээ нээхийн суралцаж эхлээрэй!
           </div>
         </div>
       )}

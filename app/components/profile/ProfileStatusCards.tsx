@@ -33,7 +33,7 @@ export const ProfileStatusCards = memo(function ProfileStatusCards({ stats }: Pr
     return (
       <div className="flex flex-wrap justify-between w-11/12 max-w-6xl gap-5">
         <div className="text-gray-400 text-center py-8 w-full">
-          No statistics available
+          Статистик мэдээлэл байхгүй
         </div>
       </div>
     );

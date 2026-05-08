@@ -17,6 +17,9 @@ import {
   COMMUNITY_ACTIVITY,
 } from "../../../lib/home-data";
 import { useRouter } from "next/navigation";
+import { fetchMostRecentInProgress, InProgressCourse } from "@/lib/progress";
+import { getUserStats, UserStats } from "@/lib/xp";
+import { getLevelProgress, getRankTitle } from "@/lib/level-system";
 import { supabase } from "@/lib/supabaseclient";
 
 export default function Overview() {
@@ -32,6 +35,9 @@ export default function Overview() {
   const quickLinksRef = useRef<HTMLDivElement>(null);
 
   const [achievements, setAchievements] = useState<any[]>([]);
+  const [continueLesson, setContinueLesson] = useState<InProgressCourse | null>(null);
+  const [userStats, setUserStats] = useState<UserStats>({ xp: 0, level: 1, streak_count: 0, last_active_date: null });
+  const [courseStats, setCourseStats] = useState({ completed: 0, total: 0 });
   const [expandedAchievement, setExpandedAchievement] = useState<string | null>(
     null,
   );
@@ -107,6 +113,22 @@ export default function Overview() {
     }
 
     fetchAchievements();
+    fetchMostRecentInProgress().then(setContinueLesson);
+    getUserStats().then(s => { if (s) setUserStats(s); });
+
+    // Fetch course completion stats
+    (async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+      const { data: rows } = await supabase
+        .from('user_course_progress')
+        .select('status')
+        .eq('user_id', user.id);
+      const { count: totalCount } = await supabase.from('videos').select('*', { count: 'exact', head: true });
+      const completed = rows?.filter(r => r.status === 'completed').length ?? 0;
+      const total = totalCount ?? 0;
+      setCourseStats({ completed, total });
+    })();
 
     // Trigger stats animation after a short delay
     setTimeout(() => setStatsVisible(true), 300);
@@ -220,31 +242,31 @@ export default function Overview() {
           {[
             {
               icon: BookOpen,
-              value: "0/0",
-              label: "Lessons Completed",
+              value: `${courseStats.completed}/${courseStats.total}`,
+              label: "Дууссан хичээлүүд",
               color: "text-purple-400",
-              progress: { current: 0, total: 0 },
+              progress: { current: courseStats.completed, total: Math.max(courseStats.total, 1) },
             },
             {
               icon: Code,
-              value: "0 Days",
-              label: "Current Streak",
-              color: "text-purple-400",
-              progress: { current: 0, total: 0 },
+              value: `${userStats.streak_count} Өдөр`,
+              label: "Тасралтгүй суралцсан хоног",
+              color: "text-orange-400",
+              progress: { current: Math.min(userStats.streak_count, 7), total: 7 },
             },
             {
               icon: Award,
-              value: "0/0",
-              label: "Games Built",
-              color: "text-purple-400",
-              progress: { current: 0, total: 0 },
+              value: `Lv.${userStats.level}`,
+              label: getRankTitle(userStats.level),
+              color: "text-yellow-400",
+              progress: { current: getLevelProgress(userStats.xp).progressXP, total: Math.max(getLevelProgress(userStats.xp).xpToNextLevel, 1) },
             },
             {
               icon: MessageCircle,
-              value: "0%",
-              label: "Completion Rate",
+              value: `${userStats.xp} XP`,
+              label: "Нийт туршлагын оноо",
               color: "text-purple-400",
-              progress: { current: 0, total: 0 },
+              progress: { current: courseStats.completed, total: Math.max(courseStats.total, 1) },
             },
           ].map((stat, index) => (
             <div
@@ -282,62 +304,82 @@ export default function Overview() {
               <div className="p-6 border-b border-gray-800">
                 <h2 className="text-2xl font-bold flex items-center gap-2 bg-linear-to-r from-purple-500 to-pink-500 bg-clip-text text-transparent">
                   <Icon name="Rocket" className="size-6 text-purple-500" />
-                  Continue Learning
+                  Суралцаж үргэлжүүлэх
                 </h2>
               </div>
               <div className="p-6">
-                <div className="bg-linear-to-r from-purple-950/60 to-pink-950/60 rounded-xl p-6 border border-purple-600/40 mb-6 transform transition-all duration-500 hover:scale-105 hover:shadow-2xl hover:shadow-purple-600/15 group">
-                  <div className="flex items-start justify-between mb-4">
-                    <div>
-                      <div className="text-purple-500 text-sm font-medium mb-1">
-                        LESSON 4 • WEEK 2
+                {continueLesson?.videos ? (
+                  /* ── Continue Watching card ── */
+                  <div
+                    onClick={() => router.push(`/home/lessons/${continueLesson.videos!.id}`)}
+                    className="bg-linear-to-r from-purple-950/60 to-pink-950/60 rounded-xl p-6 border border-purple-600/40 mb-6 transform transition-all duration-500 hover:scale-105 hover:shadow-2xl hover:shadow-purple-600/15 group cursor-pointer"
+                  >
+                    <div className="flex items-start justify-between mb-4">
+                      <div className="flex-1 min-w-0">
+                        {continueLesson.videos.category && (
+                          <div className="text-purple-500 text-sm font-medium mb-1 uppercase tracking-wide">
+                            {continueLesson.videos.category}
+                          </div>
+                        )}
+                        <h3 className="text-2xl font-bold mb-2 group-hover:text-purple-400 transition-colors line-clamp-2">
+                          {continueLesson.videos.title}
+                        </h3>
+                        {continueLesson.videos.description && (
+                          <p className="text-gray-400 group-hover:text-gray-300 transition-colors line-clamp-2">
+                            {continueLesson.videos.description}
+                          </p>
+                        )}
                       </div>
-                      <h3 className="text-2xl font-bold mb-2 group-hover:text-purple-400 transition-colors">
-                        Introduction to Physics
-                      </h3>
-                      <p className="text-gray-400 group-hover:text-gray-300 transition-colors">
-                        Learn how Unity's physics engine works and apply forces
-                        to objects
-                      </p>
-                    </div>
-                    <div className="shrink-0 ml-4">
-                      <div className="w-16 h-16 bg-linear-to-br from-purple-500/60 to-pink-500/60 rounded-full flex items-center justify-center transform transition-all duration-300 group-hover:scale-110 group-hover:rotate-12">
-                        <Icon name="Play" className="size-8 text-white" />
+                      <div className="shrink-0 ml-4">
+                        <div className="w-16 h-16 bg-linear-to-br from-purple-500/60 to-pink-500/60 rounded-full flex items-center justify-center transform transition-all duration-300 group-hover:scale-110 group-hover:rotate-12">
+                          <Icon name="Play" className="size-8 text-white" />
+                        </div>
                       </div>
                     </div>
-                  </div>
-                  <div className="flex items-center gap-4 text-sm text-gray-300">
-                    <div className="flex items-center gap-2 transform transition-transform duration-300 hover:scale-110">
-                      <Icon name="Clock" className="size-4" />
-                      <span>20 min</span>
+                    {/* Progress bar */}
+                    <div className="mb-4">
+                      <div className="flex justify-between text-xs text-gray-400 mb-1">
+                        <span>Явц</span>
+                        <span className="font-bold text-purple-300">{continueLesson.progress_percent}%</span>
+                      </div>
+                      <div className="bg-gray-800 rounded-full h-2 overflow-hidden">
+                        <div
+                          className="bg-linear-to-r from-purple-500 to-pink-500 h-full rounded-full transition-all duration-1000 ease-out"
+                          style={{ width: learningVisible ? `${continueLesson.progress_percent}%` : "0%" }}
+                        />
+                      </div>
                     </div>
-                    <div className="flex items-center gap-2 transform transition-transform duration-300 hover:scale-110">
-                      <Icon name="Code" className="size-4" />
-                      <span>Coding Exercise</span>
+                    <button className="w-full bg-linear-to-r from-purple-600/40 to-pink-600/40 text-white py-3 rounded-lg font-bold hover:scale-105 transition-all duration-300 hover:shadow-lg hover:shadow-purple-500/50">
+                      Хичээлийг үргэлжүүл
+                    </button>
+                  </div>
+                ) : (
+                  /* ── Start Learning card (no in-progress course) ── */
+                  <div
+                    onClick={() => router.push("/home/lessons")}
+                    className="bg-linear-to-r from-purple-950/60 to-pink-950/60 rounded-xl p-6 border border-purple-600/40 mb-6 transform transition-all duration-500 hover:scale-105 hover:shadow-2xl hover:shadow-purple-600/15 group cursor-pointer"
+                  >
+                    <div className="flex items-start justify-between mb-4">
+                      <div>
+                        <div className="text-purple-500 text-sm font-medium mb-1">ЭХЛЭХ ЦАГ БОЛСОН</div>
+                        <h3 className="text-2xl font-bold mb-2 group-hover:text-purple-400 transition-colors">
+                          Суралцаж эхлэх
+                        </h3>
+                        <p className="text-gray-400 group-hover:text-gray-300 transition-colors">
+                          Хичээлүүдийг харж, өөрт тохирох хичээлээ сонгоорой
+                        </p>
+                      </div>
+                      <div className="shrink-0 ml-4">
+                        <div className="w-16 h-16 bg-linear-to-br from-purple-500/60 to-pink-500/60 rounded-full flex items-center justify-center transform transition-all duration-300 group-hover:scale-110 group-hover:rotate-12">
+                          <Icon name="Play" className="size-8 text-white" />
+                        </div>
+                      </div>
                     </div>
+                    <button className="w-full bg-linear-to-r from-purple-600/40 to-pink-600/40 text-white py-3 rounded-lg font-bold hover:scale-105 transition-all duration-300 hover:shadow-lg hover:shadow-purple-500/50">
+                      Хичээлүүдийг харах
+                    </button>
                   </div>
-                  <button className="w-full bg-linear-to-r from-purple-600/40 to-pink-600/40 text-white py-3 rounded-lg font-bold mt-6 hover:scale-105 transition-all duration-300 hover:shadow-lg hover:shadow-purple-500/50">
-                    Continue Lesson
-                  </button>
-                </div>
-
-                {/* Week Progress */}
-                <div className="mb-4">
-                  <div className="flex items-center justify-between mb-3">
-                    <h3 className="font-bold text-lg">
-                      Week 2: Foundation Phase
-                    </h3>
-                    <span className="text-sm text-gray-400">
-                      3 of 6 completed
-                    </span>
-                  </div>
-                  <div className="bg-gray-800 rounded-full h-2 mb-4 overflow-hidden">
-                    <div
-                      className="bg-linear-to-r from-purple-500 to-pink-500 h-full rounded-full transition-all duration-1000 ease-out"
-                      style={{ width: learningVisible ? "50%" : "0%" }}
-                    ></div>
-                  </div>
-                </div>
+                )}
 
                 {/* Lessons List */}
                 <div className="space-y-3">
@@ -405,7 +447,7 @@ export default function Overview() {
               <div className="p-6 border-b border-gray-800">
                 <h2 className="text-xl font-bold flex items-center gap-2 bg-linear-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent">
                   <Icon name="Trophy" className="size-5 text-yellow-400" />
-                  Achievements
+                  Амжилтууд
                 </h2>
               </div>
               <div className="p-6">
@@ -441,7 +483,7 @@ export default function Overview() {
                     ))}
                 </div>
                 <button className="w-full bg-gray-800 hover:bg-gray-700 text-white py-3 rounded-lg font-medium mt-4 transition-all duration-300 hover:scale-105 hover:shadow-lg">
-                  View All Achievements
+                  Бүх амжилтыг харах
                 </button>
               </div>
             </div>
@@ -458,7 +500,7 @@ export default function Overview() {
               <div className="p-6 border-b border-gray-800">
                 <h2 className="text-xl font-bold flex items-center gap-2 bg-linear-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
                   <Icon name="Users" className="size-5 text-purple-400" />
-                  Community Activity
+                  Нийгэмлэгийн идэвхжил
                 </h2>
               </div>
               <div className="p-6">
@@ -484,7 +526,7 @@ export default function Overview() {
                   className="w-full bg-linear-to-r from-purple-900 to-pink-900 hover:from-purple-500 hover:to-pink-500 text-white py-3 rounded-lg font-bold mt-4 transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-purple-500/50 flex items-center justify-center gap-2"
                 >
                   <Icon name="MessageCircle" className="size-4" />
-                  Join Discord Community
+                  Discord нийгэмлэгт нэгдэх
                 </a>
               </div>
             </div>

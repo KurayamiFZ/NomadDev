@@ -13,7 +13,7 @@ export default function Footer() {
           </span>
         </div>
         <p className="text-xs text-muted-foreground sm:text-sm">
-          2026 GameDev Academy. All rights reserved.
+          2026 GameDev Academy. Бүх эрх хуулиар хамгаалагдсан.
         </p>
       </div>
     </footer>

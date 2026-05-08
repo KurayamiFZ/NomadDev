@@ -130,20 +130,20 @@ export function Navigation({ onNavigate }: NavigationProps) {
         {/* Desktop navigation links - Hidden on mobile */}
         <FlexRow align="center" gap="lg" className="hidden md:flex">
           <NavigationLink href="#demo" onNavigate={onNavigate}>
-            Demo
+            Демо
           </NavigationLink>
           <NavigationLink href="#roadmap" onNavigate={onNavigate}>
-            Roadmap
+            Замын зураг
           </NavigationLink>
           <NavigationLink href="#pricing" onNavigate={onNavigate}>
-            Pricing
+            Үнэ
           </NavigationLink>
           {/* Conditional rendering based on auth status */}
           {user ? (
             <>
               {/* User Level Display */}
               {userLevel > 0 && (
-                <div className={`bg-gradient-to-r ${userRankGradient} text-black px-3 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5`}>
+                <div className={`bg-linear-to-r ${userRankGradient} text-black px-3 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5`}>
                   <Star className="w-3 h-3" />
                   Lv. {userLevel}
                 </div>
@@ -153,13 +153,13 @@ export function Navigation({ onNavigate }: NavigationProps) {
                 variant="button"
                 className="flex justify-center items-center rounded-xl px-2 py-0.5"
               >
-                Dashboard
+                Хяналтын самбар
               </NavigationLink>
               <button
                 onClick={signOut}
                 className="text-sm text-gray-300 hover:text-white transition-colors"
               >
-                Sign Out
+                Гарах
               </button>
             </>
           ) : (
@@ -168,7 +168,7 @@ export function Navigation({ onNavigate }: NavigationProps) {
               variant="button"
               className="flex justify-center items-center rounded-xl px-2 py-0.5"
             >
-              Start Learning
+              Суралцаж эхлэх
             </NavigationLink>
           )}
         </FlexRow>
@@ -197,21 +197,21 @@ export function Navigation({ onNavigate }: NavigationProps) {
               onNavigate={onNavigate}
               variant="mobile"
             >
-              Demo
+              Демо
             </NavigationLink>
             <NavigationLink
               href="#roadmap"
               onNavigate={onNavigate}
               variant="mobile"
             >
-              Roadmap
+              Замын зураг
             </NavigationLink>
             <NavigationLink
               href="#pricing"
               onNavigate={onNavigate}
               variant="mobile"
             >
-              Pricing
+              Үнэ
             </NavigationLink>
             {/* Conditional mobile call-to-action buttons */}
             {user ? (
@@ -221,18 +221,18 @@ export function Navigation({ onNavigate }: NavigationProps) {
                   variant="button"
                   className="w-full"
                 >
-                  Dashboard
+                  Хяналтын самбар
                 </NavigationLink>
                 <button
                   onClick={signOut}
                   className="w-full text-sm text-gray-300 hover:text-white transition-colors text-center py-2"
                 >
-                  Sign Out
+                  Гарах
                 </button>
               </>
             ) : (
               <NavigationLink to="/login" variant="button" className="w-full">
-                Start Learning
+                Суралцаж эхлэх
               </NavigationLink>
             )}
           </div>

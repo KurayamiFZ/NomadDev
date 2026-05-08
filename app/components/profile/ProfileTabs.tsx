@@ -36,11 +36,11 @@ export const ProfileTabs = memo(function ProfileTabs({ profile, onNavigate }: Pr
   const [activeTab, setActiveTab] = useState("overview");
 
   const tabs = [
-    { id: "overview", label: "Overview" },
-    { id: "projects", label: "Projects" },
-    { id: "badges", label: "Badges" },
-    { id: "activity", label: "Activity" },
-    { id: "skills", label: "Skills" },
+    { id: "overview", label: "Тойм" },
+    { id: "projects", label: "Төслүүд" },
+    { id: "badges", label: "Тэмдэгтүүд" },
+    { id: "activity", label: "Үйл ажиллагаа" },
+    { id: "skills", label: "Ур чадвар" },
   ];
 
   // Memoized tab content to prevent unnecessary re-renders

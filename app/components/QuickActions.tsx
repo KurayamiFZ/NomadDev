@@ -24,19 +24,19 @@ export function QuickActions({ variant = "default", className = "" }: QuickActio
   const quickActions: QuickAction[] = [
     {
       icon: <Icon name="BookOpen" />,
-      label: "Course Curriculum",
+      label: "Хичээлийн хөтөлбөр",
       color: "text-blue-400",
       href: "/home/projects",
     },
     {
       icon: <Icon name="MessageCircle" />,
-      label: "Ask Question",
+      label: "Асуулт тавих",
       color: "text-pink-400",
       href: "/feedback",
     },
     {
       icon: <Icon name="BookMarked" />,
-      label: "Study Notes",
+      label: "Судалгааны тэмдэглэл",
       color: "text-yellow-400",
       href: "/notes",
     },
@@ -58,7 +58,7 @@ export function QuickActions({ variant = "default", className = "" }: QuickActio
   return (
     <div className={`${baseClasses} ${className}`}>
       <h2 className={titleClasses}>
-        {variant === "compact" ? "Quick Actions" : "Quick Links"}
+        {variant === "compact" ? "Хурдан үйлдлүүд" : "Хурдан холбоосууд"}
       </h2>
       <div className="space-y-2">
         {quickActions.map((action, index) => (

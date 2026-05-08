@@ -36,21 +36,21 @@ export interface LandingLesson {
 // Landing lessons - demo lessons for interactive preview
 export const LANDING_LESSONS: LandingLesson[] = [
   {
-    title: "Player Movement",
-    subtitle: "Learn 2D controls",
-    level: "Beginner",
+    title: "Тоглогчийн хөдөлгөөн",
+    subtitle: "2D удирдлага сур",
+    level: "Эхлэгч",
     levelColor: "bg-emerald-500/20 text-emerald-400",
   },
   {
-    title: "Enemy AI",
-    subtitle: "Smart opponents",
-    level: "Intermediate",
+    title: "Дайсны AI",
+    subtitle: "Ухаантай өрсөлдөгчид",
+    level: "Дунд",
     levelColor: "bg-amber-500/20 text-amber-400",
   },
   {
-    title: "Multiplayer Mode",
-    subtitle: "Real networking",
-    level: "Advanced",
+    title: "Олон тоглогчийн горим",
+    subtitle: "Жинхэнэ сүлжээ",
+    level: "Дэвшилтэт",
     levelColor: "bg-rose-500/20 text-rose-400",
   },
 ];
@@ -58,75 +58,75 @@ export const LANDING_LESSONS: LandingLesson[] = [
 // Roadmap phases - learning journey phases
 export const ROADMAP_PHASES: RoadmapPhase[] = [
   {
-    weeks: "Weeks 1-3",
-    title: "Foundation",
-    subtitle: "Master the fundamentals",
+    weeks: "1-3-р долоо хоног",
+    title: "Суурь",
+    subtitle: "Үндсийг эзэмш",
     gradient: "from-blue-500 to-cyan-400",
     items: [
-      "Basic Programming Concepts",
-      "Development Environment Setup", 
-      "Core Principles & Best Practices",
-      "Build Your First Project",
+      "Програмчлалын үндсэн ойлголтууд",
+      "Хөгжүүлэлтийн орчин тохируулах",
+      "Үндсэн зарчмууд & Шилдэг аргууд",
+      "Анхны төслөө бүтээ",
     ],
   },
   {
-    weeks: "Weeks 4-6", 
-    title: "Building",
-    subtitle: "Start real projects",
+    weeks: "4-6-р долоо хоног",
+    title: "Бүтээх",
+    subtitle: "Жинхэнэ төслүүд эхлүүл",
     gradient: "from-purple-500 to-pink-500",
     items: [
-      "Advanced Techniques",
-      "Project Architecture",
-      "Problem Solving Skills",
-      "Complete Portfolio Project",
+      "Дэвшилтэт арга техникүүд",
+      "Төслийн архитектур",
+      "Асуудал шийдвэрлэх чадвар",
+      "Портфолио төсөл дуусга",
     ],
   },
   {
-    weeks: "Weeks 7-9",
-    title: "Advanced", 
-    subtitle: "Professional techniques",
+    weeks: "7-9-р долоо хоног",
+    title: "Дэвшилтэт",
+    subtitle: "Мэргэжлийн арга техникүүд",
     gradient: "from-orange-500 to-red-500",
     items: [
-      "Industry Best Practices",
-      "Performance Optimization",
-      "Advanced Patterns",
-      "Professional Development",
+      "Салбарын шилдэг аргууд",
+      "Гүйцэтгэлийн оновчлол",
+      "Дэвшилтэт загварууд",
+      "Мэргэжлийн хөгжил",
     ],
   },
   {
-    weeks: "Weeks 10-12",
-    title: "Launch",
-    subtitle: "Ship your final project",
-    gradient: "from-emerald-500 to-green-600", 
+    weeks: "10-12-р долоо хоног",
+    title: "Нээлт",
+    subtitle: "Эцсийн төслөө гарга",
+    gradient: "from-emerald-500 to-green-600",
     items: [
-      "Final Project Polish",
-      "Portfolio Development",
-      "Career Preparation",
-      "Graduation & Certification",
+      "Эцсийн төслийн засвар",
+      "Портфолио хөгжүүлэлт",
+      "Ажил мэргэжлийн бэлтгэл",
+      "Төгсөлт & Гэрчилгээ",
     ],
   },
 ];
 
 // Statistics - course statistics
 export const STATS: Stat[] = [
-  { value: "12+", label: "Video Lessons", sub: "HD Content" },
-  { value: "8+", label: "Code Exercises", sub: "Hands-on Practice" },
-  { value: "4", label: "Complete Projects", sub: "Portfolio Ready" },
-  { value: "1000+", label: "Active Learners", sub: "Growing Community" },
+  { value: "12+", label: "Видео хичээлүүд", sub: "HD агуулга" },
+  { value: "8+", label: "Кодны дасгалууд", sub: "Практик дадлага" },
+  { value: "4", label: "Дууссан төслүүд", sub: "Портфолиод бэлэн" },
+  { value: "1000+", label: "Идэвхтэй суралцагсад", sub: "Өсөн нэмэгдэж буй нийгэмлэг" },
 ];
 
 // Guarantees - course guarantees and promises
 export const GUARANTEES: Guarantee[] = [
   {
-    title: "30-Day Money Back Guarantee",
-    desc: "Not satisfied? Get a full refund, no questions asked.",
+    title: "30 хоногийн мөнгөн баталгаа",
+    desc: "Сэтгэл хангалуун бус уу? Ямар ч асуултгүйгээр бүрэн буцаан олгоно.",
   },
   {
-    title: "Lifetime Access",
-    desc: "All lessons, updates, and future content included forever.",
+    title: "Насан туршийн хандалт",
+    desc: "Бүх хичээл, шинэчлэлт болон ирэх агуулгыг хязгааргүй ашиглах эрхтэй.",
   },
   {
-    title: "Expert Support",
-    desc: "Get help from instructors when you need it most.",
+    title: "Мэргэжлийн дэмжлэг",
+    desc: "Хэрэгтэй үедээ багш нараасаа тусламж авах боломжтой.",
   },
 ];

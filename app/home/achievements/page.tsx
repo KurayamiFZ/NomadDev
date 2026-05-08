@@ -9,28 +9,28 @@ import { calculateTotalXP, getLevelFromXP, getRankTitle, getRankGradient } from 
 
 const rarityConfig = {
   common: {
-    label: "Common",
+    label: "Жирийн",
     bgFrom: "from-blue-500/20",
     bgTo: "to-cyan-500/20",
     borderColor: "border-blue-500/50",
     textColor: "text-blue-400",
   },
   uncommon: {
-    label: "Uncommon",
+    label: "Дунд",
     bgFrom: "from-purple-500/20",
     bgTo: "to-pink-500/20",
     borderColor: "border-purple-500/50",
     textColor: "text-purple-400",
   },
   rare: {
-    label: "Rare",
+    label: "Ховор",
     bgFrom: "from-yellow-500/20",
     bgTo: "to-orange-500/20",
     borderColor: "border-yellow-500/50",
     textColor: "text-yellow-400",
   },
   epic: {
-    label: "Epic",
+    label: "Эпик",
     bgFrom: "from-red-500/20",
     bgTo: "to-rose-500/20",
     borderColor: "border-red-500/50",
@@ -114,7 +114,7 @@ export default function AchievementsEnhanced() {
       <div className="flex min-h-screen w-full bg-black items-center justify-center">
         <div className="text-center">
           <div className="w-16 h-16 border-4 border-purple-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-white text-lg">Loading achievements...</p>
+          <p className="text-white text-lg">Амжилтуудыг уншиж байна...</p>
         </div>
       </div>
     );
@@ -149,10 +149,10 @@ export default function AchievementsEnhanced() {
   };
 
   const tierLabels = {
-    1: "Apprentice",
-    2: "Journeyman",
-    3: "Expert",
-    4: "Master",
+    1: "Шавь",
+    2: "Дадлагажигч",
+    3: "Мэргшил",
+    4: "Мастер",
   };
 
   return (
@@ -176,7 +176,7 @@ export default function AchievementsEnhanced() {
                 <Icon name="Search" className="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 transform transition-transform duration-300 hover:scale-110" />
                 <input
                   type="text"
-                  placeholder="Search achievements..."
+                  placeholder="Амжилт хайх..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="bg-white/5 border border-white/10 rounded-xl pl-10 pr-4 py-3 w-64 focus:border-purple-500 focus:outline-none text-sm backdrop-blur-sm transition-all duration-300 hover:border-white/20 focus:shadow-lg focus:shadow-purple-500/20"
@@ -193,7 +193,7 @@ export default function AchievementsEnhanced() {
                 <div className="flex items-center gap-4">
                   <Icon name="Trophy" className="w-5 h-5 text-yellow-400" />
                   <div className="flex items-center gap-4">
-                    <div className={`bg-gradient-to-r ${rankGradient} text-black px-2 py-1 rounded-full text-xs font-bold flex items-center gap-1`}>
+                    <div className={`bg-linear-to-r ${rankGradient} text-black px-2 py-1 rounded-full text-xs font-bold flex items-center gap-1`}>
                       <Icon name="Star" className="w-3 h-3" />
                       Lv. {currentLevel}
                     </div>
@@ -229,7 +229,7 @@ export default function AchievementsEnhanced() {
             return (
               <section className="mb-12">
                 <h2 className="text-2xl font-bold text-white mb-6">
-                  Featured Achievement
+                  Онцлох амжилт
                 </h2>
                 <div className="bg-linear-to-r from-purple-600/20 to-pink-600/20 border border-purple-500/50 rounded-xl p-6">
                   <div className="flex items-center gap-4">
@@ -238,7 +238,7 @@ export default function AchievementsEnhanced() {
                     </div>
                     <div className="flex-1">
                       <p className="text-gray-300 mb-2">
-                        {featuredAchievement?.description || "You've mastered advanced skills"}
+                        {featuredAchievement?.description || "Та дэвшилтэт чадваруудыг эзэмшсэн"}
                       </p>
                       <div className="flex items-center gap-4 text-sm">
                         <span className="text-yellow-400 font-medium">
@@ -262,7 +262,7 @@ export default function AchievementsEnhanced() {
           <section className="mb-12">
             <h3 className="text-xl flex flex-row gap-4 font-black text-white mb-6">
               <Icon name="Trophy" className="size-6 text-purple-400" />
-              Achievement Tiers
+              Амжилтын шатлал
             </h3>
             <div className="space-y-4">
               {[1, 2, 3, 4].map((tier) => {
@@ -323,7 +323,7 @@ export default function AchievementsEnhanced() {
                             {tierLabels[tier as keyof typeof tierLabels]}
                           </h4>
                           <p className="text-sm text-gray-400">
-                            {unlocked} of {total} achievements unlocked
+                            {unlocked} / {total} амжилт нээгдсэн
                           </p>
                         </div>
                       </div>
@@ -360,7 +360,7 @@ export default function AchievementsEnhanced() {
               <div>
                 <h3 className="text-xl font-black mb-6 flex items-center gap-2">
                   <Icon name="Award" className="size-6 text-cyan-400" />
-                  All Achievements
+                  Бүх амжилтууд
                 </h3>
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {filteredAchievements.map((achievement) => (
@@ -402,7 +402,7 @@ export default function AchievementsEnhanced() {
                     onClick={() => setSelectedTier(null)}
                     className="text-sm font-bold text-purple-400 hover:text-purple-300 flex items-center gap-2"
                   >
-                    View All
+                    Бүгдийг харах
                     <Icon name="ChevronRight" className="size-4" />
                   </button>
                 </div>
@@ -452,7 +452,7 @@ export default function AchievementsEnhanced() {
                               ) : (
                                 <>
                                   <Icon name="Lock" className="size-3" />
-                                  Locked
+                                  Түгжигдсэн
                                 </>
                               )}
                             </div>
@@ -468,7 +468,7 @@ export default function AchievementsEnhanced() {
                           {/* Progress Bar */}
                           <div className="space-y-2 mb-4">
                             <div className="flex justify-between text-xs">
-                              <span className="text-gray-400">Progress</span>
+                              <span className="text-gray-400">Явц</span>
                               <span className="font-bold">
                                 {achievement.progress}/{achievement.total}
                               </span>
@@ -490,7 +490,7 @@ export default function AchievementsEnhanced() {
                           {isExpanded && (
                             <div className="mt-4 pt-4 border-t border-white/10 space-y-3 animate-in fade-in">
                               <div className="text-xs">
-                                <span className="text-gray-400">Rarity:</span>
+                                <span className="text-gray-400">Ховордол:</span>
                                 <span
                                   className={`ml-2 font-bold ${config.textColor}`}
                                 >
@@ -501,7 +501,7 @@ export default function AchievementsEnhanced() {
                                 achievement.unlockedDate && (
                                   <div className="text-xs">
                                     <span className="text-gray-400">
-                                      Unlocked:
+                                      Нээгдсэн:
                                     </span>
                                     <span className="ml-2 font-bold">
                                       {achievement.unlockedDate}
@@ -509,7 +509,7 @@ export default function AchievementsEnhanced() {
                                   </div>
                                 )}
                               <div className="text-xs">
-                                <span className="text-gray-400">Tier:</span>
+                                <span className="text-gray-400">Шат:</span>
                                 <span className="ml-2 font-bold">
                                   Tier {achievement.tier}
                                 </span>

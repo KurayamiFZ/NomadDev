@@ -7,7 +7,7 @@ export function GuaranteeSection() {
       <Shield className="h-10 w-10 text-emerald-400 sm:h-12 sm:w-12" />
 
       <h3 className="mt-3 text-xl font-bold text-foreground sm:mt-4 sm:text-2xl">
-        Our Guarantee To You
+        Бидний танд өгөх баталгаа
       </h3>
 
       <div className="mt-6 flex w-full flex-col gap-4 sm:mt-8 sm:gap-6">
@@ -27,7 +27,7 @@ export function GuaranteeSection() {
       </div>
 
       <p className="mt-4 text-sm font-bold text-emerald-400 sm:mt-6 sm:text-base">
-        Zero Risk, All Reward
+        Ямар ч эрсдэлгүй, бүх шагнал чинь
       </p>
     </section>
   );

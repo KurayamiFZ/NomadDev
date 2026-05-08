@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase-server";
-import { uploadVideoToR2 } from "@/lib/r2Upload";
+import { uploadVideoToR2, uploadImageToR2 } from "@/lib/r2Upload";
 
 export async function createCourse(formData: FormData) {
   try {
@@ -11,6 +11,7 @@ export async function createCourse(formData: FormData) {
     const description = formData.get("description") as string;
     const category = formData.get("category") as string;
     const videoFile = formData.get("video") as File;
+    const thumbnailFile = formData.get("thumbnail") as File | null;
 
     // Validate required fields
     if (!title?.trim()) {
@@ -48,16 +49,32 @@ export async function createCourse(formData: FormData) {
       };
     }
 
+    // Upload thumbnail if provided
+    let thumbnailUrl: string | null = null;
+    if (thumbnailFile && thumbnailFile.size > 0) {
+      try {
+        const thumbResult = await uploadImageToR2(thumbnailFile, {
+          folder: "thumbnails",
+          metadata: { courseTitle: title },
+        });
+        thumbnailUrl = thumbResult.url;
+      } catch (thumbError) {
+        console.error("Thumbnail upload failed:", thumbError);
+        // Non-fatal — continue without thumbnail
+      }
+    }
+
     // Insert course into Supabase
     try {
       const supabase = await createClient();
       const { data, error } = await supabase
-        .from("courses")
+        .from("videos")
         .insert({
           title: title.trim(),
           description: description.trim(),
           category: category.trim(),
           video_url: videoUrl,
+          thumbnail_url: thumbnailUrl,
           created_at: new Date().toISOString(),
         })
         .select()
@@ -74,7 +91,7 @@ export async function createCourse(formData: FormData) {
       }
 
       // Revalidate cache for admin pages
-      revalidatePath("/admin/courses");
+      revalidatePath("/admin/videos");
       revalidatePath("/admin/add");
 
       return {
@@ -114,7 +131,7 @@ export async function getCourses() {
   try {
     const supabase = await createClient();
     const { data, error } = await supabase
-      .from("courses")
+      .from("videos")
       .select("*")
       .order("created_at", { ascending: false });
 

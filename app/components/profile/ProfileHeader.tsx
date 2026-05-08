@@ -414,7 +414,7 @@ export function ProfileHeader({ profile, onNavigate }: ProfileHeaderProps) {
 
 
 
-        setError(data.error || 'Failed to update profile');
+        setError(data.error || 'Профайл шинэчлэхд алдаа гарлаа');
 
 
 
@@ -430,7 +430,7 @@ export function ProfileHeader({ profile, onNavigate }: ProfileHeaderProps) {
 
 
 
-      setSuccess('Profile updated successfully!');
+      setSuccess('Профайл амжилттай шинэчлэгдлээ!');
 
 
 
@@ -466,7 +466,7 @@ export function ProfileHeader({ profile, onNavigate }: ProfileHeaderProps) {
 
 
 
-      setError('An error occurred while updating your profile');
+      setError('Профайл шинэчлэхд алдаа гарлаа');
 
 
 
@@ -526,7 +526,7 @@ export function ProfileHeader({ profile, onNavigate }: ProfileHeaderProps) {
 
 
 
-            <span className="hidden sm:inline">Back</span>
+            <span className="hidden sm:inline">Буцах</span>
 
 
 
@@ -542,11 +542,11 @@ export function ProfileHeader({ profile, onNavigate }: ProfileHeaderProps) {
 
 
 
-              ? "My Profile"
+              ? "Миний профайл"
 
 
 
-              : `${profile.displayName}'s Profile`}
+              : `${profile.displayName}-н профайл`}
 
 
 
@@ -574,7 +574,7 @@ export function ProfileHeader({ profile, onNavigate }: ProfileHeaderProps) {
 
 
 
-            <span className="hidden sm:inline">Share</span>
+            <span className="hidden sm:inline">Хуваалцах</span>
 
 
 
@@ -606,7 +606,7 @@ export function ProfileHeader({ profile, onNavigate }: ProfileHeaderProps) {
 
 
 
-              <span className="hidden sm:inline">Settings</span>
+              <span className="hidden sm:inline">Тохиргоо</span>
 
 
 
@@ -758,7 +758,7 @@ export function ProfileHeader({ profile, onNavigate }: ProfileHeaderProps) {
 
 
 
-                <h2 className="text-xl font-bold text-white">Edit Profile</h2>
+                <h2 className="text-xl font-bold text-white">Профайл засах</h2>
 
 
 
@@ -802,7 +802,7 @@ export function ProfileHeader({ profile, onNavigate }: ProfileHeaderProps) {
 
 
 
-                  <label className="block text-sm font-medium text-gray-300 mb-2">Display Name</label>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">Харагдах нэр</label>
 
 
 
@@ -842,7 +842,7 @@ export function ProfileHeader({ profile, onNavigate }: ProfileHeaderProps) {
 
 
 
-                  <label className="block text-sm font-medium text-gray-300 mb-2">Bio</label>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">Намтар</label>
 
 
 
@@ -882,7 +882,7 @@ export function ProfileHeader({ profile, onNavigate }: ProfileHeaderProps) {
 
 
 
-                  <label className="block text-sm font-medium text-gray-300 mb-2">Location</label>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">Байршил</label>
 
 
 
@@ -902,7 +902,7 @@ export function ProfileHeader({ profile, onNavigate }: ProfileHeaderProps) {
 
 
 
-                    placeholder="Enter your location"
+                    placeholder="Байршилаа оруулна уу"
 
 
 
@@ -926,7 +926,7 @@ export function ProfileHeader({ profile, onNavigate }: ProfileHeaderProps) {
 
 
 
-                  <label className="block text-sm font-medium text-gray-300 mb-2">Website</label>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">Вэбсайт</label>
 
 
 
@@ -1178,7 +1178,7 @@ export function ProfileHeader({ profile, onNavigate }: ProfileHeaderProps) {
 
 
 
-                  Cancel
+                  Цуцлах
 
 
 
@@ -1206,7 +1206,7 @@ export function ProfileHeader({ profile, onNavigate }: ProfileHeaderProps) {
 
 
 
-                  {saving ? "Saving..." : "Save Changes"}
+                  {saving ? "Хадгалж байна..." : "Өөрчлөлт хадгалах"}
 
 
 
@@ -1262,7 +1262,7 @@ export function ProfileHeader({ profile, onNavigate }: ProfileHeaderProps) {
 
 
 
-                <h2 className="text-xl font-bold text-white">Settings</h2>
+                <h2 className="text-xl font-bold text-white">Тохиргоо</h2>
 
 
 
@@ -1326,7 +1326,7 @@ export function ProfileHeader({ profile, onNavigate }: ProfileHeaderProps) {
 
 
 
-                    Logout
+                    Гарах
 
 
 
@@ -1538,7 +1538,7 @@ function ProfileInfo({ profile, onEditProfile }: {
 
 
 
-            <Icon name="Globe" className="w-3.5 h-3.5 sm:w-4 sm:h-4" /> Joined{" "}
+            <Icon name="Globe" className="w-3.5 h-3.5 sm:w-4 sm:h-4" /> Нэгдсэн:{" "}
 
 
 
@@ -1570,7 +1570,7 @@ function ProfileInfo({ profile, onEditProfile }: {
 
 
 
-        <p className="text-base sm:text-lg font-black">Bio</p>
+        <p className="text-base sm:text-lg font-black">Намтар</p>
 
 
 

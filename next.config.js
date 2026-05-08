@@ -1,31 +1,37 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Performance optimizations
-  experimental: {
-    optimizePackageImports: ["lucide-react", "@radix-ui/react-slot"],
-  },
+  reactStrictMode: true,
 
-  // Image optimization
   images: {
+    remotePatterns: [
+      {
+        protocol: "http",
+        hostname: "localhost",
+        port: "3000",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "**",
+        pathname: "/**",
+      },
+    ],
     formats: ["image/webp", "image/avif"],
-    minimumCacheTTL: 60 * 60 * 24 * 30, // 30 days
   },
 
-  // Compiler optimizations
   compiler: {
     removeConsole: process.env.NODE_ENV === "production",
   },
 
-  // Enable React strict mode for development
-  reactStrictMode: true,
+  experimental: {
+    optimizePackageImports: ["lucide-react", "@radix-ui/react-slot"],
+    serverActions: {
+      bodySizeLimit: "4gb",
+      allowedOrigins: ["192.168.1.28"],
+    },
+  },
 
-  // Turbopack configuration (minimal)
-  turbopack: {},
-
-  // Disable source maps in production for smaller bundle
   productionBrowserSourceMaps: false,
 };
 
-module.exports = {
-  allowedDevOrigins: ["192.168.1.28"],
-};
+module.exports = nextConfig;

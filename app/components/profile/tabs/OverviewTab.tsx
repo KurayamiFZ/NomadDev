@@ -99,14 +99,14 @@ export function OverviewTab({ profile, onNavigate }: OverviewTabProps) {
         }`}
       >
         <div className="flex justify-between items-center mb-4">
-          <h3 className="text-2xl text-white font-black bg-linear-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
-            Featured Projects
+          <h3 className="text-2xl text-white font-black bg-linear-to-r from-purple-400 to-pink-400 bg-clip-text">
+            Онцлох төслүүд
           </h3>
           <button 
             className="text-purple-400 hover:text-purple-300 font-semibold transition-all duration-300 hover:scale-105 hover:drop-shadow-[0_0_10px_rgba(168,85,247,0.5)]"
             onClick={() => onNavigate(`/profile/${profile.username}?tab=projects`)}
           >
-            View All →
+            Бүгдийг харах →
           </button>
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
@@ -124,7 +124,7 @@ export function OverviewTab({ profile, onNavigate }: OverviewTabProps) {
             ))
           ) : (
             <div className="col-span-full text-gray-400 text-center py-8">
-              No projects available
+              Төсөл байхгүй байна
             </div>
           )}
         </div>
@@ -139,21 +139,21 @@ export function OverviewTab({ profile, onNavigate }: OverviewTabProps) {
         style={{ transitionDelay: '300ms' }}
       >
         <div className="flex justify-between items-center mb-4">
-          <h3 className="text-2xl text-white font-black bg-linear-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent">
-            Recent Badges
+          <h3 className="text-2xl text-white font-black bg-linear-to-r from-yellow-400 to-orange-400 bg-clip-text">
+            Сүүлийн тэмдэгтүүд
           </h3>
           <button 
             className="text-purple-400 hover:text-purple-300 font-semibold transition-all duration-300 hover:scale-105 hover:drop-shadow-[0_0_10px_rgba(168,85,247,0.5)]"
             onClick={() => onNavigate("/home/achievements")}
           >
-            View All →
+            Бүгдийг харах →
           </button>
         </div>
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           {loading ? (
             <div className="col-span-full text-center py-8">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-500 mx-auto mb-4"></div>
-              <div className="text-gray-400">Loading badges...</div>
+              <div className="text-gray-400">Тэмдэгтүүдийг уншиж байна...</div>
             </div>
           ) : userBadges.length > 0 ? (
             userBadges.slice(0, 4).map((badge, index) => (
@@ -169,8 +169,8 @@ export function OverviewTab({ profile, onNavigate }: OverviewTabProps) {
             ))
           ) : (
             <div className="col-span-full text-gray-400 text-center py-8">
-              <div className="text-gray-400 mb-2">No badges earned yet</div>
-              <div className="text-sm text-gray-500">Start learning to unlock your first badge!</div>
+              <div className="text-gray-400 mb-2">Одоогоор тэмдэг авсангүй байна</div>
+              <div className="text-sm text-gray-500">Эхний тэмдэгтээ нээхийн суралцаж эхлээрэй!</div>
             </div>
           )}
         </div>

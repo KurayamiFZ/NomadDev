@@ -18,7 +18,7 @@ export function WelcomeBanner() {
       <div className="relative z-10">
         <Username />
         <p className="text-purple-100 text-lg">
-          Welcome to your learning journey. Get started with your first lesson!
+          Суралцах аяллаа эхэлж байна. Эхний хичээлтэйгээ танилцаарай!
         </p>
       </div>
       <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -mr-32 -mt-32"></div>

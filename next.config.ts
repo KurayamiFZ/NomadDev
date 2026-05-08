@@ -1,6 +1,8 @@
 import type { NextConfig } from "next";
 
-const nextConfig: NextConfig = {
+// "as unknown as NextConfig" bypasses stale type stubs — serverActions is a
+// valid runtime key in Next.js 15+ even though @types/next hasn't caught up.
+const nextConfig = {
   reactStrictMode: true,
 
   images: {
@@ -25,8 +27,14 @@ const nextConfig: NextConfig = {
   },
 
   experimental: {
-    optimizePackageImports: ["lucide-react"],
+    optimizePackageImports: ["lucide-react", "@radix-ui/react-slot"],
+    serverActions: {
+      bodySizeLimit: "4gb",
+      allowedOrigins: ["192.168.1.28"],
+    },
   },
-};
+
+  productionBrowserSourceMaps: false,
+} as unknown as NextConfig;
 
 export default nextConfig;

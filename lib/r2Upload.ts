@@ -6,9 +6,12 @@
  */
 
 import { PutObjectCommand, ListObjectsV2Command, GetObjectCommand, S3Client } from '@aws-sdk/client-s3';
+import { Readable } from 'stream';
 import { v4 as uuidv4 } from 'uuid';
 
 // R2 Configuration
+// requestChecksumCalculation: 'when_required' prevents the SDK from trying
+// to hash a streaming body — Cloudflare R2 doesn't require S3 checksums.
 const r2Client = new S3Client({
   region: 'auto',
   endpoint: process.env.R2_ENDPOINT,
@@ -16,6 +19,7 @@ const r2Client = new S3Client({
     accessKeyId: process.env.R2_ACCESS_KEY_ID!,
     secretAccessKey: process.env.R2_SECRET_ACCESS_KEY!,
   },
+  requestChecksumCalculation: 'WHEN_REQUIRED' as const,
 });
 
 export async function uploadVideoToR2(
@@ -45,12 +49,18 @@ export async function uploadVideoToR2(
     const folder = options.folder || 'courses';
     const key = `${folder}/${timestamp}-${uniqueId}.${fileExtension}`;
 
-    // Prepare upload command
+    // Convert Web ReadableStream -> Node.js Readable so the SDK can stream
+    // the upload without buffering the entire file into memory.
+    // ContentLength must be provided to avoid the SDK trying to calculate
+    // a hash by buffering the stream ("flowing readable stream" error).
+    const nodeStream = Readable.fromWeb(file.stream() as Parameters<typeof Readable.fromWeb>[0]);
+
     const command = new PutObjectCommand({
       Bucket: process.env.R2_BUCKET_NAME!,
       Key: key,
-      Body: file,
+      Body: nodeStream,
       ContentType: file.type,
+      ContentLength: file.size,
       Metadata: {
         originalName: file.name,
         uploadTime: new Date().toISOString(),
@@ -80,6 +90,56 @@ export async function uploadVideoToR2(
  * @param folder - The folder to fetch lessons from (default: 'lessons')
  * @returns Promise resolving to array of lesson objects
  */
+export async function uploadImageToR2(
+  file: File,
+  options: {
+    folder?: string;
+    metadata?: Record<string, string>;
+  } = {}
+): Promise<{ url: string; key: string }> {
+  try {
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+    if (!allowedTypes.includes(file.type)) {
+      throw new Error('Invalid file type. Only JPEG, PNG, WebP, and GIF are allowed.');
+    }
+
+    const maxSize = 10 * 1024 * 1024; // 10 MB
+    if (file.size > maxSize) {
+      throw new Error('Thumbnail too large. Maximum size is 10 MB.');
+    }
+
+    const fileExtension = file.name.split('.').pop();
+    const uniqueId = uuidv4();
+    const timestamp = Date.now();
+    const folder = options.folder || 'thumbnails';
+    const key = `${folder}/${timestamp}-${uniqueId}.${fileExtension}`;
+
+    // Images are small — buffering into memory is fine
+    const buffer = Buffer.from(await file.arrayBuffer());
+
+    const command = new PutObjectCommand({
+      Bucket: process.env.R2_BUCKET_NAME!,
+      Key: key,
+      Body: buffer,
+      ContentType: file.type,
+      ContentLength: buffer.byteLength,
+      Metadata: {
+        originalName: file.name,
+        uploadTime: new Date().toISOString(),
+        ...options.metadata,
+      },
+    });
+
+    await r2Client.send(command);
+
+    const publicUrl = `${process.env.R2_PUBLIC_URL}/${key}`;
+    return { url: publicUrl, key };
+  } catch (error) {
+    console.error('R2 image upload error:', error);
+    throw new Error(`Failed to upload thumbnail: ${error instanceof Error ? error.message : 'Unknown error'}`);
+  }
+}
+
 export async function fetchLessonsFromR2(folder: string = 'lessons'): Promise<any[]> {
   try {
     // List all objects in the lessons folder

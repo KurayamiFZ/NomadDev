@@ -11,13 +11,13 @@ export function TransformationSection() {
 
         <div>
           <span className="text-sm font-bold text-foreground/80 sm:text-base">
-            Week 1
+            1-р долоо хоног
           </span>
           <p className="text-lg font-bold text-foreground sm:text-xl">
-            Complete Beginner
+            Бүрэн эхлэгч
           </p>
           <p className="text-xs text-foreground/60 sm:text-sm">
-            No coding experience
+            Кодчлолын туршлагагүй
           </p>
         </div>
 
@@ -28,10 +28,10 @@ export function TransformationSection() {
 
         <div className="rounded-full bg-amber-400/20 px-3 py-1.5 sm:px-4 sm:py-2">
           <span className="text-sm font-bold text-amber-300 sm:text-base">
-            Learning Journey
+            Суралцах аялал
           </span>
           <p className="text-[10px] text-foreground/80 sm:text-xs">
-            Interactive Lessons | Hands-on Projects
+            Интерактив хичээл — Практик төслүүд
           </p>
         </div>
 
@@ -46,13 +46,13 @@ export function TransformationSection() {
             className="mx-auto h-8 w-8 text-foreground sm:h-10 sm:w-10 lg:h-12 lg:w-12 md:mx-0"
           />
           <span className="text-sm font-bold text-foreground/80 sm:text-base">
-            Week 12
+            12-р долоо хоног
           </span>
           <p className="text-lg font-bold text-foreground sm:text-xl">
-            Published Game Developer
+            Тоглоом гаргасан хөгжүүлэгч
           </p>
           <p className="text-xs text-foreground/60 sm:text-sm">
-            Commercial game shipped
+            Арилжааны тоглоом бүтээгдсэн
           </p>
         </div>
       </section>

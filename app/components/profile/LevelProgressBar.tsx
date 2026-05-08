@@ -39,13 +39,13 @@ export function LevelProgressBar({
   if (compact) {
     return (
       <div className="flex items-center gap-3">
-        <div className={`bg-gradient-to-r ${rankGradient} text-black px-3 py-1 rounded-full text-sm font-bold flex items-center gap-1`}>
+        <div className={`bg-linear-to-r ${rankGradient} text-black px-3 py-1 rounded-full text-sm font-bold flex items-center gap-1`}>
           <Trophy className="w-3 h-3" />
           Lv. {levelInfo.currentLevel}
         </div>
         <div className="flex-1 bg-gray-700 rounded-full h-2 overflow-hidden">
           <div 
-            className={`bg-gradient-to-r ${rankGradient} h-full transition-all duration-500 ease-out`}
+            className={`bg-linear-to-r ${rankGradient} h-full transition-all duration-500 ease-out`}
             style={{ width: `${Math.min(levelInfo.progressPercentage, 100)}%` }}
           />
         </div>
@@ -61,7 +61,7 @@ export function LevelProgressBar({
       {/* Level and Rank Header */}
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-3">
-          <div className={`bg-gradient-to-r ${rankGradient} text-black px-3 py-1.5 rounded-full text-sm font-bold flex items-center gap-1.5`}>
+          <div className={`bg-linear-to-r ${rankGradient} text-black px-3 py-1.5 rounded-full text-sm font-bold flex items-center gap-1.5`}>
             <Trophy className="w-4 h-4" />
             Lv. {levelInfo.currentLevel} {rankTitle}
           </div>
@@ -70,24 +70,24 @@ export function LevelProgressBar({
           )}
         </div>
         <div className="text-right">
-          <div className="text-white font-semibold">{totalXP.toLocaleString()} Total XP</div>
-          <div className="text-xs text-gray-400">Level {levelInfo.currentLevel}</div>
+          <div className="text-white font-semibold">{totalXP.toLocaleString()} Нийт XP</div>
+          <div className="text-xs text-gray-400">Түвшин {levelInfo.currentLevel}</div>
         </div>
       </div>
 
       {/* Progress Bar */}
       <div className="space-y-2">
         <div className="flex justify-between text-xs text-gray-400">
-          <span>Progress to Level {levelInfo.currentLevel + 1}</span>
+          <span>{levelInfo.currentLevel + 1}-р түвшин хүртэлх явц</span>
           <span>{Math.round(levelInfo.progressPercentage)}%</span>
         </div>
         <div className="bg-gray-700 rounded-full h-3 overflow-hidden relative">
           <div 
-            className={`bg-gradient-to-r ${rankGradient} h-full transition-all duration-500 ease-out relative overflow-hidden`}
+            className={`bg-linear-to-r ${rankGradient} h-full transition-all duration-500 ease-out relative overflow-hidden`}
             style={{ width: `${Math.min(levelInfo.progressPercentage, 100)}%` }}
           >
             {/* Animated shine effect */}
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-12 animate-pulse" />
+            <div className="absolute inset-0 bg-linear-to-r from-transparent via-white/20 to-transparent -skew-x-12 animate-pulse" />
           </div>
         </div>
         <div className="flex justify-between text-xs text-gray-400">
@@ -100,11 +100,11 @@ export function LevelProgressBar({
       {showDetails && (
         <div className="mt-4 pt-3 border-t border-gray-700 grid grid-cols-2 gap-4 text-xs">
           <div>
-            <div className="text-gray-400">Current Level XP</div>
+            <div className="text-gray-400">Энэ түвшинийн XP</div>
             <div className="text-white font-semibold">{levelInfo.currentLevelXP.toLocaleString()} XP</div>
           </div>
           <div>
-            <div className="text-gray-400">XP to Next Level</div>
+            <div className="text-gray-400">Дараагийн түвшин хүртэлх XP</div>
             <div className="text-white font-semibold">{levelInfo.xpToNextLevel.toLocaleString()} XP</div>
           </div>
         </div>
