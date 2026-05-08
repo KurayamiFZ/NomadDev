@@ -1,49 +1,36 @@
-/**
- * Course Actions - Server-side operations
- * 
- * Server actions for course creation, including R2 upload and Supabase insertion.
- * Keeps all sensitive operations and credentials on the server side.
- */
+"use server";
 
-'use server';
+import { revalidatePath } from "next/cache";
+import { createClient } from "@/lib/supabase-server";
+import { uploadVideoToR2 } from "@/lib/r2Upload";
 
-import { revalidatePath } from 'next/cache';
-import { createClient } from '@/lib/supabase-server';
-import { uploadVideoToR2 } from '@/lib/r2Upload';
-
-/**
- * Create a new course with video upload
- * 
- * @param formData - Form data including course metadata and video file
- * @returns Promise resolving to success/error response
- */
 export async function createCourse(formData: FormData) {
   try {
     // Extract form fields
-    const title = formData.get('title') as string;
-    const description = formData.get('description') as string;
-    const category = formData.get('category') as string;
-    const videoFile = formData.get('video') as File;
+    const title = formData.get("title") as string;
+    const description = formData.get("description") as string;
+    const category = formData.get("category") as string;
+    const videoFile = formData.get("video") as File;
 
     // Validate required fields
     if (!title?.trim()) {
-      return { success: false, error: 'Course title is required' };
+      return { success: false, error: "Course title is required" };
     }
     if (!description?.trim()) {
-      return { success: false, error: 'Course description is required' };
+      return { success: false, error: "Course description is required" };
     }
     if (!category?.trim()) {
-      return { success: false, error: 'Course category is required' };
+      return { success: false, error: "Course category is required" };
     }
     if (!videoFile || videoFile.size === 0) {
-      return { success: false, error: 'Video file is required' };
+      return { success: false, error: "Video file is required" };
     }
 
     // Upload video to R2
     let videoUrl: string;
     try {
       const uploadResult = await uploadVideoToR2(videoFile, {
-        folder: 'courses',
+        folder: "courses",
         metadata: {
           courseTitle: title,
           category: category,
@@ -51,10 +38,13 @@ export async function createCourse(formData: FormData) {
       });
       videoUrl = uploadResult.url;
     } catch (uploadError) {
-      console.error('Video upload failed:', uploadError);
-      return { 
-        success: false, 
-        error: uploadError instanceof Error ? uploadError.message : 'Failed to upload video' 
+      console.error("Video upload failed:", uploadError);
+      return {
+        success: false,
+        error:
+          uploadError instanceof Error
+            ? uploadError.message
+            : "Failed to upload video",
       };
     }
 
@@ -62,7 +52,7 @@ export async function createCourse(formData: FormData) {
     try {
       const supabase = await createClient();
       const { data, error } = await supabase
-        .from('courses')
+        .from("courses")
         .insert({
           title: title.trim(),
           description: description.trim(),
@@ -74,69 +64,71 @@ export async function createCourse(formData: FormData) {
         .single();
 
       if (error) {
-        console.error('Supabase insertion error:', error);
+        console.error("Supabase insertion error:", error);
         // If database insertion fails, we should ideally delete the uploaded video
         // For now, we'll just return the error
-        return { 
-          success: false, 
-          error: `Database error: ${error.message}` 
+        return {
+          success: false,
+          error: `Database error: ${error.message}`,
         };
       }
 
       // Revalidate cache for admin pages
-      revalidatePath('/admin/courses');
-      revalidatePath('/admin/add');
+      revalidatePath("/admin/courses");
+      revalidatePath("/admin/add");
 
-      return { 
-        success: true, 
+      return {
+        success: true,
         data: {
           id: data.id,
           title: data.title,
           video_url: data.video_url,
-        }
+        },
       };
-
     } catch (dbError) {
-      console.error('Database operation failed:', dbError);
-      return { 
-        success: false, 
-        error: dbError instanceof Error ? dbError.message : 'Database operation failed' 
+      console.error("Database operation failed:", dbError);
+      return {
+        success: false,
+        error:
+          dbError instanceof Error
+            ? dbError.message
+            : "Database operation failed",
       };
     }
-
   } catch (error) {
-    console.error('Course creation failed:', error);
-    return { 
-      success: false, 
-      error: error instanceof Error ? error.message : 'An unexpected error occurred' 
+    console.error("Course creation failed:", error);
+    return {
+      success: false,
+      error:
+        error instanceof Error ? error.message : "An unexpected error occurred",
     };
   }
 }
 
 /**
  * Get all courses (for admin dashboard)
- * 
+ *
  * @returns Promise resolving to courses list or error
  */
 export async function getCourses() {
   try {
     const supabase = await createClient();
     const { data, error } = await supabase
-      .from('courses')
-      .select('*')
-      .order('created_at', { ascending: false });
+      .from("courses")
+      .select("*")
+      .order("created_at", { ascending: false });
 
     if (error) {
-      console.error('Error fetching courses:', error);
+      console.error("Error fetching courses:", error);
       return { success: false, error: error.message };
     }
 
     return { success: true, data: data || [] };
   } catch (error) {
-    console.error('Failed to fetch courses:', error);
-    return { 
-      success: false, 
-      error: error instanceof Error ? error.message : 'Failed to fetch courses' 
+    console.error("Failed to fetch courses:", error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : "Failed to fetch courses",
     };
   }
 }

@@ -9,6 +9,7 @@ import { LessonCard } from "../../components/LessonCard";
 import { LiveClassCard } from "../../components/LiveClassCard";
 import { AchievementOver } from "../../components/AchievementOver";
 import { CommunityActivityItem } from "../../components/CommunityActivityItem";
+import { QuickActions } from "../../components/QuickActions";
 import {
   UPCOMING_CLASSES,
   CURRENT_WEEK_LESSONS,
@@ -219,31 +220,31 @@ export default function Overview() {
           {[
             {
               icon: BookOpen,
-              value: "12/150",
+              value: "0/0",
               label: "Lessons Completed",
               color: "text-purple-400",
-              progress: { current: 12, total: 150 },
+              progress: { current: 0, total: 0 },
             },
             {
               icon: Code,
-              value: "7 Days",
+              value: "0 Days",
               label: "Current Streak",
               color: "text-purple-400",
-              progress: { current: 7, total: 30 },
+              progress: { current: 0, total: 0 },
             },
             {
               icon: Award,
-              value: "3/5",
+              value: "0/0",
               label: "Games Built",
               color: "text-purple-400",
-              progress: { current: 3, total: 5 },
+              progress: { current: 0, total: 0 },
             },
             {
               icon: MessageCircle,
-              value: "69%",
+              value: "0%",
               label: "Completion Rate",
               color: "text-purple-400",
-              progress: { current: 69, total: 100 },
+              progress: { current: 0, total: 0 },
             },
           ].map((stat, index) => (
             <div
@@ -358,7 +359,7 @@ export default function Overview() {
             </div>
 
             {/* Live Classes */}
-            <div
+            {/* <div
               ref={liveClassesRef}
               className={`bg-linear-to-br from-gray-900 to-black rounded-xl border border-gray-800 overflow-hidden transform transition-all duration-700 ease-out ${
                 liveClassesVisible
@@ -387,7 +388,7 @@ export default function Overview() {
                   </div>
                 ))}
               </div>
-            </div>
+            </div> */}
           </div>
 
           {/* Right Column - Community & Achievements */}
@@ -488,61 +489,17 @@ export default function Overview() {
               </div>
             </div>
 
-            {/* Quick Links */}
+            {/* Quick Actions */}
             <div
               ref={quickLinksRef}
-              className={`bg-linear-to-br from-gray-900 to-black rounded-xl border border-gray-800 p-6 transform transition-all duration-700 ease-out ${
+              className={`transform transition-all duration-700 ease-out ${
                 quickLinksVisible
                   ? "translate-y-0 opacity-100"
                   : "translate-y-8 opacity-0"
               }`}
+              style={{ transitionDelay: "400ms" }}
             >
-              <h2 className="text-xl font-bold mb-4 bg-linear-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
-                Quick Links
-              </h2>
-              <div className="space-y-2">
-                {[
-                  {
-                    icon: BookOpen,
-                    label: "Course Curriculum",
-                    color: "text-blue-400",
-                  },
-                  {
-                    icon: MessageCircle,
-                    label: "Ask a Question",
-                    color: "text-purple-500",
-                  },
-                  {
-                    icon: Award,
-                    label: "Certificates",
-                    color: "text-yellow-400",
-                  },
-                ].map((link, index) => (
-                  <button
-                    key={index}
-                    onClick={() => {
-                      if (link.label === "Ask a Question") {
-                        router.push("/feedback");
-                      }
-                    }}
-                    className={`w-full flex items-center gap-3 p-3 rounded-lg bg-gray-800 hover:bg-gray-700 transition-all duration-300 text-left transform hover:scale-105 hover:shadow-lg ${
-                      quickLinksVisible
-                        ? "translate-y-0 opacity-100"
-                        : "translate-y-8 opacity-0"
-                    }`}
-                    style={{ transitionDelay: `${index * 100}ms` }}
-                  >
-                    <link.icon
-                      className={`w-5 h-5 ${link.color} transform transition-transform duration-300 hover:scale-110`}
-                    />
-                    <span className="font-medium">{link.label}</span>
-                    <Icon
-                      name="ChevronRight"
-                      className="w-4 h-4 ml-auto text-gray-400 transform transition-transform duration-300 hover:translate-x-1"
-                    />
-                  </button>
-                ))}
-              </div>
+              <QuickActions />
             </div>
           </div>
         </div>

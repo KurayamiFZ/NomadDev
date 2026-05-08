@@ -74,70 +74,14 @@ export function EnhancedFeedbackWidget() {
     urgent: "text-red-400 bg-red-400/10 border-red-400/30",
   };
 
-  const categories = [
-    { value: "general", label: "General", color: "text-gray-400" },
-    { value: "technical", label: "Technical", color: "text-blue-400" },
-    { value: "billing", label: "Billing", color: "text-green-400" },
-    { value: "course", label: "Course", color: "text-purple-400" },
-    { value: "bug", label: "Bug", color: "text-red-400" },
-    { value: "feature", label: "Feature", color: "text-orange-400" },
-  ];
+  // Categories - will be populated from database
+  const categories = [];
 
-  const responseTemplates = [
-    {
-      id: "acknowledgment",
-      name: "Acknowledgment",
-      content:
-        "Thank you for your feedback. We appreciate you bringing this to our attention and will review it carefully.",
-    },
-    {
-      id: "investigation",
-      name: "Under Investigation",
-      content:
-        "We have received your feedback and our team is actively investigating this matter. We will provide you with an update within 24-48 hours.",
-    },
-    {
-      id: "resolution",
-      name: "Issue Resolved",
-      content:
-        "We have addressed the issue you reported. The fix has been implemented and should now be working as expected. Please let us know if you continue to experience any problems.",
-    },
-    {
-      id: "feature-request",
-      name: "Feature Request",
-      content:
-        "Thank you for suggesting this feature. Our product team will review your request as part of our roadmap planning. We'll notify you if this feature gets added to our development queue.",
-    },
-    {
-      id: "bug-fix",
-      name: "Bug Fix",
-      content:
-        "We have identified and fixed the bug you reported. This will be included in our next update. Thank you for helping us improve our platform.",
-    },
-  ];
+  // Response templates - will be populated from database
+  const responseTemplates = [];
 
-  const toneOptions = [
-    {
-      value: "professional",
-      label: "Professional",
-      description: "Formal and business-like",
-    },
-    {
-      value: "friendly",
-      label: "Friendly",
-      description: "Warm and approachable",
-    },
-    {
-      value: "technical",
-      label: "Technical",
-      description: "Detailed and technical",
-    },
-    {
-      value: "apologetic",
-      label: "Apologetic",
-      description: "Sincere and understanding",
-    },
-  ];
+  // Tone options - will be populated from database
+  const toneOptions = [];
 
   useEffect(() => {
     if (isAdminAuthenticated) {
@@ -176,16 +120,8 @@ export function EnhancedFeedbackWidget() {
           adminResponse: item.admin_response,
           adminId: item.admin_id,
           respondedAt: item.responded_at,
-          user: {
-            displayName: "User", // We'll fetch this separately if needed
-            email: "user@example.com",
-          },
-          admin: item.admin_id
-            ? {
-                displayName: "Admin",
-                email: "admin@example.com",
-              }
-            : undefined,
+          user: null, // Will be populated from database
+          admin: null, // Will be populated from database
         }),
       );
 

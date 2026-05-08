@@ -14,6 +14,7 @@ import {
 } from "../../../lib/level-system";
 import { supabase } from "../../../lib/supabaseclient";
 import { useAuth } from "../../components/AuthProvider";
+import { QuickActions } from "../../components/QuickActions";
 
 // Main component for the lessons page
 export default function LessonsEnhanced() {
@@ -23,21 +24,21 @@ export default function LessonsEnhanced() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedPath, setSelectedPath] = useState("main");
 
-  // User level state
+  // User level state - will be populated from database
   const [userStats, setUserStats] = useState({
-    totalLessons: 24,
-    completedLessons: 3,
+    totalLessons: 0,
+    completedLessons: 0,
     totalxp: 0,
     currentLevel: 1,
     nextLevelxp: 100,
-    totalDuration: "8h 45m",
-    weekProgress: 2,
-    totalWeeks: 8,
-    currentStreak: 7,
-    longestStreak: 14,
-    skillPoints: 18,
+    totalDuration: "0h 0m",
+    weekProgress: 0,
+    totalWeeks: 0,
+    currentStreak: 0,
+    longestStreak: 0,
+    skillPoints: 0,
     rank: "Beginner",
-    percentile: 87,
+    percentile: 0,
   });
 
   // Animation states
@@ -249,172 +250,10 @@ export default function LessonsEnhanced() {
     fetchUserStats();
   }, [user]);
 
-  // Learning paths - New feature
-  const learningPaths = [
-    {
-      id: "main",
-      name: "Main Quest",
-      icon: <Icon name="Sword" />,
-      color: "purple",
-    },
-    {
-      id: "advanced",
-      name: "Expert Path",
-      icon: <Icon name="Crown" />,
-      color: "yellow",
-    },
-    {
-      id: "projects",
-      name: "Build Track",
-      icon: <Icon name="Gamepad2" />,
-      color: "green",
-    },
-  ];
-
-  // Enhanced lessons with xp and skill points
-  const currentWeekLessons = [
-    {
-      id: 1,
-      title: "Understanding Unity Components",
-      duration: "12 min",
-      completed: true,
-      locked: false,
-      description: "Master the core building blocks of Unity game development",
-      category: "Fundamentals",
-      difficulty: "Beginner",
-      xp: 150,
-      skillPoints: 2,
-      completionRate: 98,
-      thumbnail: "bg-blue-500",
-    },
-    {
-      id: 2,
-      title: "Creating Your First GameObject",
-      duration: "15 min",
-      completed: true,
-      locked: false,
-      description: "Bring objects to life in your Unity scene",
-      category: "Fundamentals",
-      difficulty: "Beginner",
-      xp: 200,
-      skillPoints: 2,
-      completionRate: 95,
-      thumbnail: "bg-cyan-500",
-    },
-    {
-      id: 3,
-      title: "Working with Transforms",
-      duration: "18 min",
-      completed: true,
-      locked: false,
-      description: "Control position, rotation, and scale like a pro",
-      category: "Fundamentals",
-      difficulty: "Beginner",
-      xp: 250,
-      skillPoints: 3,
-      completionRate: 92,
-      thumbnail: "bg-teal-500",
-    },
-    {
-      id: 4,
-      title: "Introduction to Physics",
-      duration: "20 min",
-      completed: false,
-      locked: false,
-      current: true,
-      description: "Harness gravity, forces, and realistic movement",
-      category: "Physics",
-      difficulty: "Intermediate",
-      xp: 350,
-      skillPoints: 5,
-      completionRate: 87,
-      thumbnail: "bg-purple-500",
-    },
-    {
-      id: 5,
-      title: "Collision Detection",
-      duration: "16 min",
-      completed: false,
-      locked: false,
-      description: "Detect and respond to object interactions",
-      category: "Physics",
-      difficulty: "Intermediate",
-      xp: 300,
-      skillPoints: 4,
-      completionRate: 89,
-      thumbnail: "bg-pink-500",
-    },
-    {
-      id: 6,
-      title: "Building Your Platformer",
-      duration: "25 min",
-      completed: false,
-      locked: false,
-      description: "Create your first complete game from scratch",
-      category: "Project",
-      difficulty: "Intermediate",
-      xp: 500,
-      skillPoints: 8,
-      completionRate: 85,
-      thumbnail: "bg-rose-500",
-      isBoss: true,
-    },
-  ];
-
-  // Power-ups and boosts
-  const activePowerUps = [
-    {
-      name: "2x xp Boost",
-      icon: <Icon name="Zap" />,
-      color: "yellow",
-      timeLeft: "2h 15m",
-    },
-    {
-      name: "Focus Mode",
-      icon: <Icon name="Brain" />,
-      color: "blue",
-      timeLeft: "45m",
-    },
-    {
-      name: "Streak Shield",
-      icon: <Icon name="Shield" />,
-      color: "green",
-      timeLeft: "1 day",
-    },
-  ];
-
-  // Skill tree nodes
-  const skillTree = [
-    { name: "Unity Basics", level: 3, maxLevel: 3, unlocked: true },
-    { name: "Physics Master", level: 1, maxLevel: 5, unlocked: true },
-    { name: "Animation Pro", level: 0, maxLevel: 5, unlocked: false },
-    { name: "AI Developer", level: 0, maxLevel: 5, unlocked: false },
-  ];
-
-  // Daily challenges
-  const dailyChallenges = [
-    {
-      title: "Complete 3 Lessons",
-      progress: 2,
-      total: 3,
-      reward: "250 xp",
-      icon: <Icon name="BookOpen" />,
-    },
-    {
-      title: "Perfect Score",
-      progress: 1,
-      total: 1,
-      reward: "500 xp",
-      icon: <Icon name="Star" />,
-    },
-    {
-      title: "Help 2 Students",
-      progress: 0,
-      total: 2,
-      reward: "150 xp",
-      icon: <Icon name="Users" />,
-    },
-  ];
+  const learningPaths: any[] = [];
+  const currentWeekLessons: any[] = [];
+  const activePowerUps: any[] = [];
+  const skillTree: any[] = [];
 
   const filters = ["all", "in-progress", "completed", "locked"];
   const progressPercentage = Math.round(
@@ -610,26 +449,32 @@ export default function LessonsEnhanced() {
 
           {/* Active Power-Ups */}
           <div className="flex gap-3 mt-4">
-            {activePowerUps.map((powerUp, i) => (
-              <div
-                key={i}
-                className="flex-1 bg-linear-to-br from-white/10 to-white/5 backdrop-blur-sm border border-white/20 rounded-2xl p-4"
-              >
-                <div className="flex items-center gap-3">
-                  <div
-                    className={`p-2 bg-${powerUp.color}-500/20 rounded-xl border border-${powerUp.color}-500/30`}
-                  >
-                    {powerUp.icon}
-                  </div>
-                  <div>
-                    <div className="font-bold text-sm">{powerUp.name}</div>
-                    <div className="text-xs text-gray-400">
-                      {powerUp.timeLeft}
+            {activePowerUps.length === 0 ? (
+              <div className="flex-1 bg-white/5 border border-white/10 rounded-2xl p-4 text-center">
+                <div className="text-gray-400 text-sm">No active power-ups</div>
+              </div>
+            ) : (
+              activePowerUps.map((powerUp, i) => (
+                <div
+                  key={i}
+                  className="flex-1 bg-linear-to-br from-white/10 to-white/5 backdrop-blur-sm border border-white/20 rounded-2xl p-4"
+                >
+                  <div className="flex items-center gap-3">
+                    <div
+                      className={`p-2 bg-${powerUp.color}-500/20 rounded-xl border border-${powerUp.color}-500/30`}
+                    >
+                      {powerUp.icon}
+                    </div>
+                    <div>
+                      <div className="font-bold text-sm">{powerUp.name}</div>
+                      <div className="text-xs text-gray-400">
+                        {powerUp.timeLeft}
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              ))
+            )}
           </div>
         </div>
 
@@ -647,44 +492,50 @@ export default function LessonsEnhanced() {
             Choose Your Path
           </h2>
           <div className="grid grid-cols-3 gap-4">
-            {learningPaths.map((path, index) => (
-              <button
-                key={path.id}
-                onClick={() => setSelectedPath(path.id)}
-                className={`group relative p-6 rounded-2xl border-2 transition-all duration-500 transform hover:scale-105 hover:shadow-lg ${
-                  selectedPath === path.id
-                    ? "bg-linear-to-br from-purple-500/20 to-pink-500/20 border-purple-500 shadow-lg shadow-purple-500/30"
-                    : "bg-white/5 border-white/10 hover:border-white/20 hover:shadow-lg hover:shadow-white/10"
-                } ${
-                  pathsVisible
-                    ? "translate-y-0 opacity-100"
-                    : "translate-y-8 opacity-0"
-                }`}
-                style={{ transitionDelay: `${index * 150}ms` }}
-              >
-                <div className="flex items-center gap-3 mb-2">
-                  {path.icon}
-                  <div className="text-left">
-                    <div className="font-black text-lg group-hover:text-white transition-colors duration-300">
-                      {path.name}
-                    </div>
-                    <div className="text-xs text-gray-400 group-hover:text-gray-300 transition-colors duration-300">
-                      {path.id === "main" && "Core curriculum"}
-                      {path.id === "advanced" && "Challenge yourself"}
-                      {path.id === "projects" && "Hands-on practice"}
+            {learningPaths.length === 0 ? (
+              <div className="col-span-3 bg-white/5 border border-white/10 rounded-2xl p-8 text-center">
+                <div className="text-gray-400">No learning paths available yet</div>
+              </div>
+            ) : (
+              learningPaths.map((path, index) => (
+                <button
+                  key={path.id}
+                  onClick={() => setSelectedPath(path.id)}
+                  className={`group relative p-6 rounded-2xl border-2 transition-all duration-500 transform hover:scale-105 hover:shadow-lg ${
+                    selectedPath === path.id
+                      ? "bg-linear-to-br from-purple-500/20 to-pink-500/20 border-purple-500 shadow-lg shadow-purple-500/30"
+                      : "bg-white/5 border-white/10 hover:border-white/20 hover:shadow-lg hover:shadow-white/10"
+                  } ${
+                    pathsVisible
+                      ? "translate-y-0 opacity-100"
+                      : "translate-y-8 opacity-0"
+                  }`}
+                  style={{ transitionDelay: `${index * 150}ms` }}
+                >
+                  <div className="flex items-center gap-3 mb-2">
+                    {path.icon}
+                    <div className="text-left">
+                      <div className="font-black text-lg group-hover:text-white transition-colors duration-300">
+                        {path.name}
+                      </div>
+                      <div className="text-xs text-gray-400 group-hover:text-gray-300 transition-colors duration-300">
+                        {path.id === "main" && "Core curriculum"}
+                        {path.id === "advanced" && "Challenge yourself"}
+                        {path.id === "projects" && "Hands-on practice"}
+                      </div>
                     </div>
                   </div>
-                </div>
-                {selectedPath === path.id && (
-                  <div className="absolute top-2 right-2">
-                    <Icon
-                      name="CheckCircle"
-                      className="w-5 h-5 text-purple-400"
-                    />
-                  </div>
-                )}
-              </button>
-            ))}
+                  {selectedPath === path.id && (
+                    <div className="absolute top-2 right-2">
+                      <Icon
+                        name="CheckCircle"
+                        className="w-5 h-5 text-purple-400"
+                      />
+                    </div>
+                  )}
+                </button>
+              ))
+            )}
           </div>
         </div>
 
@@ -813,118 +664,126 @@ export default function LessonsEnhanced() {
               </div>
 
               <div className="grid md:grid-cols-2 gap-4">
-                {currentWeekLessons.map((lesson) => (
-                  <div
-                    key={lesson.id}
-                    className={`group relative rounded-2xl overflow-hidden border transition-all cursor-pointer ${
-                      lesson.completed
-                        ? "bg-white/5 border-white/10 hover:border-green-500/50"
-                        : lesson.current
-                          ? "bg-purple-500/10 border-purple-500/50"
-                          : "bg-white/5 border-white/10 hover:border-purple-500/50"
-                    }`}
-                  >
-                    {/* Thumbnail Header */}
+                {currentWeekLessons.length === 0 ? (
+                  <div className="col-span-2 bg-white/5 border border-white/10 rounded-2xl p-8 text-center">
+                    <Icon name="BookOpen" className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                    <div className="text-gray-400 text-lg mb-2">No lessons available yet</div>
+                    <div className="text-gray-500 text-sm">Check back later for new content</div>
+                  </div>
+                ) : (
+                  currentWeekLessons.map((lesson) => (
                     <div
-                      className={`h-32 ${lesson.thumbnail} relative overflow-hidden`}
+                      key={lesson.id}
+                      className={`group relative rounded-2xl overflow-hidden border transition-all cursor-pointer ${
+                        lesson.completed
+                          ? "bg-white/5 border-white/10 hover:border-green-500/50"
+                          : lesson.current
+                            ? "bg-purple-500/10 border-purple-500/50"
+                            : "bg-white/5 border-white/10 hover:border-purple-500/50"
+                      }`}
                     >
-                      <div className="absolute inset-0 bg-linear-to-t from-black/80 to-transparent"></div>
+                      {/* Thumbnail Header */}
+                      <div
+                        className={`h-32 ${lesson.thumbnail} relative overflow-hidden`}
+                      >
+                        <div className="absolute inset-0 bg-linear-to-t from-black/80 to-transparent"></div>
 
-                      {/* Status Badge */}
-                      <div className="absolute top-3 left-3">
-                        {lesson.completed ? (
-                          <div className="flex items-center gap-2 bg-green-500/90 px-3 py-1.5 rounded-full backdrop-blur-sm">
-                            <Icon name="CheckCircle" className="w-4 h-4" />
-                            <span className="text-xs font-bold">Completed</span>
-                          </div>
-                        ) : lesson.current ? (
-                          <div className="flex items-center gap-2 bg-purple-500/90 px-3 py-1.5 rounded-full backdrop-blur-sm">
-                            <Icon name="Play" className="w-4 h-4" />
-                            <span className="text-xs font-bold">
-                              In Progress
-                            </span>
-                          </div>
-                        ) : lesson.locked ? (
-                          <div className="flex items-center gap-2 bg-gray-500/90 px-3 py-1.5 rounded-full backdrop-blur-sm">
-                            <Icon name="Lock" className="w-4 h-4" />
-                            <span className="text-xs font-bold">Locked</span>
-                          </div>
-                        ) : (
-                          <div className="flex items-center gap-2 bg-blue-500/90 px-3 py-1.5 rounded-full backdrop-blur-sm">
-                            <Icon name="Target" className="w-4 h-4" />
-                            <span className="text-xs font-bold">Available</span>
+                        {/* Status Badge */}
+                        <div className="absolute top-3 left-3">
+                          {lesson.completed ? (
+                            <div className="flex items-center gap-2 bg-green-500/90 px-3 py-1.5 rounded-full backdrop-blur-sm">
+                              <Icon name="CheckCircle" className="w-4 h-4" />
+                              <span className="text-xs font-bold">Completed</span>
+                            </div>
+                          ) : lesson.current ? (
+                            <div className="flex items-center gap-2 bg-purple-500/90 px-3 py-1.5 rounded-full backdrop-blur-sm">
+                              <Icon name="Play" className="w-4 h-4" />
+                              <span className="text-xs font-bold">
+                                In Progress
+                              </span>
+                            </div>
+                          ) : lesson.locked ? (
+                            <div className="flex items-center gap-2 bg-gray-500/90 px-3 py-1.5 rounded-full backdrop-blur-sm">
+                              <Icon name="Lock" className="w-4 h-4" />
+                              <span className="text-xs font-bold">Locked</span>
+                            </div>
+                          ) : (
+                            <div className="flex items-center gap-2 bg-blue-500/90 px-3 py-1.5 rounded-full backdrop-blur-sm">
+                              <Icon name="Target" className="w-4 h-4" />
+                              <span className="text-xs font-bold">Available</span>
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Boss Battle Badge */}
+                        {lesson.isBoss && (
+                          <div className="absolute top-3 right-3">
+                            <div className="flex items-center gap-1 bg-red-500/90 px-3 py-1.5 rounded-full backdrop-blur-sm">
+                              <Icon name="Flame" className="w-4 h-4" />
+                              <span className="text-xs font-bold">BOSS</span>
+                            </div>
                           </div>
                         )}
+
+                        {/* Completion Rate */}
+                        <div className="absolute bottom-3 right-3 flex items-center gap-1 bg-black/60 px-2 py-1 rounded-full backdrop-blur-sm text-xs">
+                          <Icon name="Users" className="w-3 h-3" />
+                          {lesson.completionRate}%
+                        </div>
                       </div>
 
-                      {/* Boss Battle Badge */}
-                      {lesson.isBoss && (
-                        <div className="absolute top-3 right-3">
-                          <div className="flex items-center gap-1 bg-red-500/90 px-3 py-1.5 rounded-full backdrop-blur-sm">
-                            <Icon name="Flame" className="w-4 h-4" />
-                            <span className="text-xs font-bold">BOSS</span>
+                      {/* Content */}
+                      <div className="p-5">
+                        <div className="flex items-start justify-between mb-3">
+                          <div className="flex-1">
+                            <h3
+                              className={`font-bold text-lg mb-2 ${
+                                lesson.completed ? "text-gray-400" : "text-white"
+                              } group-hover:text-purple-400 transition`}
+                            >
+                              {lesson.title}
+                            </h3>
+                            <p className="text-sm text-gray-400 line-clamp-2 mb-3">
+                              {lesson.description}
+                            </p>
                           </div>
                         </div>
-                      )}
 
-                      {/* Completion Rate */}
-                      <div className="absolute bottom-3 right-3 flex items-center gap-1 bg-black/60 px-2 py-1 rounded-full backdrop-blur-sm text-xs">
-                        <Icon name="Users" className="w-3 h-3" />
-                        {lesson.completionRate}%
+                        {/* Meta Info */}
+                        <div className="flex items-center justify-between text-xs">
+                          <div className="flex items-center gap-3">
+                            <div className="flex items-center gap-1 text-gray-400">
+                              <Icon name="Clock" className="w-3 h-3" />
+                              {lesson.duration}
+                            </div>
+                            <span className="text-gray-600">•</span>
+                            <span className="text-gray-400">
+                              {lesson.difficulty}
+                            </span>
+                          </div>
+                          <div className="flex items-center gap-3">
+                            <div className="flex items-center gap-1 text-yellow-400 font-bold">
+                              <Icon name="Sparkles" className="w-3 h-3" />+
+                              {lesson.xp}
+                            </div>
+                            <div className="flex items-center gap-1 text-purple-400 font-bold">
+                              <Icon name="Gem" className="w-3 h-3" />+
+                              {lesson.skillPoints}
+                            </div>
+                          </div>
+                        </div>
                       </div>
+
+                      {/* Hover Overlay */}
+                      <div className="absolute inset-0 bg-linear-to-t from-purple-600/20 to-transparent opacity-0 group-hover:opacity-100 transition pointer-events-none"></div>
                     </div>
-
-                    {/* Content */}
-                    <div className="p-5">
-                      <div className="flex items-start justify-between mb-3">
-                        <div className="flex-1">
-                          <h3
-                            className={`font-bold text-lg mb-2 ${
-                              lesson.completed ? "text-gray-400" : "text-white"
-                            } group-hover:text-purple-400 transition`}
-                          >
-                            {lesson.title}
-                          </h3>
-                          <p className="text-sm text-gray-400 line-clamp-2 mb-3">
-                            {lesson.description}
-                          </p>
-                        </div>
-                      </div>
-
-                      {/* Meta Info */}
-                      <div className="flex items-center justify-between text-xs">
-                        <div className="flex items-center gap-3">
-                          <div className="flex items-center gap-1 text-gray-400">
-                            <Icon name="Clock" className="w-3 h-3" />
-                            {lesson.duration}
-                          </div>
-                          <span className="text-gray-600">•</span>
-                          <span className="text-gray-400">
-                            {lesson.difficulty}
-                          </span>
-                        </div>
-                        <div className="flex items-center gap-3">
-                          <div className="flex items-center gap-1 text-yellow-400 font-bold">
-                            <Icon name="Sparkles" className="w-3 h-3" />+
-                            {lesson.xp}
-                          </div>
-                          <div className="flex items-center gap-1 text-purple-400 font-bold">
-                            <Icon name="Gem" className="w-3 h-3" />+
-                            {lesson.skillPoints}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Hover Overlay */}
-                    <div className="absolute inset-0 bg-linear-to-t from-purple-600/20 to-transparent opacity-0 group-hover:opacity-100 transition pointer-events-none"></div>
-                  </div>
-                ))}
+                  ))
+                )}
               </div>
             </div>
 
             {/* Daily Challenges */}
-            <div className="bg-linear-to-br from-orange-500/10 to-red-500/10 border border-orange-500/30 rounded-2xl p-6">
+            {/* <div className="bg-linear-to-br from-orange-500/10 to-red-500/10 border border-orange-500/30 rounded-2xl p-6">
               <div className="flex items-center gap-3 mb-6">
                 <div className="p-3 bg-orange-500/20 rounded-xl">
                   <Icon name="Flame" className="w-6 h-6 text-orange-400" />
@@ -943,37 +802,45 @@ export default function LessonsEnhanced() {
                 </div>
               </div>
               <div className="space-y-3">
-                {dailyChallenges.map((challenge, i) => (
-                  <div
-                    key={i}
-                    className="flex items-center gap-4 p-4 bg-black/30 rounded-xl border border-white/10"
-                  >
-                    <div className="p-2 bg-orange-500/20 rounded-lg">
-                      {challenge.icon}
-                    </div>
-                    <div className="flex-1">
-                      <div className="font-bold mb-2">{challenge.title}</div>
-                      <div className="flex items-center gap-2">
-                        <div className="flex-1 h-2 bg-white/10 rounded-full overflow-hidden">
-                          <div
-                            className="h-full bg-linear-to-r from-orange-500 to-red-500 rounded-full transition-all"
-                            style={{
-                              width: `${(challenge.progress / challenge.total) * 100}%`,
-                            }}
-                          ></div>
+                {dailyChallenges.length === 0 ? (
+                  <div className="bg-black/30 rounded-xl border border-white/10 p-6 text-center">
+                    <Icon name="Flame" className="w-8 h-8 text-gray-400 mx-auto mb-3" />
+                    <div className="text-gray-400">No daily challenges available</div>
+                    <div className="text-gray-500 text-sm mt-1">Check back tomorrow</div>
+                  </div>
+                ) : (
+                  dailyChallenges.map((challenge, i) => (
+                    <div
+                      key={i}
+                      className="flex items-center gap-4 p-4 bg-black/30 rounded-xl border border-white/10"
+                    >
+                      <div className="p-2 bg-orange-500/20 rounded-lg">
+                        {challenge.icon}
+                      </div>
+                      <div className="flex-1">
+                        <div className="font-bold mb-2">{challenge.title}</div>
+                        <div className="flex items-center gap-2">
+                          <div className="flex-1 h-2 bg-white/10 rounded-full overflow-hidden">
+                            <div
+                              className="h-full bg-linear-to-r from-orange-500 to-red-500 rounded-full transition-all"
+                              style={{
+                                width: `${(challenge.progress / challenge.total) * 100}%`,
+                              }}
+                            ></div>
+                          </div>
+                          <span className="text-xs text-gray-400">
+                            {challenge.progress}/{challenge.total}
+                          </span>
                         </div>
-                        <span className="text-xs text-gray-400">
-                          {challenge.progress}/{challenge.total}
-                        </span>
+                      </div>
+                      <div className="text-sm font-bold text-orange-400">
+                        {challenge.reward}
                       </div>
                     </div>
-                    <div className="text-sm font-bold text-orange-400">
-                      {challenge.reward}
-                    </div>
-                  </div>
-                ))}
+                  ))
+                )}
               </div>
-            </div>
+            </div> */}
           </div>
 
           {/* Right Sidebar */}
@@ -986,34 +853,42 @@ export default function LessonsEnhanced() {
                   Skill Tree
                 </h3>
                 <div className="space-y-4">
-                  {skillTree.map((skill, i) => (
-                    <div key={i}>
-                      <div className="flex items-center justify-between mb-2">
-                        <span
-                          className={`font-bold text-sm ${
-                            skill.unlocked ? "text-white" : "text-gray-500"
-                          }`}
-                        >
-                          {skill.name}
-                        </span>
-                        <span className="text-xs text-gray-400">
-                          {skill.level}/{skill.maxLevel}
-                        </span>
-                      </div>
-                      <div className="flex gap-1">
-                        {[...Array(skill.maxLevel)].map((_, idx) => (
-                          <div
-                            key={idx}
-                            className={`flex-1 h-2 rounded-full ${
-                              idx < skill.level
-                                ? "bg-linear-to-r from-cyan-500 to-blue-500"
-                                : "bg-white/10"
-                            }`}
-                          ></div>
-                        ))}
-                      </div>
+                  {skillTree.length === 0 ? (
+                    <div className="bg-black/30 rounded-xl border border-white/10 p-6 text-center">
+                      <Icon name="Cpu" className="w-8 h-8 text-gray-400 mx-auto mb-3" />
+                      <div className="text-gray-400">No skills available yet</div>
+                      <div className="text-gray-500 text-sm mt-1">Complete lessons to unlock skills</div>
                     </div>
-                  ))}
+                  ) : (
+                    skillTree.map((skill, i) => (
+                      <div key={i}>
+                        <div className="flex items-center justify-between mb-2">
+                          <span
+                            className={`font-bold text-sm ${
+                              skill.unlocked ? "text-white" : "text-gray-500"
+                            }`}
+                          >
+                            {skill.name}
+                          </span>
+                          <span className="text-xs text-gray-400">
+                            {skill.level}/{skill.maxLevel}
+                          </span>
+                        </div>
+                        <div className="flex gap-1">
+                          {[...Array(skill.maxLevel)].map((_, idx) => (
+                            <div
+                              key={idx}
+                              className={`flex-1 h-2 rounded-full ${
+                                idx < skill.level
+                                  ? "bg-linear-to-r from-cyan-500 to-blue-500"
+                                  : "bg-white/10"
+                              }`}
+                            ></div>
+                          ))}
+                        </div>
+                      </div>
+                    ))
+                  )}
                 </div>
                 <button className="w-full mt-4 bg-cyan-500/20 hover:bg-cyan-500/30 border border-cyan-500/30 text-cyan-400 py-3 rounded-xl font-bold transition">
                   Unlock Skills ({userStats.skillPoints} SP)
@@ -1027,45 +902,11 @@ export default function LessonsEnhanced() {
                   Leaderboard
                 </h3>
                 <div className="space-y-3">
-                  {[
-                    { rank: 1, name: "Sarah M.", xp: 18500, avatar: "SM" },
-                    { rank: 2, name: "Alex C.", xp: 16200, avatar: "AC" },
-                    {
-                      rank: 3,
-                      name: "You",
-                      xp: userStats.totalxp,
-                      avatar: "ME",
-                      highlight: true,
-                    },
-                  ].map((user) => (
-                    <div
-                      key={user.rank}
-                      className={`flex items-center gap-3 p-3 rounded-xl ${
-                        user.highlight
-                          ? "bg-purple-500/20 border border-purple-500/30"
-                          : "bg-white/5"
-                      }`}
-                    >
-                      <div className="text-xl font-black text-gray-500 w-6">
-                        #{user.rank}
-                      </div>
-                      <div className="w-10 h-10 bg-linear-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center font-bold text-sm">
-                        {user.avatar}
-                      </div>
-                      <div className="flex-1">
-                        <div className="font-bold text-sm">{user.name}</div>
-                        <div className="text-xs text-gray-400">
-                          {user.xp.toLocaleString()} xp
-                        </div>
-                      </div>
-                      {user.rank === 1 && (
-                        <Icon
-                          name="Crown"
-                          className="w-5 h-5 text-yellow-400"
-                        />
-                      )}
-                    </div>
-                  ))}
+                  <div className="bg-black/30 rounded-xl border border-white/10 p-6 text-center">
+                    <Icon name="Trophy" className="w-8 h-8 text-gray-400 mx-auto mb-3" />
+                    <div className="text-gray-400">Leaderboard data not available</div>
+                    <div className="text-gray-500 text-sm mt-1">Start completing lessons to appear on the leaderboard</div>
+                  </div>
                 </div>
                 <button className="w-full mt-4 bg-white/5 hover:bg-white/10 border border-white/10 py-3 rounded-xl font-bold transition">
                   View Full Rankings
@@ -1074,74 +915,15 @@ export default function LessonsEnhanced() {
 
               {/* Study Streak */}
               <div className="bg-linear-to-br from-orange-500/20 to-red-500/20 border border-orange-500/30 rounded-2xl p-6">
-                <div className="flex items-center gap-3 mb-4">
-                  <Icon name="Flame" className="w-8 h-8 text-orange-400" />
-                  <div>
-                    <div className="text-3xl font-black">
-                      {userStats.currentStreak}
-                    </div>
-                    <div className="text-sm text-gray-400">Day Streak</div>
-                  </div>
-                </div>
-                <div className="flex gap-1 mb-4">
-                  {[...Array(7)].map((_, i) => (
-                    <div
-                      key={i}
-                      className={`flex-1 h-12 rounded-lg ${
-                        i < userStats.currentStreak % 7
-                          ? "bg-linear-to-t from-orange-500 to-yellow-500"
-                          : "bg-white/10"
-                      }`}
-                    ></div>
-                  ))}
-                </div>
-                <div className="text-xs text-gray-400">
-                  🏆 Longest: {userStats.longestStreak} days
+                <div className="text-center">
+                  <Icon name="Flame" className="w-12 h-12 text-gray-400 mx-auto mb-3" />
+                  <div className="text-gray-400">No study streak yet</div>
+                  <div className="text-gray-500 text-sm mt-1">Complete lessons daily to build your streak</div>
                 </div>
               </div>
 
               {/* Quick Actions */}
-              <div className="bg-linear-to-br from-white/10 to-white/5 backdrop-blur-sm border border-white/20 rounded-2xl p-6">
-                <h3 className="font-black text-lg mb-4">Quick Actions</h3>
-                <div className="space-y-2">
-                  {[
-                    {
-                      icon: <Icon name="Download" />,
-                      label: "Download Resources",
-                      color: "blue",
-                    },
-                    {
-                      icon: <Icon name="Share2" />,
-                      label: "Share Progress",
-                      color: "green",
-                    },
-                    {
-                      icon: <Icon name="MessageCircle" />,
-                      label: "Ask Question",
-                      color: "purple",
-                    },
-                    {
-                      icon: <Icon name="BookMarked" />,
-                      label: "Study Notes",
-                      color: "pink",
-                    },
-                  ].map((action, i) => (
-                    <button
-                      key={i}
-                      className="w-full flex items-center gap-3 p-3 bg-white/5 hover:bg-white/10 rounded-xl transition text-left group"
-                    >
-                      {action.icon}
-                      <span className="font-medium group-hover:text-white transition">
-                        {action.label}
-                      </span>
-                      <Icon
-                        name="ChevronRight"
-                        className="w-4 h-4 ml-auto text-gray-400 group-hover:translate-x-1 transition"
-                      />
-                    </button>
-                  ))}
-                </div>
-              </div>
+              <QuickActions variant="compact" />
             </div>
           </div>
         </div>

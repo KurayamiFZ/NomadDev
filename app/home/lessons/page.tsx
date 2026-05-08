@@ -92,159 +92,78 @@ export default function Lessons() {
     };
   }, []);
 
-  // Array of current week lessons with their details
-  const currentWeekLessons = [
-    {
-      id: 1,
-      title: "Understanding Unity Components",
-      duration: "12 min",
-      completed: true,
-      locked: false,
-      description:
-        "Learn the fundamentals of Unity components and how they work together to create game objects",
-      category: "Fundamentals",
-      difficulty: "Beginner",
-    },
-    {
-      id: 2,
-      title: "Creating Your First GameObject",
-      duration: "15 min",
-      completed: true,
-      locked: false,
-      description:
-        "Step-by-step guide to creating and manipulating game objects in Unity",
-      category: "Fundamentals",
-      difficulty: "Beginner",
-    },
-    {
-      id: 3,
-      title: "Working with Transforms",
-      duration: "18 min",
-      completed: true,
-      locked: false,
-      description:
-        "Master position, rotation, and scale transformations for game objects",
-      category: "Fundamentals",
-      difficulty: "Beginner",
-    },
-    {
-      id: 4,
-      title: "Introduction to Physics",
-      duration: "20 min",
-      completed: false,
-      locked: false,
-      current: true,
-      description:
-        "Understand Unity's physics system including rigidbodies and colliders",
-      category: "Physics",
-      difficulty: "Intermediate",
-    },
-    {
-      id: 5,
-      title: "Collision Detection",
-      duration: "16 min",
-      completed: false,
-      locked: false,
-      description:
-        "Learn how to detect and respond to collisions between game objects",
-      category: "Physics",
-      difficulty: "Intermediate",
-    },
-    {
-      id: 6,
-      title: "Building Your Platformer",
-      duration: "25 min",
-      completed: false,
-      locked: false,
-      description:
-        "Put everything together to build a complete 2D platformer game",
-      category: "Project",
-      difficulty: "Intermediate",
-    },
-  ];
-
-  // Array of upcoming lessons
-  const upcomingLessons = [
-    {
-      id: 7,
-      title: "Advanced Animation Techniques",
-      duration: "22 min",
-      completed: false,
-      locked: true,
-      unlockDate: "Unlocks in 2 days",
-      category: "Animation",
-      difficulty: "Advanced",
-    },
-    {
-      id: 8,
-      title: "Particle Systems Mastery",
-      duration: "19 min",
-      completed: false,
-      locked: true,
-      unlockDate: "Unlocks in 4 days",
-      category: "Effects",
-      difficulty: "Advanced",
-    },
-    {
-      id: 9,
-      title: "Audio Integration",
-      duration: "17 min",
-      completed: false,
-      locked: true,
-      unlockDate: "Unlocks in 5 days",
-      category: "Audio",
-      difficulty: "Intermediate",
-    },
-  ];
-
-  // Course statistics
-  const stats = {
-    totalLessons: 24,
-    completedLessons: 3,
-    totalDuration: "8h 45m",
-    weekProgress: 2,
-    totalWeeks: 8,
-  };
-
-  // Weekly milestones
-  const weeklyMilestones = [
-    {
-      week: 1,
-      title: "Unity Basics",
-      status: "completed",
-      lessons: 6,
-      completedLessons: 6,
-    },
-    {
-      week: 2,
-      title: "Physics & Movement",
-      status: "in-progress",
-      lessons: 6,
-      completedLessons: 3,
-    },
-    {
-      week: 3,
-      title: "Animation & Effects",
-      status: "locked",
-      lessons: 6,
-      completedLessons: 0,
-    },
-    {
-      week: 4,
-      title: "Game Mechanics",
-      status: "locked",
-      lessons: 6,
-      completedLessons: 0,
-    },
-  ];
-
-  // Filter options for lessons
+  const [currentWeekLessons, setCurrentWeekLessons] = useState<any[]>([]);
+  const [stats, setStats] = useState<any>({ totalLessons: 0, completedLessons: 0 });
+  const [weeklyMilestones, setWeeklyMilestones] = useState<any[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
   const filters = ["all", "in-progress", "completed", "locked"];
 
-  // Calculate progress percentage
-  const progressPercentage = Math.round(
-    (stats.completedLessons / stats.totalLessons) * 100,
-  );
+  // Fetch lessons from R2 storage
+  useEffect(() => {
+    async function fetchLessons() {
+      try {
+        setLoading(true);
+        console.log('Lessons page: Fetching lessons from R2...');
+        
+        const response = await fetch('/api/lessons');
+        const result = await response.json();
+        
+        if (result.success && result.data) {
+          console.log('Lessons page: Fetched lessons:', result.data.length);
+          setCurrentWeekLessons(result.data);
+          
+          // Calculate stats from fetched lessons
+          const totalLessons = result.data.length;
+          const completedLessons = result.data.filter((lesson: any) => lesson.completed).length;
+          
+          setStats({
+            totalLessons,
+            completedLessons,
+            totalDuration: result.data.reduce((total: number, lesson: any) => {
+              const duration = parseInt(lesson.duration) || 0;
+              return total + duration;
+            }, 0),
+            weekProgress: Math.floor((completedLessons / totalLessons) * 8) || 0,
+            totalWeeks: 8,
+          });
+          
+          // Create weekly milestones from lessons
+          const lessonsPerWeek = Math.ceil(totalLessons / 4);
+          const milestones = [];
+          
+          for (let week = 1; week <= 4; week++) {
+            const startIdx = (week - 1) * lessonsPerWeek;
+            const endIdx = Math.min(startIdx + lessonsPerWeek, totalLessons);
+            const weekLessons = result.data.slice(startIdx, endIdx);
+            const completedInWeek = weekLessons.filter((lesson: any) => lesson.completed).length;
+            
+            milestones.push({
+              week,
+              title: `Week ${week}`,
+              status: weekLessons.some((lesson: any) => lesson.current) ? 'in-progress' : 
+                     completedInWeek === weekLessons.length ? 'completed' : 'locked',
+              lessons: weekLessons.length,
+              completedLessons: completedInWeek,
+            });
+          }
+          
+          setWeeklyMilestones(milestones);
+        } else {
+          console.error('Lessons page: API returned error:', result.error);
+        }
+      } catch (error) {
+        console.error('Lessons page: Error fetching lessons:', error);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchLessons();
+  }, []);
+
+  const progressPercentage = stats.totalLessons > 0 
+    ? Math.round((stats.completedLessons / stats.totalLessons) * 100)
+    : 0;
 
   // Main container for the page
   return (
@@ -354,12 +273,21 @@ export default function Lessons() {
           ))}
         </div>
 
+        {/* Loading State */}
+        {loading && (
+          <div className="flex flex-col items-center justify-center py-12">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-500 mb-4"></div>
+            <p className="text-gray-400">Loading lessons from cloud storage...</p>
+          </div>
+        )}
+
         {/* Main Grid Layout */}
-        <div className="grid lg:grid-cols-3 gap-8">
-          {/* Left Column - Lessons Content */}
-          <div className="lg:col-span-2 space-y-6">
-            {/* Current Lesson Highlight */}
-            {currentWeekLessons.find((l) => l.current) && (
+        {!loading && (
+          <div className="grid lg:grid-cols-3 gap-8">
+            {/* Left Column - Lessons Content */}
+            <div className="lg:col-span-2 space-y-6">
+              {/* Current Lesson Highlight */}
+              {currentWeekLessons.find((l) => l.current) && (
               <div
                 ref={currentLessonRef}
                 className={`bg-linear-to-r from-purple-950/60 to-pink-950/60 rounded-xl p-6 border border-purple-600/40 mb-6 transform transition-all duration-500 hover:scale-105 hover:shadow-2xl hover:shadow-purple-600/15 group ${
@@ -521,7 +449,7 @@ export default function Lessons() {
                   </button>
                 </div>
 
-                <div ref={upcomingRef} className="grid md:grid-cols-2 gap-4">
+                {/* <div ref={upcomingRef} className="grid md:grid-cols-2 gap-4">
                   {upcomingLessons.map((lesson, index) => (
                     <div
                       key={lesson.id}
@@ -555,7 +483,7 @@ export default function Lessons() {
                       </div>
                     </div>
                   ))}
-                </div>
+                </div> */}
               </div>
             )}
           </div>
@@ -695,6 +623,7 @@ export default function Lessons() {
             </div>
           </div>
         </div>
+        )}
       </div>
     </div>
   );

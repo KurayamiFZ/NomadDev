@@ -32,7 +32,7 @@ export default function HomeLayout({ children }: { children: ReactNode }) {
     "overview",
     "lessons",
     "projects",
-    "classes",
+    // "classes",
     "achievements",
     "community",
   ];
@@ -92,7 +92,7 @@ export default function HomeLayout({ children }: { children: ReactNode }) {
           console.log("No user achievements found - testing with sample data");
 
           // Test the level system with sample XP
-          const sampleXP = 750; // Sample XP for testing
+          const sampleXP = 10; // Sample XP for testing
           const testLevel = getLevelFromXP(sampleXP);
           const testRank = getRankTitle(testLevel);
           const testLevelProgress = getLevelProgress(sampleXP);
@@ -324,10 +324,10 @@ export default function HomeLayout({ children }: { children: ReactNode }) {
           </div>
 
           <div className="flex items-center gap-3">
-            {/* streak badge */}
+            {/* streak badge
             <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-orange-500/10 border border-orange-500/20 text-orange-400 text-xs font-bold">
               <IconComponent name="Flame" className="size-3.5" />7 day streak
-            </div>
+            </div> */}
 
             {/* notifications */}
             <button className="relative p-2 rounded-lg bg-white/5 border border-white/5 hover:bg-white/10 transition-colors">

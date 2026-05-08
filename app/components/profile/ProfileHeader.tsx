@@ -886,7 +886,11 @@ export function ProfileHeader({ profile, onNavigate }: ProfileHeaderProps) {
 
 
 
-                  <select
+                  <input
+
+
+
+                    type="text"
 
 
 
@@ -898,107 +902,15 @@ export function ProfileHeader({ profile, onNavigate }: ProfileHeaderProps) {
 
 
 
+                    placeholder="Enter your location"
+
+
+
                     className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white focus:border-purple-500 focus:outline-none"
 
 
 
-                  >
-
-
-
-                    <option value="">Select a aimag/niislel</option>
-
-
-
-                    <option value="Улаанбаатар">Улаанбаатар</option>
-
-
-
-                    <option value="Архангай">Архангай</option>
-
-
-
-                    <option value="Баян-Өлгий">Баян-Өлгий</option>
-
-
-
-                    <option value="Баянхонгор">Баянхонгор</option>
-
-
-
-                    <option value="Булган">Булган</option>
-
-
-
-                    <option value="Говь-Алтай">Говь-Алтай</option>
-
-
-
-                    <option value="Говьсүмбэр">Говьсүмбэр</option>
-
-
-
-                    <option value="Дархан-Уул">Дархан-Уул</option>
-
-
-
-                    <option value="Дорноговь">Дорноговь</option>
-
-
-
-                    <option value="Дорнод">Дорнод</option>
-
-
-
-                    <option value="Дундговь">Дундговь</option>
-
-
-
-                    <option value="Завхан">Завхан</option>
-
-
-
-                    <option value="Орхон">Орхон</option>
-
-
-
-                    <option value="Өвөрхангай">Өвөрхангай</option>
-
-
-
-                    <option value="Өмнөговь">Өмнөговь</option>
-
-
-
-                    <option value="Сүхбаатар">Сүхбаатар</option>
-
-
-
-                    <option value="Сэлэнгэ">Сэлэнгэ</option>
-
-
-
-                    <option value="Төв">Төв</option>
-
-
-
-                    <option value="Увс">Увс</option>
-
-
-
-                    <option value="Ховд">Ховд</option>
-
-
-
-                    <option value="Хөвсгөл">Хөвсгөл</option>
-
-
-
-                    <option value="Хэнтий">Хэнтий</option>
-
-
-
-                  </select>
+                  />
 
 
 

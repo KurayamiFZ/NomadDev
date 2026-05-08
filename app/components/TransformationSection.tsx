@@ -28,10 +28,10 @@ export function TransformationSection() {
 
         <div className="rounded-full bg-amber-400/20 px-3 py-1.5 sm:px-4 sm:py-2">
           <span className="text-sm font-bold text-amber-300 sm:text-base">
-            12 Week Transformation
+            Learning Journey
           </span>
           <p className="text-[10px] text-foreground/80 sm:text-xs">
-            150+ Lessons | 5 Complete Games
+            Interactive Lessons | Hands-on Projects
           </p>
         </div>
 

@@ -104,195 +104,14 @@ export default function LiveClassesPage() {
     };
   }, [selectedFilter]); // Add selectedFilter dependency to re-setup observers when filter changes
 
-  // Array of live/upcoming classes with their details
-  const liveClasses = [
-    {
-      id: 1,
-      title: "2D Platformer Physics Deep Dive",
-      instructor: "Alex Chen",
-      avatar: "AC",
-      time: "Today, 6:00 PM EST",
-      duration: "90 min",
-      attendees: 847,
-      status: "live",
-      thumbnail: "bg-blue-600",
-      description:
-        "Learn advanced physics techniques for creating smooth platformer movement and responsive controls",
-      category: "Physics",
-    },
-    {
-      id: 2,
-      title: "Character Animation Workshop",
-      instructor: "Sarah Martinez",
-      avatar: "SM",
-      time: "Tomorrow, 6:00 PM EST",
-      duration: "60 min",
-      attendees: 623,
-      status: "upcoming",
-      thumbnail: "bg-purple-600",
-      description:
-        "Master character animation, blend trees, and animation controllers in Unity",
-      category: "Animation",
-    },
-    {
-      id: 3,
-      title: "Q&A Session: Week 2 Review",
-      instructor: "Alex Chen",
-      avatar: "AC",
-      time: "Wed, 7:00 PM EST",
-      duration: "45 min",
-      attendees: 512,
-      status: "upcoming",
-      thumbnail: "bg-green-600",
-      description: "Ask questions and get help with Week 2 challenges",
-      category: "Q&A",
-    },
-    {
-      id: 4,
-      title: "UI/UX Design for Games",
-      instructor: "Maya Johnson",
-      avatar: "MJ",
-      time: "Thu, 5:00 PM EST",
-      duration: "75 min",
-      attendees: 389,
-      status: "upcoming",
-      thumbnail: "bg-pink-600",
-      description:
-        "Design intuitive and beautiful game interfaces that enhance player experience",
-      category: "Design",
-    },
-    {
-      id: 5,
-      title: "Advanced C# Patterns",
-      instructor: "David Kim",
-      avatar: "DK",
-      time: "Fri, 6:30 PM EST",
-      duration: "90 min",
-      attendees: 445,
-      status: "upcoming",
-      thumbnail: "bg-orange-600",
-      description:
-        "Learn design patterns and best practices for clean, maintainable game code",
-      category: "Programming",
-    },
-  ];
+  // Live classes - will be populated from database
+  const liveClasses: any[] = [];
 
-  // Array of past class recordings
-  const pastClasses = [
-    {
-      id: 101,
-      title: "Week 2 Review Session",
-      instructor: "Alex Chen",
-      avatar: "AC",
-      time: "45:30",
-      duration: "45 min",
-      attendees: 0,
-      status: "past",
-      thumbnail: "bg-gray-700",
-      description: "Complete review of Week 2 concepts and projects",
-      category: "Review",
-      date: "2 days ago",
-      views: 1234,
-    },
-    {
-      id: 102,
-      title: "Building Your First 3D Game",
-      instructor: "Sarah Martinez",
-      avatar: "SM",
-      time: "78:15",
-      duration: "78 min",
-      attendees: 0,
-      status: "past",
-      thumbnail: "bg-gray-700",
-      description: "Step-by-step guide to creating a complete 3D game",
-      category: "3D Development",
-      date: "5 days ago",
-      views: 2156,
-    },
-    {
-      id: 103,
-      title: "Multiplayer Networking Basics",
-      instructor: "David Kim",
-      avatar: "DK",
-      time: "92:45",
-      duration: "92 min",
-      attendees: 0,
-      status: "past",
-      thumbnail: "bg-gray-700",
-      description: "Introduction to multiplayer game development",
-      category: "Networking",
-      date: "1 week ago",
-      views: 1876,
-    },
-    {
-      id: 104,
-      title: "Game Audio Implementation",
-      instructor: "Maya Johnson",
-      avatar: "MJ",
-      time: "56:20",
-      duration: "56 min",
-      attendees: 0,
-      status: "past",
-      thumbnail: "bg-gray-700",
-      description: "Adding sound effects and music to your games",
-      category: "Audio",
-      date: "1 week ago",
-      views: 945,
-    },
-    {
-      id: 105,
-      title: "Performance Optimization",
-      instructor: "Alex Chen",
-      avatar: "AC",
-      time: "85:10",
-      duration: "85 min",
-      attendees: 0,
-      status: "past",
-      thumbnail: "bg-gray-700",
-      description: "Optimize your games for better performance",
-      category: "Optimization",
-      date: "2 weeks ago",
-      views: 1543,
-    },
-    {
-      id: 106,
-      title: "AI and Pathfinding",
-      instructor: "David Kim",
-      avatar: "DK",
-      time: "72:35",
-      duration: "72 min",
-      attendees: 0,
-      status: "past",
-      thumbnail: "bg-gray-700",
-      description: "Create intelligent NPCs with advanced AI",
-      category: "AI",
-      date: "2 weeks ago",
-      views: 1687,
-    },
-  ];
+  // Past classes - will be populated from database
+  const pastClasses: any[] = [];
 
-  // Array of featured instructors
-  const instructors = [
-    { name: "Alex Chen", avatar: "AC", title: "Unity Expert", students: 12500 },
-    {
-      name: "Sarah Martinez",
-      avatar: "SM",
-      title: "Animation Specialist",
-      students: 8900,
-    },
-    {
-      name: "David Kim",
-      avatar: "DK",
-      title: "Programming Guru",
-      students: 10200,
-    },
-    {
-      name: "Maya Johnson",
-      avatar: "MJ",
-      title: "UI/UX Designer",
-      students: 7600,
-    },
-  ];
+  // Instructors - will be populated from database
+  const instructors: any[] = [];
 
   // Filter options for classes
   const filters = ["all", "live", "upcoming", "past"];
@@ -754,7 +573,7 @@ export default function LiveClassesPage() {
                       Join Live
                     </h3>
                     <p className="text-sm text-white opacity-90 mb-4">
-                      Connect with 15k+ developers in real-time classes
+                      Connect with developers in real-time classes
                     </p>
                     {/* Browse button */}
                     <button className="w-full bg-white text-purple-600 py-3 rounded-lg font-bold hover:bg-gray-100 transition-all duration-300 transform hover:scale-105 hover:shadow-lg">

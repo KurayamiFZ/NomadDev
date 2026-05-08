@@ -95,11 +95,10 @@ export function DemoSection() {
 
         <div className="flex flex-col gap-1.5 rounded-lg border border-purple-600/30 bg-purple-600/8 p-4 sm:gap-2 sm:rounded-xl sm:p-6">
           <span className="text-base font-extrabold text-purple-300 sm:text-xl">
-            This is just 1 of 150+ lessons
+            This is just 1 of many interactive lessons
           </span>
           <span className="text-xs text-muted-foreground sm:text-sm">
-            Unlock complete 12-week journey to master game development from
-            scratch to store launch.
+            Start your learning journey with hands-on game development projects.
           </span>
         </div>
       </div>

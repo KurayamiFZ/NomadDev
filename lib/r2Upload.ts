@@ -5,7 +5,7 @@
  * Keeps all credentials and upload logic on the server side.
  */
 
-import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
+import { PutObjectCommand, ListObjectsV2Command, GetObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import { v4 as uuidv4 } from 'uuid';
 
 // R2 Configuration
@@ -72,6 +72,76 @@ export async function uploadVideoToR2(
     console.error('R2 upload error:', error);
     throw new Error(`Failed to upload video: ${error instanceof Error ? error.message : 'Unknown error'}`);
   }
+}
+
+/**
+ * Fetch lesson metadata from Cloudflare R2 storage
+ * 
+ * @param folder - The folder to fetch lessons from (default: 'lessons')
+ * @returns Promise resolving to array of lesson objects
+ */
+export async function fetchLessonsFromR2(folder: string = 'lessons'): Promise<any[]> {
+  try {
+    // List all objects in the lessons folder
+    const listCommand = new ListObjectsV2Command({
+      Bucket: process.env.R2_BUCKET_NAME!,
+      Prefix: `${folder}/`,
+    });
+
+    const listResponse = await r2Client.send(listCommand);
+    const objects = listResponse.Contents || [];
+
+    console.log('Found objects in R2:', objects.length);
+
+    // Fetch metadata for each lesson
+    const lessons = [];
+    
+    for (const object of objects) {
+      if (object.Key?.endsWith('.json')) {
+        try {
+          // Get the JSON metadata file
+          const getCommand = new GetObjectCommand({
+            Bucket: process.env.R2_BUCKET_NAME!,
+            Key: object.Key,
+          });
+
+          const getResponse = await r2Client.send(getCommand);
+          
+          // Convert stream to string
+          const bodyContents = await streamToString(getResponse.Body);
+          const lessonData = JSON.parse(bodyContents);
+
+          // Add video URL if video file exists
+          const videoKey = object.Key.replace('.json', '.mp4');
+          lessons.push({
+            ...lessonData,
+            id: lessonData.id || parseInt(object.Key?.split('/').pop()?.split('.')[0] || '0'),
+            videoUrl: `${process.env.R2_PUBLIC_URL}/${videoKey}`,
+            key: object.Key,
+          });
+        } catch (error) {
+          console.error(`Error fetching lesson ${object.Key}:`, error);
+        }
+      }
+    }
+
+    // Sort lessons by ID
+    return lessons.sort((a, b) => a.id - b.id);
+  } catch (error) {
+    console.error('Error fetching lessons from R2:', error);
+    throw new Error(`Failed to fetch lessons: ${error instanceof Error ? error.message : 'Unknown error'}`);
+  }
+}
+
+/**
+ * Helper function to convert stream to string
+ */
+async function streamToString(stream: any): Promise<string> {
+  const chunks = [];
+  for await (const chunk of stream) {
+    chunks.push(chunk);
+  }
+  return Buffer.concat(chunks).toString('utf-8');
 }
 
 /**
