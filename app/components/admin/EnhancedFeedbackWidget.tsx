@@ -74,14 +74,9 @@ export function EnhancedFeedbackWidget() {
     urgent: "text-red-400 bg-red-400/10 border-red-400/30",
   };
 
-  // Categories - will be populated from database
-  const categories = [];
-
-  // Response templates - will be populated from database
-  const responseTemplates = [];
-
-  // Tone options - will be populated from database
-  const toneOptions = [];
+  const categories: { value: string; label: string }[] = [];
+  const responseTemplates: { id: string; name: string; content: string }[] = [];
+  const toneOptions: { value: string; label: string; description: string }[] = [];
 
   useEffect(() => {
     if (isAdminAuthenticated) {
