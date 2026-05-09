@@ -6,7 +6,7 @@ import { HeroSection } from "./components/HeroSection";
 import { DemoSection } from "./components/DemoSection";
 import { RoadmapSection } from "./components/RoadmapSection";
 import { TransformationSection } from "./components/TransformationSection";
-import { StatsSection } from "./components/StatsSection";
+// import { StatsSection } from "./components/StatsSection";
 import { GuaranteeSection } from "./components/GuaranteeSection";
 import Footer from "./components/footer";
 
