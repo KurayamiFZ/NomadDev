@@ -6,11 +6,11 @@ export interface RoadmapPhase {
   items: string[];
 }
 
-export interface Stat {
-  value: string;
-  label: string;
-  sub: string;
-}
+// export interface Stat {
+//   value: string;
+//   label: string;
+//   sub: string;
+// }
 
 export interface Guarantee {
   title: string;
