@@ -3,7 +3,7 @@ import { GUARANTEES, type Guarantee } from "@/lib/constants";
 
 export function GuaranteeSection() {
   return (
-    <section className="mx-4 mb-8 flex w-[calc(100%-2rem)] max-w-xl flex-col items-center rounded-2xl border-2 border-emerald-500 bg-linear-to-b from-secondary to-black p-6 sm:mx-6 sm:w-[calc(100%-3rem)] sm:rounded-3xl sm:p-8">
+    <section className="mx-4 mb-8 md:mt-8 flex w-[calc(100%-2rem)] max-w-xl flex-col items-center rounded-2xl border-2 border-emerald-500 bg-linear-to-b from-secondary to-black p-6 sm:mx-6 sm:w-[calc(100%-3rem)] sm:rounded-3xl sm:p-8">
       <Shield className="h-10 w-10 text-emerald-400 sm:h-12 sm:w-12" />
 
       <h3 className="mt-3 text-xl font-bold text-foreground sm:mt-4 sm:text-2xl">
