@@ -1,12 +1,3 @@
-/**
- * Constants and Data for GameDev Academy Platform
- * 
- * This file contains shared constants, data structures, and configuration
- * used throughout the application for consistency and maintainability.
- * 
- * @fileoverview Central constants and data definitions
- */
-
 export interface RoadmapPhase {
   weeks: string;
   title: string;
@@ -38,7 +29,7 @@ export const LANDING_LESSONS: LandingLesson[] = [
   {
     title: "Тоглогчийн хөдөлгөөн",
     subtitle: "2D удирдлага сур",
-    level: "Эхлэгч",
+    level: "Анхлан",
     levelColor: "bg-emerald-500/20 text-emerald-400",
   },
   {
@@ -112,15 +103,19 @@ export const STATS: Stat[] = [
   { value: "12+", label: "Видео хичээлүүд", sub: "HD агуулга" },
   { value: "8+", label: "Кодны дасгалууд", sub: "Практик дадлага" },
   { value: "4", label: "Дууссан төслүүд", sub: "Портфолиод бэлэн" },
-  { value: "1000+", label: "Идэвхтэй суралцагсад", sub: "Өсөн нэмэгдэж буй нийгэмлэг" },
+  {
+    value: "1000+",
+    label: "Идэвхтэй суралцагсад",
+    sub: "Өсөн нэмэгдэж буй нийгэмлэг",
+  },
 ];
 
 // Guarantees - course guarantees and promises
 export const GUARANTEES: Guarantee[] = [
-  {
-    title: "30 хоногийн мөнгөн баталгаа",
-    desc: "Сэтгэл хангалуун бус уу? Ямар ч асуултгүйгээр бүрэн буцаан олгоно.",
-  },
+  // {
+  //   title: "30 хоногийн мөнгөн баталгаа",
+  //   desc: "Сэтгэл хангалуун бус уу? Ямар ч асуултгүйгээр бүрэн буцаан олгоно.",
+  // },
   {
     title: "Насан туршийн хандалт",
     desc: "Бүх хичээл, шинэчлэлт болон ирэх агуулгыг хязгааргүй ашиглах эрхтэй.",

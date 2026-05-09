@@ -1,18 +1,3 @@
-/**
- * Main Landing Page - GameDev Academy
- *
- * This is the primary landing page for the GameDev Academy platform.
- * It showcases the course offerings, interactive demo, and enrollment options.
- *
- * Architecture: Modular component-based design for maintainability
- * - Each section is a separate, reusable component
- * - Data is centralized in lib/constants.ts
- * - Responsive design with mobile-first approach
- *
- * @component
- * @returns {JSX.Element} The complete landing page
- */
-
 "use client";
 
 // Import all page sections as modular components
@@ -25,14 +10,6 @@ import { StatsSection } from "./components/StatsSection";
 import { GuaranteeSection } from "./components/GuaranteeSection";
 import Footer from "./components/footer";
 
-/**
- * Main Home Page Component
- *
- * Renders the complete landing page with all sections in order.
- * Uses a gradient background and responsive layout.
- *
- * @returns {JSX.Element} The assembled landing page
- */
 export default function Home() {
   return (
     // Main container with gradient background effect

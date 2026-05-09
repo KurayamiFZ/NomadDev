@@ -14,10 +14,10 @@ export function TransformationSection() {
             1-р долоо хоног
           </span>
           <p className="text-lg font-bold text-foreground sm:text-xl">
-            Бүрэн эхлэгч
+            Анхлан Суралцагч
           </p>
           <p className="text-xs text-foreground/60 sm:text-sm">
-            Кодчлолын туршлагагүй
+            Код бичих туршлагагүй
           </p>
         </div>
 
@@ -49,7 +49,7 @@ export function TransformationSection() {
             12-р долоо хоног
           </span>
           <p className="text-lg font-bold text-foreground sm:text-xl">
-            Тоглоом гаргасан хөгжүүлэгч
+            Тоглоом хөгжүүлэгч
           </p>
           <p className="text-xs text-foreground/60 sm:text-sm">
             Арилжааны тоглоом бүтээгдсэн
