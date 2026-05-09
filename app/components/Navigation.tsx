@@ -1,21 +1,3 @@
-/**
- * Navigation Component - GameDev Academy
- *
- * Sticky navigation header with branding, menu items, and mobile responsiveness.
- * Handles navigation between different sections and external pages.
- *
- * Features:
- * - Responsive design with mobile hamburger menu
- * - Smooth scroll navigation to page sections
- * - Integration with Next.js router
- * - Gradient branding with game controller icon
- *
- * @component
- * @param {Object} props - Component props
- * @param {Function} props.onNavigate - Optional callback for navigation events
- * @returns {JSX.Element} Sticky navigation header
- */
-
 "use client";
 
 import { useState, useEffect } from "react";
@@ -28,7 +10,12 @@ import { FlexRow } from "./ui/FlexRow";
 import { Button } from "./button";
 import { Gamepad2 } from "lucide-react";
 import { useAuth } from "./AuthProvider";
-import { calculateTotalXP, getLevelFromXP, getRankTitle, getRankGradient } from "../../lib/level-system";
+import {
+  calculateTotalXP,
+  getLevelFromXP,
+  getRankTitle,
+  getRankGradient,
+} from "../../lib/level-system";
 import { supabase } from "../../lib/supabaseclient";
 
 interface NavigationProps {
@@ -73,24 +60,29 @@ export function Navigation({ onNavigate }: NavigationProps) {
         // If we have user achievements, try to get achievement details
         if (userAchievements && userAchievements.length > 0) {
           const achievementIds = userAchievements
-            .filter(ua => ua.unlocked)
-            .map(ua => ua.achievement_id);
+            .filter((ua) => ua.unlocked)
+            .map((ua) => ua.achievement_id);
 
           if (achievementIds.length > 0) {
-            const { data: achievements, error: achievementError } = await supabase
-              .from("achievement")
-              .select("id, xp")
-              .in("id", achievementIds);
+            const { data: achievements, error: achievementError } =
+              await supabase
+                .from("achievement")
+                .select("id, xp")
+                .in("id", achievementIds);
 
             if (achievementError) {
-              console.error("Error fetching achievement details:", achievementError);
+              console.error(
+                "Error fetching achievement details:",
+                achievementError,
+              );
               return;
             }
 
             // Calculate total XP from unlocked achievements
-            const totalXP = achievements?.reduce((sum, achievement) => {
-              return sum + (achievement.xp || 0);
-            }, 0) || 0;
+            const totalXP =
+              achievements?.reduce((sum, achievement) => {
+                return sum + (achievement.xp || 0);
+              }, 0) || 0;
 
             // Calculate level and rank
             const level = getLevelFromXP(totalXP);
@@ -122,9 +114,7 @@ export function Navigation({ onNavigate }: NavigationProps) {
           >
             <IconWrapper icon={Gamepad2} size="md" variant="transparent" />
           </GradientBackground>
-          <span className="text-xl font-bold text-foreground">
-            GameDev Academy
-          </span>
+          <span className="text-xl font-bold text-foreground">Urguu Game</span>
         </FlexRow>
 
         {/* Desktop navigation links - Hidden on mobile */}
@@ -143,7 +133,9 @@ export function Navigation({ onNavigate }: NavigationProps) {
             <>
               {/* User Level Display */}
               {userLevel > 0 && (
-                <div className={`bg-linear-to-r ${userRankGradient} text-black px-3 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5`}>
+                <div
+                  className={`bg-linear-to-r ${userRankGradient} text-black px-3 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5`}
+                >
                   <Star className="w-3 h-3" />
                   Lv. {userLevel}
                 </div>

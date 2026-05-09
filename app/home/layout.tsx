@@ -231,10 +231,10 @@ export default function HomeLayout({ children }: { children: ReactNode }) {
           </div>
           <div className="flex flex-col items-start">
             <span className="font-black text-lg leading-none tracking-tight text-white group-hover:text-purple-400 transition-colors">
-              Nomad Dev
+              Urguu
             </span>
             <span className="text-[10px] font-semibold tracking-widest text-purple-500/60 uppercase mt-0.5">
-              Academy
+              Game
             </span>
           </div>
         </button>
@@ -283,7 +283,8 @@ export default function HomeLayout({ children }: { children: ReactNode }) {
                   }`}
                 />
                 <span className="relative">
-                  {TAB_LABELS[tab] || tab.charAt(0).toUpperCase() + tab.slice(1)}
+                  {TAB_LABELS[tab] ||
+                    tab.charAt(0).toUpperCase() + tab.slice(1)}
                 </span>
 
                 {/* active dot */}
