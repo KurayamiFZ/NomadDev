@@ -9,11 +9,11 @@ export default function Footer() {
             <Gamepad2 className="h-3.5 w-3.5 text-foreground sm:h-4 sm:w-4" />
           </div>
           <span className="text-sm font-bold text-foreground sm:text-base">
-            GameDev Academy
+            Urguu Game
           </span>
         </div>
         <p className="text-xs text-muted-foreground sm:text-sm">
-          2026 GameDev Academy. Бүх эрх хуулиар хамгаалагдсан.
+          2026 Urguu Game. Бүх эрх хуулиар хамгаалагдсан.
         </p>
       </div>
     </footer>

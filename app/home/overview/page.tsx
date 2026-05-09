@@ -35,8 +35,15 @@ export default function Overview() {
   const quickLinksRef = useRef<HTMLDivElement>(null);
 
   const [achievements, setAchievements] = useState<any[]>([]);
-  const [continueLesson, setContinueLesson] = useState<InProgressCourse | null>(null);
-  const [userStats, setUserStats] = useState<UserStats>({ xp: 0, level: 1, streak_count: 0, last_active_date: null });
+  const [continueLesson, setContinueLesson] = useState<InProgressCourse | null>(
+    null,
+  );
+  const [userStats, setUserStats] = useState<UserStats>({
+    xp: 0,
+    level: 1,
+    streak_count: 0,
+    last_active_date: null,
+  });
   const [courseStats, setCourseStats] = useState({ completed: 0, total: 0 });
   const [expandedAchievement, setExpandedAchievement] = useState<string | null>(
     null,
@@ -114,18 +121,25 @@ export default function Overview() {
 
     fetchAchievements();
     fetchMostRecentInProgress().then(setContinueLesson);
-    getUserStats().then(s => { if (s) setUserStats(s); });
+    getUserStats().then((s) => {
+      if (s) setUserStats(s);
+    });
 
     // Fetch course completion stats
     (async () => {
-      const { data: { user } } = await supabase.auth.getUser();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
       if (!user) return;
       const { data: rows } = await supabase
-        .from('user_course_progress')
-        .select('status')
-        .eq('user_id', user.id);
-      const { count: totalCount } = await supabase.from('videos').select('*', { count: 'exact', head: true });
-      const completed = rows?.filter(r => r.status === 'completed').length ?? 0;
+        .from("user_course_progress")
+        .select("status")
+        .eq("user_id", user.id);
+      const { count: totalCount } = await supabase
+        .from("videos")
+        .select("*", { count: "exact", head: true });
+      const completed =
+        rows?.filter((r) => r.status === "completed").length ?? 0;
       const total = totalCount ?? 0;
       setCourseStats({ completed, total });
     })();
@@ -245,28 +259,43 @@ export default function Overview() {
               value: `${courseStats.completed}/${courseStats.total}`,
               label: "Дууссан хичээлүүд",
               color: "text-purple-400",
-              progress: { current: courseStats.completed, total: Math.max(courseStats.total, 1) },
+              progress: {
+                current: courseStats.completed,
+                total: Math.max(courseStats.total, 1),
+              },
             },
             {
               icon: Code,
               value: `${userStats.streak_count} Өдөр`,
               label: "Тасралтгүй суралцсан хоног",
               color: "text-orange-400",
-              progress: { current: Math.min(userStats.streak_count, 7), total: 7 },
+              progress: {
+                current: Math.min(userStats.streak_count, 7),
+                total: 7,
+              },
             },
             {
               icon: Award,
               value: `Lv.${userStats.level}`,
               label: getRankTitle(userStats.level),
               color: "text-yellow-400",
-              progress: { current: getLevelProgress(userStats.xp).progressXP, total: Math.max(getLevelProgress(userStats.xp).xpToNextLevel, 1) },
+              progress: {
+                current: getLevelProgress(userStats.xp).progressXP,
+                total: Math.max(
+                  getLevelProgress(userStats.xp).xpToNextLevel,
+                  1,
+                ),
+              },
             },
             {
               icon: MessageCircle,
               value: `${userStats.xp} XP`,
               label: "Нийт туршлагын оноо",
               color: "text-purple-400",
-              progress: { current: courseStats.completed, total: Math.max(courseStats.total, 1) },
+              progress: {
+                current: courseStats.completed,
+                total: Math.max(courseStats.total, 1),
+              },
             },
           ].map((stat, index) => (
             <div
@@ -304,14 +333,16 @@ export default function Overview() {
               <div className="p-6 border-b border-gray-800">
                 <h2 className="text-2xl font-bold flex items-center gap-2 bg-linear-to-r from-purple-500 to-pink-500 bg-clip-text text-transparent">
                   <Icon name="Rocket" className="size-6 text-purple-500" />
-                  Суралцаж үргэлжүүлэх
+                  Үргэлжүүлэх
                 </h2>
               </div>
               <div className="p-6">
                 {continueLesson?.videos ? (
                   /* ── Continue Watching card ── */
                   <div
-                    onClick={() => router.push(`/home/lessons/${continueLesson.videos!.id}`)}
+                    onClick={() =>
+                      router.push(`/home/lessons/${continueLesson.videos!.id}`)
+                    }
                     className="bg-linear-to-r from-purple-950/60 to-pink-950/60 rounded-xl p-6 border border-purple-600/40 mb-6 transform transition-all duration-500 hover:scale-105 hover:shadow-2xl hover:shadow-purple-600/15 group cursor-pointer"
                   >
                     <div className="flex items-start justify-between mb-4">
@@ -340,12 +371,18 @@ export default function Overview() {
                     <div className="mb-4">
                       <div className="flex justify-between text-xs text-gray-400 mb-1">
                         <span>Явц</span>
-                        <span className="font-bold text-purple-300">{continueLesson.progress_percent}%</span>
+                        <span className="font-bold text-purple-300">
+                          {continueLesson.progress_percent}%
+                        </span>
                       </div>
                       <div className="bg-gray-800 rounded-full h-2 overflow-hidden">
                         <div
                           className="bg-linear-to-r from-purple-500 to-pink-500 h-full rounded-full transition-all duration-1000 ease-out"
-                          style={{ width: learningVisible ? `${continueLesson.progress_percent}%` : "0%" }}
+                          style={{
+                            width: learningVisible
+                              ? `${continueLesson.progress_percent}%`
+                              : "0%",
+                          }}
                         />
                       </div>
                     </div>
@@ -361,12 +398,14 @@ export default function Overview() {
                   >
                     <div className="flex items-start justify-between mb-4">
                       <div>
-                        <div className="text-purple-500 text-sm font-medium mb-1">ЭХЛЭХ ЦАГ БОЛСОН</div>
+                        <div className="text-purple-500 text-sm font-medium mb-1">
+                          ЭХЛЭХ ЦАГ БОЛСОН
+                        </div>
                         <h3 className="text-2xl font-bold mb-2 group-hover:text-purple-400 transition-colors">
                           Суралцаж эхлэх
                         </h3>
                         <p className="text-gray-400 group-hover:text-gray-300 transition-colors">
-                          Хичээлүүдийг харж, өөрт тохирох хичээлээ сонгоорой
+                          Байгаа хичээлүүдэс өөрт тохирох хичээлээ сонгоорой
                         </p>
                       </div>
                       <div className="shrink-0 ml-4">
@@ -376,7 +415,7 @@ export default function Overview() {
                       </div>
                     </div>
                     <button className="w-full bg-linear-to-r from-purple-600/40 to-pink-600/40 text-white py-3 rounded-lg font-bold hover:scale-105 transition-all duration-300 hover:shadow-lg hover:shadow-purple-500/50">
-                      Хичээлүүдийг харах
+                      Үргэлжүүлэх
                     </button>
                   </div>
                 )}
@@ -500,7 +539,7 @@ export default function Overview() {
               <div className="p-6 border-b border-gray-800">
                 <h2 className="text-xl font-bold flex items-center gap-2 bg-linear-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
                   <Icon name="Users" className="size-5 text-purple-400" />
-                  Нийгэмлэгийн идэвхжил
+                  Community
                 </h2>
               </div>
               <div className="p-6">
@@ -526,7 +565,7 @@ export default function Overview() {
                   className="w-full bg-linear-to-r from-purple-900 to-pink-900 hover:from-purple-500 hover:to-pink-500 text-white py-3 rounded-lg font-bold mt-4 transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-purple-500/50 flex items-center justify-center gap-2"
                 >
                   <Icon name="MessageCircle" className="size-4" />
-                  Discord нийгэмлэгт нэгдэх
+                  Discord-д нэгдэх
                 </a>
               </div>
             </div>

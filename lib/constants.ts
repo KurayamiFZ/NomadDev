@@ -99,16 +99,16 @@ export const ROADMAP_PHASES: RoadmapPhase[] = [
 ];
 
 // Statistics - course statistics
-export const STATS: Stat[] = [
-  { value: "12+", label: "Видео хичээлүүд", sub: "HD агуулга" },
-  { value: "8+", label: "Кодны дасгалууд", sub: "Практик дадлага" },
-  { value: "4", label: "Дууссан төслүүд", sub: "Портфолиод бэлэн" },
-  {
-    value: "1000+",
-    label: "Идэвхтэй суралцагсад",
-    sub: "Өсөн нэмэгдэж буй нийгэмлэг",
-  },
-];
+// export const STATS: Stat[] = [
+//   { value: "12+", label: "Видео хичээлүүд", sub: "HD агуулга" },
+//   { value: "8+", label: "Кодны дасгалууд", sub: "Практик дадлага" },
+//   { value: "4", label: "Дууссан төслүүд", sub: "Портфолиод бэлэн" },
+//   {
+//     value: "1000+",
+//     label: "Идэвхтэй суралцагсад",
+//     sub: "Өсөн нэмэгдэж буй нийгэмлэг",
+//   },
+// ];
 
 // Guarantees - course guarantees and promises
 export const GUARANTEES: Guarantee[] = [

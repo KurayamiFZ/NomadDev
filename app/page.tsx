@@ -29,8 +29,8 @@ export default function Home() {
       {/* Transformation Section - Before/after learning journey visualization */}
       <TransformationSection />
 
-      {/* Stats Section - Course statistics and achievements */}
-      <StatsSection />
+      {/* Stats Section - Course statistics and achievements
+      <StatsSection /> */}
 
       {/* Guarantee Section - Risk-free promises and benefits */}
       <GuaranteeSection />
