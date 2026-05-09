@@ -227,14 +227,11 @@ export default function HomeLayout({ children }: { children: ReactNode }) {
           <div className="relative size-10 rounded-xl bg-linear-to-br from-purple-500 to-pink-500 shadow-lg shadow-purple-500/40 flex items-center justify-center shrink-0">
             {/* inner shine */}
             <div className="absolute inset-0 rounded-xl bg-white/10" />
-            <span className="relative text-white font-black text-sm">ND</span>
+            <span className="relative text-white font-black text-sm">UG</span>
           </div>
           <div className="flex flex-col items-start">
             <span className="font-black text-lg leading-none tracking-tight text-white group-hover:text-purple-400 transition-colors">
-              Urguu
-            </span>
-            <span className="text-[10px] font-semibold tracking-widest text-purple-500/60 uppercase mt-0.5">
-              Game
+              Urguu Game
             </span>
           </div>
         </button>
